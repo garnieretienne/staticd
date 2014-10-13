@@ -1,0 +1,6 @@
+# Bundler folders
+.bundle
+vendor/bundle
+
+# Vagrant folder
+.vagrant

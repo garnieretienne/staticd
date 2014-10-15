@@ -2,7 +2,7 @@ require "test_helper"
 require "staticd/datastore/local"
 require "base64"
 
-class DatastoreLocalTest < Test::Unit::TestCase
+class DatastoreLocalTest < MiniTest::Unit::TestCase
   include TestHelper
 
   def test_it_should_store_file_and_return_an_url

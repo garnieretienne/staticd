@@ -1,10 +1,7 @@
-require 'dm-validations'
-
-class Site
+class DomainName
   include DataMapper::Resource
 
   property :name, String, key: true, unique: true
 
-  has n, :releases
-  has n, :domain_names
+  belongs_to :site
 end

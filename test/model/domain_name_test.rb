@@ -1,7 +1,7 @@
 require "test_helper"
 require "staticd/database"
 
-class SiteTest < MiniTest::Unit::TestCase
+class DomainNameTest < MiniTest::Test
   include TestHelper
 
   def setup
@@ -10,10 +10,10 @@ class SiteTest < MiniTest::Unit::TestCase
 
   def test_it_must_have_an_unique_name
     refute_nil testing_domain.name
-    refute DomainName.new(name: "example.org").save
+    refute Staticd::Model::DomainName.new(name: "example.org").save
   end
 
   def test_it_must_belong_to_a_site
-    assert_instance_of Site, testing_domain.site
+    assert_instance_of Staticd::Model::Site, testing_domain.site
   end
 end

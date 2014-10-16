@@ -1,11 +1,13 @@
 require "data_mapper"
 
-DataMapper.setup(:default, 'sqlite::memory:')
+module Staticd
+  DataMapper.setup(:default, 'sqlite::memory:')
 
-# Load models
-Dir.glob("#{File.dirname(File.dirname(__FILE__))}/../models/*.rb") {|file|
-  require file
-}
+  # Load models
+  require "staticd/model/site"
+  require "staticd/model/release"
+  require "staticd/model/domain_name"
 
-DataMapper.finalize
-DataMapper.auto_migrate!
+  DataMapper.finalize
+  DataMapper.auto_migrate!
+end

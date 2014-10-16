@@ -4,3 +4,6 @@ vendor/bundle
 
 # Vagrant folder
 .vagrant
+
+# Yard folder
+.yardoc

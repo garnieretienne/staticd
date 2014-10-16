@@ -1,13 +1,13 @@
 require "test_helper"
 require "json"
 require "base64"
-require_relative "../api"
+require "staticd/api"
 
-class APITest < MiniTest::Unit::TestCase
+class APITest < MiniTest::Test
   include TestHelper
 
   def app
-    API
+    Staticd::API
   end
 
   def setup

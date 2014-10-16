@@ -1,7 +1,7 @@
 require "test_helper"
 require "staticd/database"
 
-class SiteTest < MiniTest::Unit::TestCase
+class SiteTest < MiniTest::Test
   include TestHelper
 
   def setup
@@ -10,7 +10,7 @@ class SiteTest < MiniTest::Unit::TestCase
 
   def test_it_must_have_an_unique_name
     assert !testing_site.name.nil?
-    assert !Site.new(name: "test").save
+    assert !Staticd::Model::Site.new(name: "test").save
   end
 
   def test_it_can_have_releases

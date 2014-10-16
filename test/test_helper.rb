@@ -23,23 +23,27 @@ module TestHelper
   end
 
   def testing_site
-    @testing_site ||= Site.get("test") || Site.create(name: "test")
+    @testing_site ||=
+      Staticd::Model::Site.get("test") ||
+      Staticd::Model::Site.create(name: "test")
   end
 
   def testing_release
-    @testing_release ||= Release.get(site_name: testing_site.name, tag: "v1") ||
-        Release.create(
-          site: testing_site,
-          tag: "v1",
-          url: fixtures_path("files/mywebsite.fr.tar.gz")
-        )
+    @testing_release ||=
+      Staticd::Model::Release.get(site_name: testing_site.name, tag: "v1") ||
+      Staticd::Model::Release.create(
+        site: testing_site,
+        tag: "v1",
+        url: fixtures_path("files/mywebsite.fr.tar.gz")
+      )
   end
 
   def testing_domain
-    @testing_domain ||= DomainName.get(
-      site_name: testing_site.name,
-      name: "example.org"
-    ) ||
-    DomainName.create(site: testing_site, name: "example.org")
+    @testing_domain ||=
+      Staticd::Model::DomainName.get(
+        site_name: testing_site.name,
+        name: "example.org"
+      ) ||
+      Staticd::Model::DomainName.create(site: testing_site, name: "example.org")
   end
 end

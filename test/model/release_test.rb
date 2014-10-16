@@ -1,7 +1,7 @@
 require "test_helper"
 require "staticd/database"
 
-class SiteTest < MiniTest::Unit::TestCase
+class ReleaseTest < MiniTest::Test
   include TestHelper
 
   def setup
@@ -17,6 +17,6 @@ class SiteTest < MiniTest::Unit::TestCase
   end
 
   def test_it_must_belong_to_a_site
-    assert_instance_of Site, testing_release.site
+    assert_instance_of Staticd::Model::Site, testing_release.site
   end
 end

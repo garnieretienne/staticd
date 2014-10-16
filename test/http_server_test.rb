@@ -1,11 +1,11 @@
 require "test_helper"
-require_relative "../http_server"
+require "staticd/http_server"
 
-class HTTPServerTest < MiniTest::Unit::TestCase
+class HTTPServerTest < MiniTest::Test
   include TestHelper
 
   def app
-    HTTPServer.new
+    Staticd::HTTPServer.new
   end
 
   def setup

@@ -98,8 +98,8 @@ module Staticd
 
     # Attach a new domain name to a site
     #
-    # @params site_name [String] the name of the site (url)
-    # @params name [String] the domain name to attach
+    # @param site_name [String] the name of the site (url)
+    # @param name [String] the domain name to attach
     # @return [Hash] the domain name attributes
     # @example Using curl
     #   curl --data '{"name": "hello.io"}' \

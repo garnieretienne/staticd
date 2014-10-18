@@ -100,4 +100,20 @@ class APITest < MiniTest::Test
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
   end
+
+  def test_it_should_list_all_domain_names_attached_to_a_site
+    get "/sites/#{testing_site.name}/domain_names"
+    assert last_response.ok?
+    response_data = JSON.parse last_response.body
+    assert response_data.kind_of?(Array)
+    refute response_data.empty?
+    assert response_data.first.kind_of?(String)
+  end
+
+  def test_it_should_return_an_error_listing_all_domains_of_an_unknown_site
+    get "/sites/unknown_site/domain_names"
+    refute last_response.ok?
+    response_data = JSON.parse last_response.body
+    refute response_data["error"].empty?
+  end
 end

@@ -74,7 +74,10 @@ module Staticd
           JSONResponse.send :error, "Cannot create the new release (#{msg})"
         end
       else
-        JSONResponse.send :error, "This site (#{site}) does not exist"
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
       end
     end
 
@@ -92,7 +95,10 @@ module Staticd
         tags = site.releases.map{|releases| releases.tag}
         JSONResponse.send :success, tags
       else
-        JSONResponse.send :error, "This site (#{site}) does not exist"
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
       end
     end
 
@@ -119,7 +125,31 @@ module Staticd
           JSONResponse.send :error, "Cannot create the new domain name (#{msg})"
         end
       else
-        JSONResponse.send :error, "This site (#{site}) does not exist"
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
+      end
+    end
+
+    # Get all domain names attached to a site
+    #
+    # @param site_name [String] the name of the site (url)
+    # @return [Array] a list of all domain names
+    # @example Using curl
+    #   curl localhost:4567/api/sites/my_app/domain_names
+    # @example Output
+    #   ["hello.io"]
+    get "/sites/:site_name/domain_names" do
+      site = Site.get params[:site_name]
+      if site
+        domains = site.domain_names.map{|domain| domain.name}
+        JSONResponse.send :success, domains
+      else
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
       end
     end
   end

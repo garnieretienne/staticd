@@ -13,7 +13,9 @@ module Staticd
 
       # Find the corresponding site and release
       site = domain_name.site
+      return send_404 unless site
       last_release = site.releases.last
+      return send_404 unless last_release
 
       # Verify the site is cached
       local_path = CacheEngine.cached? last_release.url
@@ -33,9 +35,13 @@ module Staticd
         File.foreach(file){|chunk| res.write chunk}
         res.finish
       else
-        res = Rack::Response.new ["Not Found"], 404, {}
-        res.finish
+        send_404
       end
+    end
+
+    def send_404
+      res = Rack::Response.new ["Not Found"], 404, {}
+      res.finish
     end
   end
 end

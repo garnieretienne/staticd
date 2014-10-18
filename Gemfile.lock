@@ -6,6 +6,13 @@ GIT
       activesupport
       yard (~> 0.7)
 
+PATH
+  remote: .
+  specs:
+    staticdctl (0.0.1)
+      gli (= 2.12.2)
+      rest_client
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -74,16 +81,21 @@ GEM
     do_sqlite3 (0.10.14)
       data_objects (= 0.10.14)
     fastercsv (1.5.5)
+    gli (2.12.2)
     i18n (0.6.11)
     json (1.8.1)
     json_pure (1.8.1)
     minitest (5.4.2)
     multi_json (1.10.1)
+    netrc (0.7.9)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rake (10.3.2)
+    rest_client (1.7.3)
+      netrc (~> 0.7.7)
     sinatra (1.4.5)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -105,6 +117,8 @@ DEPENDENCIES
   data_mapper
   dm-sqlite-adapter
   rack-test
+  rake
   sinatra
+  staticdctl!
   yard
   yard-sinatra!

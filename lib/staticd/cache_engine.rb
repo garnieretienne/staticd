@@ -1,17 +1,18 @@
 require 'digest/md5'
+require "staticd_utils/archive"
 
 module Staticd
   class CacheEngine
 
     CACHE_DIR = "/tmp/cache"
 
-    # TODO: url must not be an url but a file path for now
-    # TODO: support native ruby implementation for creating / extracting gzipped
-    # tarballs
     def self.cache(url)
       init
-      `rm --recursive --force #{cache_path(url)}; mkdir --parents #{cache_path(url)}`
-      `cd #{cache_path(url)}; tar --extract --gzip --file #{url}`
+      if File.directory? cache_path(url)
+        FileUtils.rm_r cache_path(url), force: true, secure: true
+      end
+      archive = StaticdUtils::Archive.open_file url
+      archive.extract cache_path(url)
       cache_path(url)
     end
 

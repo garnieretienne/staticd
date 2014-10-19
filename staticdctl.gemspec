@@ -12,7 +12,8 @@ spec = Gem::Specification.new do |s|
     "bin/staticdctl",
     "lib/staticdctl.rb",
     "lib/staticdctl/rest_client.rb",
-    "lib/staticdctl/version.rb"
+    "lib/staticdctl/version.rb",
+    "lib/staticd_utils/archive.rb"
   ]
   s.require_paths << 'lib'
   # s.has_rdoc = true

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'gli'
 require 'staticdctl'
+require 'staticd_utils/archive'
 
 include GLI::App
 
@@ -103,12 +104,11 @@ arg_name '[path]'
 command :push do |c|
   c.action do |global_options,options,args|
 
-    STATICDCTL_CACHE="/tmp/staticdctl"
-    archive_path = "#{STATICDCTL_CACHE}/#{Time.now.to_i}.tar.gz"
+    print "Building the archive... "
     source_path = args.any? ? args.first : "."
-    `mkdir -p #{STATICDCTL_CACHE}`
-    `cd #{source_path}; tar --exclude '.git/*' --exclude '.git' -czf #{archive_path} .`
-    base64 = `cat #{archive_path} | base64`
+    archive = StaticdUtils::Archive.create source_path
+    base64 = archive.to_base64
+    puts "done."
 
     staticd_api = Staticdctl::RESTClient.new global_options[:host]
     staticd_api.call :post, "/sites/#{global_options[:site]}/releases", {
@@ -140,8 +140,7 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
-  # true
-  raise exception
+  true
 end
 
 exit run(ARGV)

@@ -51,14 +51,14 @@ module StaticdUtils
     end
 
     def to_base64
-      unless @stream.closed?
-        base64 = Base64.encode64 @stream.read
-        self.close
-        base64
-      end
+      return false if @stream.closed?
+      base64 = Base64.encode64 @stream.read
+      self.close
+      base64
     end
 
     def to_file(path)
+      return false if @stream.closed?
       File.open(path, 'w') do |file|
         file.write @stream.read
       end
@@ -67,6 +67,8 @@ module StaticdUtils
     end
 
     def extract(path)
+      return false if @stream.closed?
+      FileUtils.mkdir_p "#{path}"
       gzip = Zlib::GzipReader.new(@stream)
       gzip.rewind
       tar = Gem::Package::TarReader.new gzip
@@ -82,6 +84,7 @@ module StaticdUtils
       end
       gzip.close
       tar.close
+      self.close
       path
     end
   end

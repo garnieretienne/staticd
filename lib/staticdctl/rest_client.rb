@@ -13,7 +13,9 @@ module Staticdctl
       json_req_data = req_data ? req_data.to_json : nil
       req_args = ["#{@url}#{path}"]
       req_args << req_data.to_json if req_data
-      req_args << {content_type: :json, accept: :json}
+      req_opts = {accept: :json}
+      req_opts.merge({content_type: :json}) if req_data
+      req_args << req_opts
       RestClient.send method, *req_args do |response, request, result|
         res_data = JSON.parse response.to_s
         case response.code

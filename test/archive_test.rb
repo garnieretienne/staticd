@@ -61,4 +61,10 @@ EOF
       end
     end
   end
+
+  def test_get_archive_size
+    testing_archive do |archive|
+      assert_instance_of Fixnum, archive.size
+    end
+  end
 end

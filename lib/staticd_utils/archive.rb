@@ -87,5 +87,9 @@ module StaticdUtils
       self.close
       path
     end
+
+    def size
+      @stream.size
+    end
   end
 end

@@ -2,6 +2,7 @@
 require 'gli'
 require 'staticdctl'
 require 'staticd_utils/archive'
+require 'staticd_utils/file_size'
 
 include GLI::App
 
@@ -108,7 +109,8 @@ command :push do |c|
     source_path = args.any? ? args.first : "."
     archive = StaticdUtils::Archive.create source_path
     base64 = archive.to_base64
-    puts "done."
+    file_size = StaticdUtils::FileSize.new(archive.size)
+    puts "done. (#{file_size})"
 
     staticd_api = Staticdctl::RESTClient.new global_options[:host]
     staticd_api.call :post, "/sites/#{global_options[:site]}/releases", {
@@ -140,7 +142,8 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
-  true
+  # true
+  raise exception
 end
 
 exit run(ARGV)

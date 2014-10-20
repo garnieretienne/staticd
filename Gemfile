@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 group :server do
+  gem "puma"
   gem "sinatra"
   gem "rack-test"
   gem "data_mapper"

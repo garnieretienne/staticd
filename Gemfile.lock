@@ -88,6 +88,8 @@ GEM
     minitest (5.4.2)
     multi_json (1.10.1)
     netrc (0.7.9)
+    puma (2.9.1)
+      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -116,6 +118,7 @@ DEPENDENCIES
   byebug
   data_mapper
   dm-sqlite-adapter
+  puma
   rack-test
   rake
   sinatra

@@ -1,3 +1,5 @@
+#\ -s puma
+
 require "staticd/api"
 require "staticd/http_server"
 

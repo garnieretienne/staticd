@@ -10,6 +10,7 @@ module Staticd
       # Get the domain name
       req = Rack::Request.new env
       domain_name = DomainName.get req.host
+      return send_404 unless domain_name
 
       # Find the corresponding site and release
       site = domain_name.site

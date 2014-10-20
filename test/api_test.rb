@@ -40,7 +40,10 @@ class APITest < MiniTest::Test
   def test_it_should_create_a_new_release_of_a_site
     file_path = fixtures_path "files/mywebsite.fr.tar.gz"
     base64 = Base64.encode64 File.read(file_path)
-    post "/sites/#{testing_site.name}/releases", JSON.generate(file: base64)
+    post(
+      "/sites/#{testing_site.name}/releases",
+      file: Rack::Test::UploadedFile.new(file_path, "application/x-tar-gz")
+    )
     assert last_response.ok?
     response_data = JSON.parse last_response.body
     assert_equal testing_site.name, response_data["site_name"]

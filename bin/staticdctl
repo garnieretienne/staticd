@@ -49,7 +49,7 @@ command :"sites:create" do |c|
 
     staticd_api = Staticdctl::RESTClient.new global_options[:host]
     staticd_api.call :post, "/sites", {
-      name: global_options[:name]
+      name: global_options[:site]
     } do |data|
       puts "#{data['name']} has been created."
     end
@@ -108,14 +108,14 @@ command :push do |c|
     print "Building the archive... "
     source_path = args.any? ? args.first : "."
     archive = StaticdUtils::Archive.create source_path
-    base64 = archive.to_base64
     file_size = StaticdUtils::FileSize.new(archive.size)
     puts "done. (#{file_size})"
 
     staticd_api = Staticdctl::RESTClient.new global_options[:host]
-    staticd_api.call :post, "/sites/#{global_options[:site]}/releases", {
-      file: base64
-    } do |data|
+    staticd_api.send_file(
+      "/sites/#{global_options[:site]}/releases",
+      archive.to_archive_file
+    ) do |data|
       puts "#{data["site_name"]} #{data["tag"]} received"
     end
   end

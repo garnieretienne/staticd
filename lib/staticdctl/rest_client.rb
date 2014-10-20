@@ -28,5 +28,21 @@ module Staticdctl
         end
       end
     end
+
+    def send_file(path, file, &block)
+      req_args = ["#{@url}#{path}"]
+      req_args << {file: file}
+      RestClient.post *req_args do |response, request, result|
+        res_data = JSON.parse response.to_s
+        case response.code
+        when 200
+          yield res_data
+        when 403
+          raise res_data['error']
+        else
+          raise "Server returned an '#{response.code}' status code"
+        end
+      end
+    end
   end
 end

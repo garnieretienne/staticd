@@ -15,7 +15,7 @@ module Staticd
     # @param name [String] the name of the new site
     # @return [Hash] the site attributes
     # @example Using curl
-    #   curl --data '{"name": "my_app"}' http://localhost:4567/api/sites
+    #   curl --data '{"name": "my_app"}' http://localhost/api/sites
     # @example Output
     #   {"name":"my_app"}
     post "/sites" do
@@ -34,7 +34,7 @@ module Staticd
     #
     # @return [Array] the name of each sites
     # @example Using curl
-    #   curl localhost:4567/api/sites
+    #   curl localhost/api/sites
     # @example Output
     #   ["my_app","another_app"]
     get "/sites" do
@@ -45,13 +45,10 @@ module Staticd
     # Create a new site release
     #
     # @param site_name [String] the name of the site (url)
-    # @param file [Text] the base64 encoded gzipped tarball containing the site
-    #   files
+    # @param file [File] the gzipped tarball containing the site files
     # @return [Hash] the new release attributes
     # @example Using curl
-    #   base64_encoded=$(base64 test/fixtures/files/mywebsite.fr.tar.gz)
-    #   curl --data "{\"file\": \"$base64_encoded\"}" \
-    #       localhost:4567/api/sites/my_app/releases
+    #   curl --form file=@archive.tar.gz localhost/api/sites/my_app/releases
     # @example Output
     #   {
     #     "id":1,
@@ -63,9 +60,13 @@ module Staticd
       site = Site.get params[:site_name]
       if site
         request.body.rewind
-        data = JSONRequest.parse request.body.read
         tag = "v#{site.releases.count + 1}"
-        url = data["file"] ? Datastore::Local.put_base64(data["file"]) : nil
+        url = if params[:file]
+          archive_path = params[:file][:tempfile].path
+          Datastore::Local.put archive_path
+        else
+          nil
+        end
         release = Release.new site: site, tag: tag, url: url
         if release.save
           JSONResponse.send :success, release.attributes
@@ -86,7 +87,7 @@ module Staticd
     # @param site_name [String] the name of the site (url)
     # @return [Array] the tag of each releases
     # @example Using curl
-    #   curl localhost:4567/api/sites/my_app/releases
+    #   curl localhost/api/sites/my_app/releases
     # @example Ouput
     #   ["v1","v2"]
     get "/sites/:site_name/releases" do
@@ -109,7 +110,7 @@ module Staticd
     # @return [Hash] the domain name attributes
     # @example Using curl
     #   curl --data '{"name": "hello.io"}' \
-    #     localhost:4567/api/sites/my_app/domain_names
+    #     localhost/api/sites/my_app/domain_names
     # @example Output
     #   {"name":"hello.io","site_name":"my_app"}
     post "/sites/:site_name/domain_names" do
@@ -137,7 +138,7 @@ module Staticd
     # @param site_name [String] the name of the site (url)
     # @return [Array] a list of all domain names
     # @example Using curl
-    #   curl localhost:4567/api/sites/my_app/domain_names
+    #   curl localhost/api/sites/my_app/domain_names
     # @example Output
     #   ["hello.io"]
     get "/sites/:site_name/domain_names" do

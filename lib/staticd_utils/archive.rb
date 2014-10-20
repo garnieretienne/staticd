@@ -2,6 +2,7 @@ require "rubygems/package"
 require "zlib"
 require "base64"
 require "open-uri"
+require "staticd_utils/archive_file"
 
 module StaticdUtils
   class Archive
@@ -64,6 +65,10 @@ module StaticdUtils
       end
       self.close
       path
+    end
+
+    def to_archive_file
+      StaticdUtils::ArchiveFile.new @stream
     end
 
     def extract(path)

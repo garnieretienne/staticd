@@ -67,4 +67,14 @@ EOF
       assert_instance_of Fixnum, archive.size
     end
   end
+
+  def test_get_archive_stream_to_look_like_a_file
+    testing_archive do |archive|
+      duck_file = archive.to_archive_file
+      assert_respond_to duck_file, :read
+      assert_respond_to duck_file, :path
+      assert_respond_to duck_file, :original_filename
+      assert_respond_to duck_file, :content_type
+    end
+  end
 end

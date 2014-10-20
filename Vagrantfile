@@ -31,6 +31,7 @@ rbenv rehash
 sudo apt-get install --assume-yes sqlite3 libsqlite3-dev
 
 # Install gem dependencies using bundler
+sudo apt-get install --assume-yes build-essential libssl-dev
 gem install bundler
 rbenv rehash
 cd /vagrant

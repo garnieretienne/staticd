@@ -59,7 +59,6 @@ module Staticd
     post "/sites/:site_name/releases" do
       site = Site.get params[:site_name]
       if site
-        request.body.rewind
         tag = "v#{site.releases.count + 1}"
         url = if params[:file]
           archive_path = params[:file][:tempfile].path

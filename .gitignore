@@ -7,3 +7,6 @@ vendor/bundle
 
 # Yard folder
 .yardoc
+
+# Gem files
+*.gem

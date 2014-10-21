@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require "rack"
+require "staticd/api"
+require "staticd/http_server"
+
+Rack::Server.start(
+  config: "#{File.dirname(__FILE__)}/../config.ru",
+  server: "puma",
+  port: ENV["PORT"] || "8080",
+  environment: ENV["RACK_ENV"] == "production" ? :deployment : :development
+)

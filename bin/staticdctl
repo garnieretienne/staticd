@@ -17,7 +17,7 @@ arguments :strict
 # --------------
 
 desc 'Staticd API endpoint'
-default_value "localhost:4567/api"
+default_value "localhost:8080/api"
 arg_name 'Staticd API endpoint'
 flag [:h, :host]
 
@@ -97,6 +97,25 @@ command :releases do |c|
         puts "* #{tag}"
       end
     end
+  end
+end
+
+desc 'Build a release archive in a gzipped tarball'
+arg_name '[path]'
+command :"releases:build" do |c|
+  c.action do |global_options,options,args|
+
+    archive_path = "./#{global_options[:site]}.tar.gz"
+
+    print "Building the archive... "
+    source_path = args.any? ? args.first : "."
+    archive = StaticdUtils::Archive.create source_path
+    file_size = StaticdUtils::FileSize.new(archive.size)
+    puts "done. (#{file_size})"
+
+    print "Exporting to '#{archive_path}'... "
+    archive.to_file archive_path
+    puts "done."
   end
 end
 

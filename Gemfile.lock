@@ -9,6 +9,13 @@ GIT
 PATH
   remote: .
   specs:
+    staticd (0.0.1)
+      data_mapper (= 1.2.0)
+      dm-sqlite-adapter (= 1.2.0)
+      puma (= 2.9.1)
+      rack (>= 1.1, < 2.0)
+      rack-test (= 0.6.2)
+      sinatra (= 1.4.5)
     staticdctl (0.0.1)
       gli (= 2.12.2)
       rest_client
@@ -115,13 +122,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  byebug
-  data_mapper
-  dm-sqlite-adapter
-  puma
-  rack-test
+  byebug (= 3.5.1)
   rake
-  sinatra
+  staticd!
   staticdctl!
-  yard
+  yard (~> 0.7)
   yard-sinatra!

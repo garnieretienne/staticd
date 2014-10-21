@@ -1,13 +1,19 @@
 # Ensure we require the local version and not one we might have installed already
 require File.join([File.dirname(__FILE__),'lib','staticdctl','version.rb'])
+
+require File.join([File.dirname(__FILE__),'lib', 'gemfile', 'lock'])
+gemfile = Gemfile::Lock.new("#{File.dirname(__FILE__)}/Gemfile.lock")
+
 spec = Gem::Specification.new do |s|
   s.name = 'staticdctl'
   s.version = Staticdctl::VERSION
+  s.license = "MIT"
   s.author = 'Etienne Garnier'
   s.email = 'garnier.etienne@gmail.com'
   s.homepage = 'http://yuweb.fr'
   s.platform = Gem::Platform::RUBY
   s.summary = 'CLI for the staticd API'
+  s.description = 'CLI client to control a staticd app on a remote host'
   s.files = [
     "bin/staticdctl",
     "lib/staticdctl.rb",
@@ -17,14 +23,14 @@ spec = Gem::Specification.new do |s|
     "lib/staticd_utils/file_size.rb",
     "lib/staticd_utils/archive_file.rb"
   ]
+  s.files = Dir["lib/staticdctl/**/*"] + Dir["lib/staticd_utils/**/*"] + [
+    "lib/staticdctl.rb",
+    "bin/staticdctl"
+  ]
   s.require_paths << 'lib'
-  # s.has_rdoc = true
-  # s.extra_rdoc_files = ['README.rdoc','staticdctl.rdoc']
-  # s.rdoc_options << '--title' << 'staticdctl' << '--main' << 'README.rdoc' << '-ri'
   s.bindir = 'bin'
   s.executables << 'staticdctl'
-  s.add_development_dependency('rake')
-  # s.add_development_dependency('rdoc')
-  s.add_runtime_dependency('gli','2.12.2')
-  s.add_runtime_dependency('rest_client')
+  %w(gli rest_client).each do |name|
+    s.add_runtime_dependency name, *gemfile.find_requirements(name)
+  end
 end

@@ -24,7 +24,7 @@ spec = Gem::Specification.new do |s|
   %w(rack puma sinatra rack-test data_mapper dm-sqlite-adapter).each do |name|
     s.add_runtime_dependency name, *gemfile.find_requirements(name)
   end
-  %w(byebug yard).each do |name|
+  %w(rake byebug yard).each do |name|
     s.add_development_dependency name, *gemfile.find_requirements(name)
   end
 end

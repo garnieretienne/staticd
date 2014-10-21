@@ -18,7 +18,7 @@ PATH
       sinatra (= 1.4.5)
     staticdctl (0.0.1)
       gli (= 2.12.2)
-      rest_client
+      rest_client (= 1.7.3)
 
 GEM
   remote: https://rubygems.org/
@@ -102,7 +102,6 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rake (10.3.2)
     rest_client (1.7.3)
       netrc (~> 0.7.7)
     sinatra (1.4.5)
@@ -123,7 +122,6 @@ PLATFORMS
 
 DEPENDENCIES
   byebug (= 3.5.1)
-  rake
   staticd!
   staticdctl!
   yard (~> 0.7)

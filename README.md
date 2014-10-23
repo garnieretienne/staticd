@@ -10,14 +10,14 @@
 
 `rm --recursive --force .yardoc/ && bundle exec yard server --reload --plugin yard-sinatra`
 
-## TODO
+## TODO v1
 
-* sites list: list attached domains
-* sites list: list number of versions
-* proper staticd executable
-* clean staticdctl executable
-* site creation: create an unique domain name (need to know the wildcard dns)
-* add users management and API authentication
-* domain deletion
-* site deletion (delete all releases, each release cache and exah attached domain)
-* release deletion
+* DONE sites list: list attached domains
+* DONE sites list: list number of versions
+* TODO proper staticd executable
+* TODO clean staticdctl executable
+* TODO site creation: create an unique domain name (need to know the wildcard dns)
+* TODO add users management and API authentication
+* TODO domain deletion
+* TODO site deletion (delete all releases, each release cache and exah attached domain)
+* TODO release deletion

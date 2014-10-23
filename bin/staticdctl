@@ -38,7 +38,18 @@ command :sites do |c|
       puts "Sites hosted on #{global_options[:host]}:"
       data.each do |site|
         domains = site["domain_names"].map{|dn| dn["name"]}
-        puts "* #{site['name']} (#{domains.join(', ')})"
+        domains_text = if domains.any?
+          domains.join(', ')
+        else
+          "no domain names attached"
+        end
+        last_release = site['releases'].last
+        last_release_text = if last_release
+          last_release['tag']
+        else
+          "no releases pushed yet"
+        end
+        puts "* #{site['name']} (#{last_release_text}): #{domains_text}"
       end
     end
   end

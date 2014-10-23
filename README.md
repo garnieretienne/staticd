@@ -14,9 +14,9 @@
 
 * DONE sites list: list attached domains
 * DONE sites list: list number of versions
-* TODO proper staticd executable
-* TODO clean staticdctl executable
-* TODO site creation: create an unique domain name (need to know the wildcard dns)
+* DONE proper staticd executable
+* DONE clean staticdctl executable
+* DONE site creation: create an unique domain name (need to know the wildcard dns)
 * TODO add users management and API authentication
 * TODO domain deletion
 * TODO site deletion (delete all releases, each release cache and exah attached domain)

@@ -63,7 +63,8 @@ command :"sites:create" do |c|
     staticd_api.call :post, "/sites", {
       name: global_options[:site]
     } do |data|
-      puts "#{data['name']} has been created."
+      domain_name = data['domain_names'].first['name']
+      puts "#{data['name']} has been created. (http://#{domain_name})"
     end
   end
 end

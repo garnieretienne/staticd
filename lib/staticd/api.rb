@@ -3,6 +3,7 @@ require "staticd/database"
 require "staticd/datastore/local"
 require "staticd/json_response"
 require "staticd/json_request"
+require "staticd/domain_generator"
 
 module Staticd
   class API < Sinatra::Base
@@ -22,8 +23,9 @@ module Staticd
       request.body.rewind
       data = JSONRequest.parse request.body.read
       site = Site.new name: data["name"]
+      site.domain_names << DomainName.new(name: DomainGenerator.new(site.name))
       if site.save
-        JSONResponse.send :success, site.to_h
+        JSONResponse.send :success, site.to_h(:full)
       else
         msg = site.errors.full_messages.first
         JSONResponse.send :error, "Cannot create the new site (#{msg})"

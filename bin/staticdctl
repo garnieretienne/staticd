@@ -6,7 +6,7 @@ require 'staticd_utils/file_size'
 
 include GLI::App
 
-program_desc 'Describe your application here'
+program_desc 'Staticd CLI client'
 
 version Staticdctl::VERSION
 

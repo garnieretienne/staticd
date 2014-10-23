@@ -2,6 +2,7 @@ module Staticd
   module Model
     class Release
       include DataMapper::Resource
+      include Staticd::Model::Serializer
 
       property :id, Serial, unique: true
       property :tag, String, required: true

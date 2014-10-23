@@ -3,6 +3,7 @@ require "data_mapper"
 module Staticd
 
   # Load models
+  require "staticd/model/serializer"
   require "staticd/model/site"
   require "staticd/model/release"
   require "staticd/model/domain_name"

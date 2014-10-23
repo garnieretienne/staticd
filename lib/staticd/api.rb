@@ -23,23 +23,27 @@ module Staticd
       data = JSONRequest.parse request.body.read
       site = Site.new name: data["name"]
       if site.save
-        JSONResponse.send :success, site.attributes
+        JSONResponse.send :success, site.to_h
       else
         msg = site.errors.full_messages.first
         JSONResponse.send :error, "Cannot create the new site (#{msg})"
       end
     end
 
-    # Get a list of all sites
+    # Get a list of all sites with releases and attached domain names
     #
-    # @return [Array] the name of each sites
+    # @return [Array] a collection of sites
     # @example Using curl
     #   curl localhost/api/sites
     # @example Output
-    #   ["my_app","another_app"]
+    #   [{
+    #     "name":"my_app",
+    #     "releases":[],
+    #     "domain_names":[{"name":"my_app.com","site_name":"my_app"}]
+    #   }]
     get "/sites" do
-      names = Site.all.map{|site| site.name}
-      JSONResponse.send :success, names
+      sites = Site.all.map{|site| site.to_h(:full)}
+      JSONResponse.send :success, sites
     end
 
     # Create a new site release
@@ -68,7 +72,7 @@ module Staticd
         end
         release = Release.new site: site, tag: tag, url: url
         if release.save
-          JSONResponse.send :success, release.attributes
+          JSONResponse.send :success, release.to_h
         else
           msg = release.errors.full_messages.first
           JSONResponse.send :error, "Cannot create the new release (#{msg})"
@@ -92,7 +96,7 @@ module Staticd
     get "/sites/:site_name/releases" do
       site = Site.get params[:site_name]
       if site
-        tags = site.releases.map{|releases| releases.tag}
+        tags = site.releases.map{|releases| releases.to_h}
         JSONResponse.send :success, tags
       else
         JSONResponse.send(
@@ -119,7 +123,7 @@ module Staticd
         data = JSONRequest.parse request.body.read
         domain_name = DomainName.new site: site, name: data["name"]
         if domain_name.save
-          JSONResponse.send :success, domain_name.attributes
+          JSONResponse.send :success, domain_name.to_h
         else
           msg = domain_name.errors.full_messages.first
           JSONResponse.send :error, "Cannot create the new domain name (#{msg})"

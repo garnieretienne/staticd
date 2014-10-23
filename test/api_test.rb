@@ -34,7 +34,7 @@ class APITest < MiniTest::Test
     response_data = JSON.parse last_response.body
     assert response_data.kind_of?(Array)
     assert !response_data.empty?
-    assert response_data.first.kind_of?(String)
+    assert response_data.first.kind_of?(Hash)
   end
 
   def test_it_should_create_a_new_release_of_a_site
@@ -71,7 +71,7 @@ class APITest < MiniTest::Test
     response_data = JSON.parse last_response.body
     assert response_data.kind_of?(Array)
     refute response_data.empty?
-    assert response_data.first.kind_of?(String)
+    assert response_data.first.kind_of?(Hash)
   end
 
   def test_it_should_return_an_error_listing_all_releases_of_an_unknown_site

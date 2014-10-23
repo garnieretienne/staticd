@@ -36,8 +36,9 @@ command :sites do |c|
     staticd_api = Staticdctl::RESTClient.new global_options[:host]
     staticd_api.call :get, "/sites" do |data|
       puts "Sites hosted on #{global_options[:host]}:"
-      data.each do |site_name|
-        puts "* #{site_name}"
+      data.each do |site|
+        domains = site["domain_names"].map{|dn| dn["name"]}
+        puts "* #{site['name']} (#{domains.join(', ')})"
       end
     end
   end

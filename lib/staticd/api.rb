@@ -4,12 +4,19 @@ require "staticd/datastore/local"
 require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
+require "rack/auth/hmac"
 
 module Staticd
   class API < Sinatra::Base
     include Model
 
     set :app_file, __FILE__
+
+    # Require HMAC authentication
+    use Rack::Auth::HMAC do |access_id|
+      return ENV["STATICD_SECRET_KEY"] if access_id == ENV["STATICD_ACCESS_ID"]
+      false
+    end
 
     # Create a new site
     #

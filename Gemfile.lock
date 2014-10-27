@@ -10,6 +10,7 @@ PATH
   remote: .
   specs:
     staticd (0.0.1)
+      api-auth (= 1.2.6)
       data_mapper (= 1.2.0)
       dm-sqlite-adapter (= 1.2.0)
       gli (= 2.12.2)
@@ -32,7 +33,8 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     addressable (2.3.6)
-    bcrypt (3.1.7)
+    api-auth (1.2.6)
+    bcrypt (3.1.9)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
     byebug (3.5.1)

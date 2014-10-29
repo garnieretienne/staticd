@@ -1,5 +1,3 @@
-#\ -s puma
-
 require "staticd"
 
 if ENV["STATICD_API_ENABLED"].nil? && ENV["STATICD_HTTP_ENABLED"].nil?

@@ -1,12 +1,8 @@
-require 'gli'
 require 'yaml'
 require 'staticdctl'
+require 'staticd_utils/gli_object'
 require 'staticd_utils/archive'
 require 'staticd_utils/file_size'
-
-class GLIObject
-  include GLI::App
-end
 
 module Staticdctl
   class CLI

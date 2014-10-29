@@ -1,2 +1,2 @@
 require 'staticdctl/version.rb'
-require 'staticdctl/rest_client.rb'
+require 'staticdctl/staticd_client.rb'

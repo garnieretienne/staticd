@@ -11,11 +11,11 @@ module Staticd
     include Model
 
     set :app_file, __FILE__
+    set :show_exceptions, false
 
     # Require HMAC authentication
     use Rack::Auth::HMAC do |access_id|
-      return ENV["STATICD_SECRET_KEY"] if access_id == ENV["STATICD_ACCESS_ID"]
-      false
+      ENV["STATICD_SECRET_KEY"] if access_id == ENV["STATICD_ACCESS_ID"]
     end
 
     # Create a new site
@@ -101,7 +101,12 @@ module Staticd
     # @example Using curl
     #   curl localhost/api/sites/my_app/releases
     # @example Ouput
-    #   ["v1","v2"]
+    #   [{
+    #     "id": "1",
+    #     "tag": "v1",
+    #     "url": "/tmp/store/20ebde5306c481363297008c70bd45e2.tar.gz",
+    #     "site_name": "my_app"
+    #   }]
     get "/sites/:site_name/releases" do
       site = Site.get params[:site_name]
       if site
@@ -152,11 +157,11 @@ module Staticd
     # @example Using curl
     #   curl localhost/api/sites/my_app/domain_names
     # @example Output
-    #   ["hello.io"]
+    #   [{"name": "hello.io"}]
     get "/sites/:site_name/domain_names" do
       site = Site.get params[:site_name]
       if site
-        domains = site.domain_names.map{|domain| domain.name}
+        domains = site.domain_names.map{|domain| domain.to_h}
         JSONResponse.send :success, domains
       else
         JSONResponse.send(

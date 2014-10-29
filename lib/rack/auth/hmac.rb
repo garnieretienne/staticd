@@ -10,13 +10,19 @@ class Rack::Auth::HMAC
     @block = block
   end
 
-  # TODO: respond with with correct content (JSON or HTML) as asked in the
-  # request
   def call(env)
+
+    # Fix an issue with the HMAC canonical string calculation:
+    # Ensure the request Content-Type is not set to anything when a GET method
+    # is used as Sinatra or Rack seems to set it to 'plain/text' when not
+    # specified.
+    env["CONTENT_TYPE"] = "" if env["REQUEST_METHOD"] == "GET"
+
     return @app.call(env) if @rack_env == "test"
     request = Rack::Request.new(env)
     access_id = ApiAuth.access_id(request)
     secret_key = @block.call(access_id)
+
     if ApiAuth.authentic?(request, secret_key)
       status, headers, response = @app.call(env)
     else

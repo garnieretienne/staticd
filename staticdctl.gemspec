@@ -30,7 +30,7 @@ spec = Gem::Specification.new do |s|
   s.require_paths << 'lib'
   s.bindir = 'bin'
   s.executables << 'staticdctl'
-  %w(rake gli rest_client).each do |name|
+  %w(rake gli rest_client api-auth).each do |name|
     s.add_runtime_dependency name, *gemfile.find_requirements(name)
   end
 end

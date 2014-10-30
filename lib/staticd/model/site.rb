@@ -6,8 +6,8 @@ module Staticd
 
       property :name, String, key: true, unique: true
 
-      has n, :releases
-      has n, :domain_names
+      has n, :releases, constraint: :destroy
+      has n, :domain_names, constraint: :destroy
     end
   end
 end

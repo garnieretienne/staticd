@@ -28,6 +28,19 @@ class APITest < MiniTest::Test
     refute response_data["error"].empty?
   end
 
+  def test_it_should_delete_a_site_and_all_attached_resources
+    delete "/sites/#{testing_site.name}"
+    assert_equal 204, last_response.status
+    assert last_response.body.empty?
+  end
+
+  def test_it_should_return_an_error_deleting_an_unknown_site
+    delete "/sites/unknown_site"
+    assert_equal 403, last_response.status
+    response_data = JSON.parse last_response.body
+    refute response_data["error"].empty?
+  end
+
   def test_it_should_get_a_list_of_all_sites
     get "/sites"
     assert last_response.ok?
@@ -110,7 +123,7 @@ class APITest < MiniTest::Test
     response_data = JSON.parse last_response.body
     assert response_data.kind_of?(Array)
     refute response_data.empty?
-    assert response_data.first.kind_of?(String)
+    assert response_data.first.kind_of?(Hash)
   end
 
   def test_it_should_return_an_error_listing_all_domains_of_an_unknown_site

@@ -2,11 +2,13 @@ require "json"
 
 module Staticd
   class JSONResponse
-    def self.send(type, content)
+    def self.send(type, content=nil)
       case type
-      when :success then
+      when :success
         @status = 200
         @body = content
+      when :success_no_content
+        @status = 204
       when :error
         @status = 403
         @body = {error: content}
@@ -14,7 +16,8 @@ module Staticd
         @status = 500
         @body = {error: "Something went wrong"}
       end
-      [@status, JSON.generate(@body)]
+      json_body = @body ? JSON.generate(@body) : nil
+      [@status, json_body]
     end
   end
 end

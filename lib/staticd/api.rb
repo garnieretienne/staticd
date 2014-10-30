@@ -55,6 +55,26 @@ module Staticd
       JSONResponse.send :success, sites
     end
 
+    # Delete a site and all its associated resources (releases, domains, etc...)
+    # If successfully deleted, it does not respond with any content.
+    #
+    # @param site_name [String] the name of the site (url)
+    delete "/sites/:name" do
+      site = Site.get params[:name]
+      if site
+        if site.destroy
+          JSONResponse.send :success_no_content
+        else
+          JSONResponse.send :error, "Cannot remove the site '#{site.name}'"
+        end
+      else
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
+      end
+    end
+
     # Create a new site release
     #
     # @param site_name [String] the name of the site (url)

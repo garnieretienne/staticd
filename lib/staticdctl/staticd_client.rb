@@ -26,6 +26,12 @@ module Staticdctl
       end
     end
 
+    def destroy_site(site, &block)
+      @staticd_api.call :delete, "/sites/#{site}" do
+        yield
+      end
+    end
+
     def domains(site, &block)
       @staticd_api.call :get, "/sites/#{site}/domain_names" do |data|
         yield build_response(data)

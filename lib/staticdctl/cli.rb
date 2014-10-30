@@ -80,6 +80,7 @@ module Staticdctl
       build_command_rm_config
       build_command_sites
       build_command_create_site
+      build_command_destroy_site
       build_command_domains
       build_command_attach_domain
       build_command_releases
@@ -167,13 +168,26 @@ module Staticdctl
 
           staticd_client global_options do |client|
 
-            client.create_site(
-              name: global_options[:site]
-            ) do |site|
+            client.create_site(name: global_options[:site]) do |site|
               puts "The #{site.name} site has been created."
               if site.domain_names.any?
                 puts "http://#{site.domain_names.first.name}"
               end
+            end
+          end
+        end
+      end
+    end
+
+    def build_command_destroy_site
+      @gli.desc 'Destroy a site'
+      @gli.command :"sites:destroy" do |c|
+        c.action do |global_options,options,args|
+
+          staticd_client global_options do |client|
+
+            client.destroy_site(global_options[:site]) do
+              puts "The #{global_options[:site]} site has been destroyed."
             end
           end
         end

@@ -46,11 +46,14 @@ module Staticdctl
 
     def send_request(request, procedure)
       signed_request = ApiAuth.sign!(request, @access_id, @secret_key)
+
       signed_request.execute do |response, request, result|
-        res_data = JSON.parse response.to_s
+        res_data = JSON.parse(response.to_s) unless response.to_s.empty?
         case response.code
         when 200
           procedure.call res_data
+        when 204
+          procedure.call
         when 403
           raise res_data['error']
         when 401

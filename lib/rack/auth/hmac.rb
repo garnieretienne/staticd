@@ -16,7 +16,7 @@ class Rack::Auth::HMAC
     # Ensure the request Content-Type is not set to anything when a GET method
     # is used as Sinatra or Rack seems to set it to 'plain/text' when not
     # specified.
-    env["CONTENT_TYPE"] = "" if env["REQUEST_METHOD"] == "GET"
+    env["CONTENT_TYPE"] = "" if ["GET", "DELETE"].include? env["REQUEST_METHOD"]
 
     return @app.call(env) if @rack_env == "test"
     request = Rack::Request.new(env)

@@ -70,7 +70,7 @@ module Staticd
       else
         JSONResponse.send(
           :error,
-          "This site (#{params[:site_name]}) does not exist"
+          "This site (#{params[:name]}) does not exist"
         )
       end
     end

@@ -44,6 +44,12 @@ module Staticdctl
       end
     end
 
+    def detach_domain(site, domain, &block)
+      @staticd_api.call :delete, "/sites/#{site}/domain_names/#{domain}" do
+        yield
+      end
+    end
+
     def releases(site, &block)
       @staticd_api.call :get, "/sites/#{site}/releases" do |data|
         yield build_response(data)

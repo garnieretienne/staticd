@@ -58,7 +58,7 @@ module Staticd
     # Delete a site and all its associated resources (releases, domains, etc...)
     # If successfully deleted, it does not respond with any content.
     #
-    # @param site_name [String] the name of the site (url)
+    # @param name [String] the name of the site (url)
     delete "/sites/:name" do
       site = Site.get params[:name]
       if site
@@ -161,6 +161,40 @@ module Staticd
         else
           msg = domain_name.errors.full_messages.first
           JSONResponse.send :error, "Cannot create the new domain name (#{msg})"
+        end
+      else
+        JSONResponse.send(
+          :error,
+          "This site (#{params[:site_name]}) does not exist"
+        )
+      end
+    end
+
+    # Detach a domain name from a site
+    # If successfully deleted, it does not respond with any content.
+    #
+    # @param site_name [String] the name of the site (url)
+    # @param name [String] the domain name (url)
+    delete "/sites/:site_name/domain_names/:name" do
+      site = Site.get params[:site_name]
+      if site
+        domain = site.domain_names.get params[:name]
+        if domain
+          if domain.destroy
+            JSONResponse.send :success_no_content
+          else
+            JSONResponse.send(
+            :error,
+            "Cannot detach the #{params[:name]} domain name from the " +
+              "#{site.name} site"
+          )
+          end
+        else
+          JSONResponse.send(
+            :error,
+            "This domain name (#{params[:name]}) is not attached to the " +
+              "#{site.name} site"
+          )
         end
       else
         JSONResponse.send(

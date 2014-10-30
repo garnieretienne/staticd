@@ -71,7 +71,7 @@ class APITest < MiniTest::Test
     refute response_data["error"].empty?
   end
 
-  def test_it_should_return_an_error_crating_a_bad_new_release_of_a_site
+  def test_it_should_return_an_error_creating_a_bad_new_release_of_a_site
     post "/sites/#{testing_site.name}/releases"
     refute last_response.ok?
     response_data = JSON.parse last_response.body
@@ -106,6 +106,26 @@ class APITest < MiniTest::Test
   def test_it_should_return_an_error_adding_a_new_domain_to_an_unknown_site
     post "/sites/unknown/domain_names"
     refute last_response.ok?
+    response_data = JSON.parse last_response.body
+    refute response_data["error"].empty?
+  end
+
+  def test_it_should_remove_a_domain_from_a_site
+    delete "/sites/#{testing_site.name}/domain_names/#{testing_domain.name}"
+    assert_equal 204, last_response.status
+    assert last_response.body.empty?
+  end
+
+  def it_should_return_an_error_removing_a_domain_to_an_unknown_site
+    delete "/sites/unknown/domain_names/#{testing_domain.name}"
+    assert_equal 403, last_response.status
+    response_data = JSON.parse last_response.body
+    refute response_data["error"].empty?
+  end
+
+  def it_should_return_an_error_removing_an_unknown_domain_from_a_site
+    delete "/sites/#{testing_site.name}/domain_names/unknown.com"
+    assert_equal 403, last_response.status
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
   end

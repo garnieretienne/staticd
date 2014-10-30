@@ -83,6 +83,7 @@ module Staticdctl
       build_command_destroy_site
       build_command_domains
       build_command_attach_domain
+      build_command_detach_domain
       build_command_releases
       build_command_create_release
     end
@@ -223,8 +224,25 @@ module Staticdctl
             client.attach_domain(global_options[:site],
               name: args.first
             ) do |domain|
-              puts "The #{domain.name} domain has been attached to " +
+              puts "The #{domain.name} domain has been attached to the " +
                 "#{domain.site_name} site"
+            end
+          end
+        end
+      end
+    end
+
+    def build_command_detach_domain
+      @gli.desc 'Detach a domain name from a site'
+      @gli.arg_name 'domain_name'
+      @gli.command :"domains:detach" do |c|
+        c.action do |global_options,options,args|
+
+          staticd_client global_options do |client|
+
+            client.detach_domain(global_options[:site], args.first) do |domain|
+              puts "The #{args.first} domain has been detached from the " +
+                "#{global_options[:site]} site"
             end
           end
         end

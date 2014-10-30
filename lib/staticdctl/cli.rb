@@ -77,6 +77,7 @@ module Staticdctl
     def build_commands
       build_command_config
       build_command_set_config
+      build_command_rm_config
       build_command_sites
       build_command_create_site
       build_command_domains
@@ -100,6 +101,7 @@ module Staticdctl
 
     def build_command_set_config
       @gli.desc 'Set a configuration option'
+      @gli.arg_name 'config_key'
       @gli.command :"config:set" do |c|
         c.action do |global_options, options, args|
           global_config = load_global_config global_options[:config]
@@ -108,6 +110,28 @@ module Staticdctl
           File.open(global_options[:config], 'w+') do |file|
             file.write global_config.to_yaml
             puts "The #{args[0]} config key has been set to #{args[1]}"
+          end
+        end
+      end
+    end
+
+    def build_command_rm_config
+      @gli.desc 'Remove a configuration option'
+      @gli.arg_name 'config_key'
+      @gli.command :"config:rm" do |c|
+        c.action do |global_options, options, args|
+          global_config = load_global_config global_options[:config]
+          if (
+            global_config.has_key?(global_options[:host]) &&
+            global_config[global_options[:host]].has_key?(args.first)
+          )
+            global_config[global_options[:host]].delete args.first
+            File.open(global_options[:config], 'w+') do |file|
+              file.write global_config.to_yaml
+              puts "The #{args.first} config key has been removed"
+            end
+          else
+            puts "The #{args.first} config key cannot be found"
           end
         end
       end

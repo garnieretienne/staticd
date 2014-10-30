@@ -24,9 +24,17 @@ module Staticdctl
 
     private
 
+    def load_global_config(config_file)
+      begin
+        YAML.load_file(config_file)
+      rescue
+        {}
+      end
+    end
+
     def load_config(config_file, host)
-      config = YAML.load_file(config_file)
-      config.has_key?(host) ? config[host] : {}
+      config = load_global_config config_file
+      (config && config.has_key?(host)) ? config[host] : {}
     end
 
     def staticd_client(options, &block)
@@ -67,12 +75,42 @@ module Staticdctl
     end
 
     def build_commands
+      build_command_config
+      build_command_set_config
       build_command_sites
       build_command_create_site
       build_command_domains
       build_command_attach_domain
       build_command_releases
       build_command_create_release
+    end
+
+    def build_command_config
+      @gli.desc 'Display current configuration'
+      @gli.command :config do |c|
+        c.action do |global_options, options, args|
+          config = load_config global_options[:config], global_options[:host]
+          puts "Current configuration for #{global_options[:host]}:"
+          config.each do |key, value|
+            puts " * #{key}: #{value}"
+          end
+        end
+      end
+    end
+
+    def build_command_set_config
+      @gli.desc 'Set a configuration option'
+      @gli.command :"config:set" do |c|
+        c.action do |global_options, options, args|
+          global_config = load_global_config global_options[:config]
+          global_config[global_options[:host]] ||= {}
+          global_config[global_options[:host]][args[0]] = args[1]
+          File.open(global_options[:config], 'w+') do |file|
+            file.write global_config.to_yaml
+            puts "The #{args[0]} config key has been set to #{args[1]}"
+          end
+        end
+      end
     end
 
     def build_command_sites

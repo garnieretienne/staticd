@@ -7,8 +7,8 @@ module Staticd
 
     def initialize
       @gli = GLIObject.new
-      @gli.program_desc 'Staticd CLI client'
-      @gli.version Staticdctl::VERSION
+      @gli.program_desc 'Staticd HTTP and API server'
+      @gli.version Staticd::VERSION
 
       @gli.on_error{|exception| raise exception}
 

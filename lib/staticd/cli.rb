@@ -29,8 +29,9 @@ module Staticd
       @gli.desc 'Start the staticd API and HTTP server'
       @gli.command :"server" do |c|
 
-        c.switch [:"api"], desc: "Enable the API service" , default_value: false
-        c.switch [:"http"], desc: "Enable the HTTP service", default_value: true
+        c.switch [:api], desc: "Enable the API service" , default_value: false
+        c.switch [:http], desc: "Enable the HTTP service", default_value: true
+        c.flag [:p, :port], desc: "Port to listen to", default_value: 8080
 
         c.action do |global_options,options,args|
 
@@ -45,7 +46,7 @@ module Staticd
           Rack::Server.start(
             config: "#{File.dirname(__FILE__)}/../../config.ru",
             server: "puma",
-            port: ENV["PORT"] || "8080",
+            Port: options[:port],
             environment: staticd_environment
           )
         end

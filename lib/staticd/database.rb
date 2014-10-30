@@ -11,6 +11,12 @@ module Staticd
   case ENV["RACK_ENV"]
   when "test"
     DataMapper.setup(:default, "sqlite::memory:")
+  when "production"
+    puts "Running database in production mode"
+    unless ENV["DATABASE_URL"]
+      raise "The DATABASE_URL environment variable must be set"
+    end
+    DataMapper.setup(:default, ENV["DATABASE_URL"])
   else
     puts "Running database in development mode"
     DataMapper::Logger.new($stdout, :debug)

@@ -6,6 +6,9 @@ VAGRANTFILE_API_VERSION = "2"
 
 $provision_script = <<EOF
 
+# Fix issue with locale
+sudo update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 > /dev/null
+
 # Install dependencies
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
@@ -23,9 +26,26 @@ rbenv global 2.1.3
 rbenv rehash
 
 # Install PostgreSQL
-#sudo apt-get install --assume-yes postgresql libpq-dev
-#sudo -u postgres createuser --superuser $USER
-#sudo -u postgres createdb $USER
+# https://github.com/jackdb/pg-app-dev-vm/blob/master/Vagrant-setup/bootstrap.sh
+POSTGRES_VERSION=9.3
+sudo su --command \
+    'echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > \
+    /etc/apt/sources.list.d/postgresql.list'
+wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
+    sudo apt-key add -
+sudo apt-get update
+sudo apt-get install --assume-yes postgresql-$POSTGRES_VERSION \
+    postgresql-server-dev-$POSTGRES_VERSION libpq-dev
+cat << EOC | sudo --user postgres psql
+-- Create the database user:
+CREATE USER $USER WITH PASSWORD '$USER';
+-- Create the database:
+CREATE DATABASE $USER WITH OWNER $USER;
+EOC
+sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" \
+    "/etc/postgresql/$POSTGRES_VERSION/main/postgresql.conf"
+echo "export DATABASE_URL=postgres://$USER:$USER@localhost:5432/$USER" > \
+    ~/.bashrc
 
 # Install SQlite
 sudo apt-get install --assume-yes sqlite3 libsqlite3-dev

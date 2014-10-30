@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'staticdctl/cli'
 
-cli = Staticdctl::CLI.new
+debugging = (ARGV.include?("--debug") || ARGV.include?("-d"))
+cli = Staticdctl::CLI.new(debugging: debugging)
 exit cli.run(ARGV)

@@ -7,13 +7,12 @@ require 'staticd_utils/file_size'
 module Staticdctl
   class CLI
 
-    def initialize
+    def initialize(options={})
       @gli = GLIObject.new
       @gli.program_desc 'Staticd CLI client'
       @gli.version Staticdctl::VERSION
 
-      @gli.on_error{|exception| raise exception}
-
+      enable_debugging if options[:debugging]
       set_global_options
       build_commands
     end
@@ -23,6 +22,10 @@ module Staticdctl
     end
 
     private
+
+    def enable_debugging
+      @gli.on_error{|exception| raise exception}
+    end
 
     def load_global_config(config_file)
       begin
@@ -51,6 +54,7 @@ module Staticdctl
       set_global_option_config
       set_global_option_host
       set_global_option_site
+      set_global_option_debug
     end
 
     def set_global_option_config
@@ -72,6 +76,13 @@ module Staticdctl
       @gli.default_value File.basename(Dir.pwd)
       @gli.arg_name 'Site name'
       @gli.flag [:s, :site]
+    end
+
+    def set_global_option_debug
+      @gli.desc 'Enable debugging (raise exception on error)'
+      @gli.default_value false
+      @gli.arg_name 'debug'
+      @gli.switch [:d, :debug]
     end
 
     def build_commands
@@ -106,6 +117,7 @@ module Staticdctl
       @gli.arg_name 'config_key'
       @gli.command :"config:set" do |c|
         c.action do |global_options, options, args|
+
           global_config = load_global_config global_options[:config]
           global_config[global_options[:host]] ||= {}
           global_config[global_options[:host]][args[0]] = args[1]
@@ -122,6 +134,7 @@ module Staticdctl
       @gli.arg_name 'config_key'
       @gli.command :"config:rm" do |c|
         c.action do |global_options, options, args|
+
           global_config = load_global_config global_options[:config]
           if (
             global_config.has_key?(global_options[:host]) &&

@@ -1,9 +1,8 @@
 module Staticd
   class DomainGenerator
 
-    def self.new(word)
-      wildcard = ENV["STATICD_WILDCARD_DOMAIN"] || "localhost"
-      return "#{word}.#{wildcard}"
+    def self.new(word, domain)
+      return "#{word}.#{domain}"
     end
   end
 end

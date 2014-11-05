@@ -1,32 +1,32 @@
 require "data_mapper"
 
+# Load models
+require "staticd/model/serializer"
+require "staticd/model/site"
+require "staticd/model/release"
+require "staticd/model/domain_name"
+
 module Staticd
 
-  # Load models
-  require "staticd/model/serializer"
-  require "staticd/model/site"
-  require "staticd/model/release"
-  require "staticd/model/domain_name"
+  module Database
 
-  case ENV["RACK_ENV"]
-  when "test"
-    DataMapper.setup(:default, "sqlite::memory:")
-  when "production"
-    puts "Running database in production mode"
-    unless ENV["DATABASE_URL"]
-      raise "The DATABASE_URL environment variable must be set"
+    def init_database(environment, database_url)
+      puts "Running database in #{environment} mode" unless environment == :test
+
+      if environment == :development
+        level = :debug
+        puts "Database #{level} info are logged to STDOUT during development"
+        DataMapper::Logger.new($stdout, level)
+      end
+
+      DataMapper.setup(:default, database_url)
+      DataMapper.finalize
+
+      if environment == :test
+        DataMapper.auto_migrate!
+      else
+        DataMapper.auto_upgrade!
+      end
     end
-    DataMapper.setup(:default, ENV["DATABASE_URL"])
-  else
-    puts "Running database in development mode"
-    DataMapper::Logger.new($stdout, :debug)
-    DataMapper.setup(:default, "sqlite:///tmp/staticd-development.db")
-  end
-
-  DataMapper.finalize
-  if ENV["RACK_ENV"] == "test"
-    DataMapper.auto_migrate!
-  else
-    DataMapper.auto_upgrade!
   end
 end

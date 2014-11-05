@@ -2,7 +2,7 @@ require "test_helper"
 require "rack/auth/hmac"
 require "api-auth"
 
-class HMACAuthTest < MiniTest::Test
+class HMACAuthTest < Minitest::Unit::TestCase
   include TestHelper
 
   def setup

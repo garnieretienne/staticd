@@ -1,7 +1,6 @@
 require "test_helper"
-require "staticd/database"
 
-class DomainNameTest < MiniTest::Test
+class DomainNameTest < Minitest::Unit::TestCase
   include TestHelper
 
   def setup

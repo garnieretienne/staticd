@@ -1,7 +1,7 @@
 require "test_helper"
 require "staticd/cache_engine"
 
-class CacheEngineTest < MiniTest::Test
+class CacheEngineTest < Minitest::Unit::TestCase
   include TestHelper
 
   def setup

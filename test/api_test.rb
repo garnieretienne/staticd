@@ -3,7 +3,7 @@ require "json"
 require "base64"
 require "staticd/api"
 
-class APITest < MiniTest::Test
+class APITest < Minitest::Unit::TestCase
   include TestHelper
 
   def app

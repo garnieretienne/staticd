@@ -1,7 +1,6 @@
 require "test_helper"
-require "staticd/database"
 
-class ReleaseTest < MiniTest::Test
+class ReleaseTest < Minitest::Unit::TestCase
   include TestHelper
 
   def setup

@@ -36,7 +36,8 @@ module Staticdctl
         url: "#{@url}#{path}",
         method: :post,
         headers: headers,
-        payload: {file: file}
+        payload: {file: file},
+        timeout: -1
       )
 
       send_request request, block

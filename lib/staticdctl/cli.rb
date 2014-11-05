@@ -299,8 +299,11 @@ module Staticdctl
               archive.to_archive_file
             ) do |release|
               timer_stop = Time.now
-              puts "done. (#{timer_stop - timer_start}s)"
-              puts "The #{release.site_name} #{release.tag} has been created"
+              time_spent = timer_stop - timer_start
+              speed = archive.size / time_spent / 1000
+              puts "done. (#{'%.2f' % time_spent}s / #{'%.2f' % speed}kbps)"
+              puts "The #{release.site_name} release (#{release.tag}) has " +
+                  "been created"
             end
           end
         end

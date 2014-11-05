@@ -1,6 +1,7 @@
 require "sinatra/base"
+require "sinatra/config_file"
 require "staticd/database"
-require "staticd/datastore/local"
+require "staticd/store"
 require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
@@ -8,14 +9,22 @@ require "rack/auth/hmac"
 
 module Staticd
   class API < Sinatra::Base
-    include Model
+    register Sinatra::ConfigFile
 
     set :app_file, __FILE__
     set :show_exceptions, false
+    config_file "#{settings.root}/../../etc/staticd.yml.erb"
+
+    # Init database
+    extend Staticd::Database
+    include Staticd::Model
+    init_database settings.environment, settings.database
 
     # Require HMAC authentication
     use Rack::Auth::HMAC do |access_id|
-      ENV["STATICD_SECRET_KEY"] if access_id == ENV["STATICD_ACCESS_ID"]
+      if access_id.to_s == settings.access_id.to_s
+        settings.secret_key.to_s
+      end
     end
 
     # Create a new site
@@ -30,7 +39,12 @@ module Staticd
       request.body.rewind
       data = JSONRequest.parse request.body.read
       site = Site.new name: data["name"]
-      site.domain_names << DomainName.new(name: DomainGenerator.new(site.name))
+      site.domain_names << DomainName.new(
+        name: DomainGenerator.new(
+          site.name,
+          settings.wildcard_domain
+        )
+      )
       if site.save
         JSONResponse.send :success, site.to_h(:full)
       else
@@ -95,7 +109,8 @@ module Staticd
         tag = "v#{site.releases.count + 1}"
         url = if params[:file]
           archive_path = params[:file][:tempfile].path
-          Datastore::Local.put archive_path
+          storage = Store.new settings.datastore
+          storage.put archive_path
         else
           nil
         end

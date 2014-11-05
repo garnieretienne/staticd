@@ -1,14 +1,14 @@
 require "test_helper"
 require "staticd_utils/archive"
 
-class ArchiveTest < MiniTest::Test
+class ArchiveTest < Minitest::Unit::TestCase
   include TestHelper
 
   def testing_archive(&block)
     archive = StaticdUtils::Archive.open_file(
       fixtures_path('files/mywebsite.fr.tar.gz')
     )
-    yield archive
+    yield archive if block_given?
     archive.close
   end
 

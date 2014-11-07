@@ -1,4 +1,4 @@
-require 'digest/md5'
+require 'digest/sha1'
 
 module Staticd
   module Datastore
@@ -11,11 +11,14 @@ module Staticd
 
       def put(file_path)
         if File.exist? file_path
-          basename = File.basename file_path
-          md5 = Digest::MD5.hexdigest File.read(file_path)
-          stored_file_path = "#{@path}/#{md5}.tar.gz"
-          FileUtils.copy_file file_path, stored_file_path
-          stored_file_path
+          FileUtils.copy_file file_path, stored_file_path(file_path)
+          stored_file_path(file_path)
+        end
+      end
+
+      def exist?(file_path)
+        if File.exist? stored_file_path(file_path)
+          stored_file_path(file_path)
         end
       end
 
@@ -23,6 +26,14 @@ module Staticd
 
       def verify_store_path
         Dir.mkdir(@path) unless File.directory?(@path)
+      end
+
+      def sha1(file_path)
+        Digest::SHA1.hexdigest File.read(file_path)
+      end
+
+      def stored_file_path(file_path)
+        stored_file_path = "#{@path}/#{sha1(file_path)}"
       end
     end
   end

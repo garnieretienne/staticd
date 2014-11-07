@@ -1,8 +1,10 @@
 require "test_helper"
 require "staticd/datastore/local"
+require "datastore/store_interface"
 
 class DatastoreLocalTest < Minitest::Unit::TestCase
   include TestHelper
+  include Test::StoreInterface
 
   def setup
     @datastore = Staticd::Datastore::Local.new path: Dir.mktmpdir
@@ -12,5 +14,11 @@ class DatastoreLocalTest < Minitest::Unit::TestCase
     archive_path = fixtures_path("files/mywebsite.fr.tar.gz")
     archive_url = @datastore.put archive_path
     assert open(archive_url){|file| File.exist? file}
+  end
+
+  def test_it_should_tell_if_a_file_is_cached
+    archive_path = fixtures_path("files/mywebsite.fr.tar.gz")
+    @datastore.put archive_path
+    assert @datastore.exist?(archive_path)
   end
 end

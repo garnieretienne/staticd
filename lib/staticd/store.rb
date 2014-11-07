@@ -10,14 +10,26 @@ module Staticd
     end
 
     def put(file_path)
-      datastoreClass = Datastore.const_get(@uri.scheme.capitalize)
-      datastore = datastoreClass.new({
+      datastore.put file_path
+    end
+
+    def exist?(file_path)
+      datastore.exist? file_path
+    end
+
+    private
+
+    def datastoreClass
+      @datastoreClass ||= Datastore.const_get(@uri.scheme.capitalize)
+    end
+
+    def datastore
+      @datastore ||= datastoreClass.new({
         host: @uri.host,
         path: @uri.path,
         username: @uri.user,
         password: @uri.password
       })
-      datastore.put file_path
     end
   end
 end

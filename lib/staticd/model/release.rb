@@ -6,9 +6,10 @@ module Staticd
 
       property :id, Serial, unique: true
       property :tag, String, required: true
-      property :url, String, required: true, length: 1..200
 
       belongs_to :site
+      has n, :release_maps, constraint: :destroy
+      has n, :resources, through: :release_maps
     end
   end
 end

@@ -15,7 +15,9 @@ if ENV["STATICD_API_ENABLED"] == "true"
 end
 if ENV["STATICD_HTTP_ENABLED"] == "true"
   puts "Staticd HTTP service enabled (/)"
-  routes['/'] = Staticd::HTTPServer.new
+  http_root = ENV["STATICD_HTTP_CACHE"] || "/tmp/www"
+  http_server = Staticd::HTTPServer.new(http_root)
+  routes['/'] = Staticd::HTTPCache.new http_root, http_server
 end
 
 

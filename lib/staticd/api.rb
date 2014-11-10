@@ -6,19 +6,16 @@ require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
 require "rack/auth/hmac"
+require "staticd_utils/archive"
 
 module Staticd
   class API < Sinatra::Base
     register Sinatra::ConfigFile
+    include Staticd::Model
 
     set :app_file, __FILE__
     set :show_exceptions, false
     config_file "#{settings.root}/../../etc/staticd.yml.erb"
-
-    # Init database
-    extend Staticd::Database
-    include Staticd::Model
-    init_database settings.environment, settings.database
 
     # Require HMAC authentication
     use Rack::Auth::HMAC do |access_id|
@@ -100,26 +97,45 @@ module Staticd
     #   {
     #     "id":1,
     #     "tag":"v1",
-    #     "url":"/tmp/store/d41d8cd98f00b204e9800998ecf8427e.tar.gz",
     #     "site_name":"my_app"
     #   }
     post "/sites/:site_name/releases" do
+      JSONResponse.send :error, "No archive file sent" unless params[:file]
       site = Site.get params[:site_name]
       if site
-        tag = "v#{site.releases.count + 1}"
-        url = if params[:file]
+        if params.has_key?("file") && params[:file].has_key?(:tempfile)
+          tag = "v#{site.releases.count + 1}"
+          release = Release.new site: site, tag: tag
           archive_path = params[:file][:tempfile].path
-          storage = Store.new settings.datastore
-          storage.put archive_path
+          Dir.mktmpdir do |tmp|
+            archive = StaticdUtils::Archive.open_file archive_path
+            archive.extract tmp
+            storage = Store.new settings.datastore
+            Dir.chdir(tmp) do
+              Dir.glob('**/*') do |file_path|
+                next unless File.file? file_path
+
+                resource_url = storage.exist?(file_path) ||
+                    storage.put(file_path)
+
+                resource = Resource.first(url: resource_url) ||
+                    Resource.new(url: resource_url)
+
+                release.release_maps.new(
+                  resource: resource,
+                  path: "/#{file_path}"
+                )
+              end
+            end
+          end
+          if release.save
+            JSONResponse.send :success, release.to_h
+          else
+            msg = release.errors.full_messages.first
+            JSONResponse.send :error, "Cannot create the new release (#{msg})"
+          end
         else
-          nil
-        end
-        release = Release.new site: site, tag: tag, url: url
-        if release.save
-          JSONResponse.send :success, release.to_h
-        else
-          msg = release.errors.full_messages.first
-          JSONResponse.send :error, "Cannot create the new release (#{msg})"
+          JSONResponse.send :error, "No valid archive file submitted"
         end
       else
         JSONResponse.send(

@@ -1,45 +1,27 @@
-require 'digest/md5'
-require "staticd_utils/archive"
+require 'open-uri'
 
 module Staticd
+
+  # TODO: add a purge method based on file's atime attribute
   class CacheEngine
 
-    CACHE_DIR = "/tmp/cache"
-
-    def self.cache(url)
-      init
-      if File.directory? cache_path(url)
-        FileUtils.rm_r cache_path(url), force: true, secure: true
+    def self.cache(http_root, resource_path, resource_url)
+      local_resource_path = "#{http_root}/#{resource_path}"
+      init(File.dirname(local_resource_path))
+      open(resource_url) do |remote_file|
+        File.open("#{http_root}/#{resource_path}", "w+") do |cached_file|
+          cached_file.write remote_file.read
+        end
       end
-      archive = StaticdUtils::Archive.open_file url
-      archive.extract cache_path(url)
-      cache_path(url)
+      local_resource_path
     end
 
-    def self.init
-      FileUtils.mkdir_p CACHE_DIR
+    def self.init(cache_path)
+      FileUtils.mkdir_p cache_path
     end
 
-    # Move into an instance method to be able to cache the md5 digest
-    def self.cache_path(url)
-      "#{CACHE_DIR}/#{Digest::MD5.hexdigest(url)}"
-    end
-
-    def self.reset!
-      FileUtils.rm_r Dir.glob("#{CACHE_DIR}/*")
-    end
-
-    def self.cached?(url)
-      Dir.exist?(cache_path(url)) ? cache_path(url) : false
-    end
-
-    def self.purge(url)
-      if File.directory? cache_path(url)
-        FileUtils.rm_r cache_path(url)
-        true
-      else
-        false
-      end
+    def self.cached?(http_root, resource_path)
+      File.exist? "#{http_root}/#{resource_path}"
     end
   end
 end

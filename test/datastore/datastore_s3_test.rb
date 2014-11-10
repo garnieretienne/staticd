@@ -2,7 +2,7 @@ require "test_helper"
 require "staticd/datastore/s3"
 require "datastore/store_interface"
 
-class DatastoreLocalTest < Minitest::Unit::TestCase
+class DatastoreS3Test < Minitest::Unit::TestCase
   include TestHelper
   include Test::StoreInterface
 

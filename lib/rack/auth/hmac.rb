@@ -13,8 +13,8 @@ class Rack::Auth::HMAC
   def call(env)
 
     # Fix an issue with the HMAC canonical string calculation:
-    # Ensure the request Content-Type is not set to nothing when a GET method
-    # is used as Sinatra or Rack seems to set it to 'plain/text' when not
+    # Ensure the request Content-Type is not set to nothing when a GET or DELETE
+    # method is used as Sinatra or Rack seems to set it to 'plain/text' when not
     # specified.
     env["CONTENT_TYPE"] = "" if ["GET", "DELETE"].include? env["REQUEST_METHOD"]
 

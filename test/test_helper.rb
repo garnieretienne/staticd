@@ -18,10 +18,11 @@ module TestHelper
   end
 
   def init_fixtures
-    testing_site
-    testing_release
-    testing_domain
-    return testing_site
+    sample_site
+    sample_release
+    sample_domain
+    sample_resource
+    return sample_site
   end
 
   def check_testing_database
@@ -31,31 +32,53 @@ module TestHelper
     end
   end
 
-  def testing_site
+  def sample_site
     check_testing_database
-    @testing_site ||=
+    @sample_site ||=
       Staticd::Model::Site.get("test") ||
       Staticd::Model::Site.create(name: "test")
   end
 
-  def testing_release
+  def sample_release
     check_testing_database
-    @testing_release ||=
-      Staticd::Model::Release.get(site_name: testing_site.name, tag: "v1") ||
+    @sample_release ||=
+      Staticd::Model::Release.get(site_name: sample_site.name, tag: "v1") ||
       Staticd::Model::Release.create(
-        site: testing_site,
-        tag: "v1",
-        url: fixtures_path("files/mywebsite.fr.tar.gz")
+        site: sample_site,
+        tag: "v1"
       )
   end
 
-  def testing_domain
+  def sample_resource
     check_testing_database
-    @testing_domain ||=
+    return @sample_resource unless @sample_resource.nil?
+
+    existing_resource = Staticd::Model::Resource.get(
+      url: fixtures_path("files/mywebsite.fr.tar.gz")
+    )
+    unless existing_resource.nil?
+      @sample_resource = existing_resource
+    else
+      new_resource = Staticd::Model::Resource.create(
+        url: fixtures_path("files/mywebsite.fr.tar.gz")
+      )
+      release_map = Staticd::Model::ReleaseMap.create(
+        resource_id: new_resource.id,
+        release_id: sample_release.id,
+        path: "/index.html"
+      )
+      @sample_resource = new_resource
+    end
+    return @existing_resource
+  end
+
+  def sample_domain
+    check_testing_database
+    @sample_domain ||=
       Staticd::Model::DomainName.get(
-        site_name: testing_site.name,
+        site_name: sample_site.name,
         name: "example.org"
       ) ||
-      Staticd::Model::DomainName.create(site: testing_site, name: "example.org")
+      Staticd::Model::DomainName.create(site: sample_site, name: "example.org")
   end
 end

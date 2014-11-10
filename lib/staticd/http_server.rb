@@ -1,34 +1,17 @@
-require "staticd/database"
-require "staticd/cache_engine"
-
 module Staticd
   class HTTPServer
-    include Model
+
+    def initialize(http_root)
+      @http_root = http_root
+    end
 
     def call(env)
-
-      # Get the domain name
       req = Rack::Request.new env
-      domain_name = DomainName.get req.host
-      return send_404 unless domain_name
-
-      # Find the corresponding site and release
-      site = domain_name.site
-      return send_404 unless site
-      last_release = site.releases.last
-      return send_404 unless last_release
-
-      # Verify the site is cached
-      local_path = CacheEngine.cached? last_release.url
-      unless local_path
-        local_path = CacheEngine.cache last_release.url
-      end
-
-      # Serve the requested file if exist
-      path = (req.path == "/") ? 'index.html' : req.path
-      file_path = "#{local_path}/#{path}"
+      file_path = @http_root + req.path
       send file_path
     end
+
+    private
 
     def send(file)
       if File.readable? file

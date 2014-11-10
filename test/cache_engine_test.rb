@@ -6,17 +6,18 @@ class CacheEngineTest < Minitest::Unit::TestCase
 
   def setup
     @archive_url = fixtures_path("files/mywebsite.fr.tar.gz")
-    Staticd::CacheEngine.reset!
   end
 
   def test_it_should_cache_the_content_of_an_archive
-    local_path = Staticd::CacheEngine.cache @archive_url
-    assert File.directory? local_path
-    refute Dir["#{local_path}/*"].empty?
-    assert_equal local_path, Staticd::CacheEngine.cached?(@archive_url)
-    assert Staticd::CacheEngine.purge @archive_url
-    refute File.directory? local_path
-    refute Staticd::CacheEngine.cached? @archive_url
-    refute Staticd::CacheEngine.purge @archive_url
+    local_path = "/i/am/here.html"
+    Dir.mktmpdir do |cache_root|
+      Staticd::CacheEngine.cache(
+        cache_root,
+        local_path,
+        @archive_url
+      )
+      assert File.exist? cache_root + local_path
+      assert Staticd::CacheEngine.cached? cache_root, local_path
+    end
   end
 end

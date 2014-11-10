@@ -4,11 +4,11 @@ require "staticd_utils/archive"
 class ArchiveTest < Minitest::Unit::TestCase
   include TestHelper
 
-  def testing_archive(&block)
+  def sample_archive(&block)
     archive = StaticdUtils::Archive.open_file(
       fixtures_path('files/mywebsite.fr.tar.gz')
     )
-    yield archive if block_given?
+    yield archive
     archive.close
   end
 
@@ -21,7 +21,7 @@ EOF
   end
 
   def test_archive_import_from_an_url_or_file_path
-    testing_archive do |archive|
+    sample_archive do |archive|
       assert archive.stream.read
     end
   end
@@ -40,7 +40,7 @@ EOF
 
   def test_archive_export_to_file
     Dir.mktmpdir do |tmp|
-      testing_archive do |archive|
+      sample_archive do |archive|
         assert archive.to_file "#{tmp}/archive.tar.gz"
         assert File.exist? "#{tmp}/archive.tar.gz"
       end
@@ -48,14 +48,14 @@ EOF
   end
 
   def test_archive_export_to_base64
-    testing_archive do |archive|
+    sample_archive do |archive|
       assert_equal mywebsite_base64, archive.to_base64
     end
   end
 
   def test_extract_archive
     Dir.mktmpdir do |tmp|
-      testing_archive do |archive|
+      sample_archive do |archive|
         archive.extract "#{tmp}"
         assert File.exist? "#{tmp}/index.html"
       end
@@ -63,13 +63,13 @@ EOF
   end
 
   def test_get_archive_size
-    testing_archive do |archive|
+    sample_archive do |archive|
       assert_instance_of Fixnum, archive.size
     end
   end
 
   def test_get_archive_stream_to_look_like_a_file
-    testing_archive do |archive|
+    sample_archive do |archive|
       duck_file = archive.to_archive_file
       assert_respond_to duck_file, :read
       assert_respond_to duck_file, :path

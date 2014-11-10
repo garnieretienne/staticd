@@ -1,6 +1,8 @@
 require 'staticd_utils/gli_object'
 require 'rack'
 require 'staticd/version'
+require 'staticd/config'
+require "staticd/database"
 
 module Staticd
   class CLI
@@ -42,6 +44,12 @@ module Staticd
           else
             :development
           end
+
+          config_file = "#{File.dirname(__FILE__)}/../../etc/staticd.yml.erb"
+          config = Staticd::Config.parse config_file, staticd_environment
+
+          extend Staticd::Database
+          init_database staticd_environment, config["database"]
 
           Rack::Server.start(
             config: "#{File.dirname(__FILE__)}/../../config.ru",

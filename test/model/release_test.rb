@@ -8,14 +8,15 @@ class ReleaseTest < Minitest::Unit::TestCase
   end
 
   def test_it_must_have_a_tag
-    refute_nil testing_release.tag
+    refute_nil sample_release.tag
   end
 
-  def test_it_must_have_an_url
-    refute_nil testing_release.url
+  def test_it_must_have_resources
+    assert_respond_to sample_release, :resources
+    assert_kind_of Enumerable, sample_release.resources
   end
 
   def test_it_must_belong_to_a_site
-    assert_instance_of Staticd::Model::Site, testing_release.site
+    assert_instance_of Staticd::Model::Site, sample_release.site
   end
 end

@@ -22,7 +22,7 @@ spec = Gem::Specification.new do |s|
   s.bindir = 'bin'
   s.executables << 'staticd'
   %w(
-    rack puma sinatra sinatra-contrib rack-test data_mapper dm-postgres-adapter
+    rack puma sinatra rack-test data_mapper dm-postgres-adapter
     gli api-auth aws-sdk
   ).each do |name|
     s.add_runtime_dependency name, *gemfile.find_requirements(name)

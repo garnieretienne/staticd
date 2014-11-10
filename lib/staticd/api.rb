@@ -1,5 +1,4 @@
 require "sinatra/base"
-require "sinatra/config_file"
 require "staticd/database"
 require "staticd/store"
 require "staticd/json_response"
@@ -10,17 +9,18 @@ require "staticd_utils/archive"
 
 module Staticd
   class API < Sinatra::Base
-    register Sinatra::ConfigFile
     include Staticd::Model
 
-    set :app_file, __FILE__
-    set :show_exceptions, false
-    config_file "#{settings.root}/../../etc/staticd.yml.erb"
+    # Configure the app
+    configure do
+      set :app_file, __FILE__
+      set :show_exceptions, false
+    end
 
     # Require HMAC authentication
     use Rack::Auth::HMAC do |access_id|
-      if access_id.to_s == settings.access_id.to_s
-        settings.secret_key.to_s
+      if access_id.to_s == ENV["STATICD_ACCESS_ID"]
+        ENV["STATICD_SECRET_KEY"]
       end
     end
 
@@ -39,7 +39,7 @@ module Staticd
       site.domain_names << DomainName.new(
         name: DomainGenerator.new(
           site.name,
-          settings.wildcard_domain
+          ENV["STATICD_WILDCARD_DOMAIN"]
         )
       )
       if site.save
@@ -110,7 +110,7 @@ module Staticd
           Dir.mktmpdir do |tmp|
             archive = StaticdUtils::Archive.open_file archive_path
             archive.extract tmp
-            storage = Store.new settings.datastore
+            storage = Store.new ENV["STATICD_DATASTORE"]
             Dir.chdir(tmp) do
               Dir.glob('**/*') do |file_path|
                 next unless File.file? file_path

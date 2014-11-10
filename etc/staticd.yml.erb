@@ -4,6 +4,7 @@ development:
   secret_key: <%= ENV["STATICD_SECRET_KEY"] %>
   database: <%= ENV["DATABASE_URL"] %>
   datastore: <%= ENV["DATASTORE_URL"] %>
+  http_cache: <%= ENV["STATICD_HTTP_CACHE"] %>
 
 production:
   wildcard_domain: <%= ENV["STATICD_WILDCARD_DOMAIN"] %>
@@ -11,6 +12,7 @@ production:
   secret_key: <%= ENV["STATICD_SECRET_KEY"] %>
   database: <%= ENV["DATABASE_URL"] %>
   datastore: <%= ENV["DATASTORE_URL"] %>
+  http_cache: <%= ENV["STATICD_HTTP_CACHE"] %>
 
 test:
   wildcard_domain: "example.org"

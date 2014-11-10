@@ -4,6 +4,7 @@ require "minitest/autorun"
 require "rack/test"
 require "byebug"
 require "staticd/database"
+require 'staticd/config'
 
 module TestHelper
   include Rack::Test::Methods
@@ -27,8 +28,21 @@ module TestHelper
 
   def check_testing_database
     unless @database_initialized
-      init_database(:test, "sqlite::memory:")
+      init_database(:test, app_config.database)
       @database_initialized = true
+    end
+  end
+
+  def app_config
+    if @app_config
+      return @app_config
+    else
+      @app_config = Staticd::Config.parse(
+        "#{File.dirname(__FILE__)}/../etc/staticd.yml.erb",
+        :test
+      )
+      @app_config.to_env!
+      return @app_config
     end
   end
 

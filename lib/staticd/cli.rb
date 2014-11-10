@@ -39,6 +39,7 @@ module Staticd
 
           ENV["STATICD_API_ENABLED"] = "true" if options[:api]
           ENV["STATICD_HTTP_ENABLED"] = "true" if options[:http]
+
           staticd_environment = if ENV["RACK_ENV"] == "production"
             :deployment
           else
@@ -47,9 +48,7 @@ module Staticd
 
           config_file = "#{File.dirname(__FILE__)}/../../etc/staticd.yml.erb"
           config = Staticd::Config.parse config_file, staticd_environment
-
-          extend Staticd::Database
-          init_database staticd_environment, config["database"]
+          config.to_env!
 
           Rack::Server.start(
             config: "#{File.dirname(__FILE__)}/../../config.ru",

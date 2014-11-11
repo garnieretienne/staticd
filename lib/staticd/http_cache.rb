@@ -14,16 +14,17 @@ module Staticd
     def call(env)
       @env = env
 
-      # Get the site name from the request Host header
-      site = Site.first(Site.domain_names.name => Rack::Request.new(@env).host)
-      return next_middleware unless site
-      @site_name = site.name
-
-      # Change the Request Path to include the site name
-      @env["SCRIPT_NAME"] = '/' + @site_name
-
       # Change the Request Path to '/index.html' if root is asked
       @env["PATH_INFO"] = '/index.html' if @env["PATH_INFO"] == '/'
+
+      # Get the release from the request Host header
+      release = Release.last(
+        Release.site.domain_names.name => Rack::Request.new(@env).host
+      )
+      return next_middleware unless release
+
+      # Change the script name to include the site name and release version
+      @env["SCRIPT_NAME"] = "/#{release.site_name}/#{release.tag}"
 
       req = Rack::Request.new @env
 
@@ -34,7 +35,7 @@ module Staticd
 
       # Get the resource to cache
       resource = Resource.first({
-        Resource.release_maps.release.site_name => site.name,
+        Resource.release_maps.release_id => release.id,
         Resource.release_maps.path => req.path_info
       })
       return next_middleware unless resource

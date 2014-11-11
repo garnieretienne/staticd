@@ -47,7 +47,7 @@ module Staticd
     def to_env!
       SETTINGS.each do |setting|
         setting_name = "STATICD_" + setting.to_s.upcase
-        ENV[setting_name] = self.send(setting).to_s
+        ENV[setting_name] = self.send(setting).to_s if self.send(setting)
       end
     end
   end

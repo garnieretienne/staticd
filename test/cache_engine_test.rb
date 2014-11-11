@@ -8,7 +8,7 @@ class CacheEngineTest < Minitest::Unit::TestCase
     @archive_url = fixtures_path("files/mywebsite.fr.tar.gz")
   end
 
-  def test_it_should_cache_the_content_of_an_archive
+  def test_it_should_cache_a_resource
     local_path = "/i/am/here.html"
     Dir.mktmpdir do |cache_root|
       Staticd::CacheEngine.cache(

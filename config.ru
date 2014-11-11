@@ -1,7 +1,11 @@
 require "staticd"
+require "tmpdir"
 
 # Enable Staticd API service
 ENV["STATICD_API_ENABLED"] ||= "true"
+
+# Default wildcard domain
+ENV["STATICD_WILDCARD_DOMAIN"] ||= "local"
 
 # Access ID used to authenticate client in the API service
 ENV["STATICD_ACCESS_ID"] ||= "1000"
@@ -31,6 +35,7 @@ if ENV["STATICD_API_ENABLED"] == "true"
   puts "Staticd API service enabled (/api)"
 
   if ENV["RACK_ENV"] == "development"
+    puts "* Wildcard domain: #{ENV["STATICD_WILDCARD_DOMAIN"]}"
     puts "* Access ID: #{ENV["STATICD_ACCESS_ID"]}"
     puts "* Secret Key: #{ENV["STATICD_SECRET_KEY"]}"
   end

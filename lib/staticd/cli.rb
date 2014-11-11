@@ -37,8 +37,8 @@ module Staticd
 
         c.action do |global_options,options,args|
 
-          ENV["STATICD_API_ENABLED"] = "true" if options[:api]
-          ENV["STATICD_HTTP_ENABLED"] = "true" if options[:http]
+          ENV["STATICD_API_ENABLED"] = options[:api] ? "true" : "false"
+          ENV["STATICD_HTTP_ENABLED"] = options[:http] ? "true" : "false"
 
           rack_environment = if ENV["RACK_ENV"] == "production"
             :deployment

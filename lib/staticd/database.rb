@@ -13,6 +13,7 @@ module Staticd
   module Database
 
     def init_database(environment, database_url)
+      environment = environment.to_sym
       puts "Running database in #{environment} mode" unless environment == :test
 
       if environment == :development

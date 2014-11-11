@@ -40,11 +40,12 @@ module Staticd
           ENV["STATICD_API_ENABLED"] = "true" if options[:api]
           ENV["STATICD_HTTP_ENABLED"] = "true" if options[:http]
 
-          staticd_environment = if ENV["RACK_ENV"] == "production"
+          rack_environment = if ENV["RACK_ENV"] == "production"
             :deployment
           else
             :development
           end
+          staticd_environment = ENV["RACK_ENV"] || "development"
 
           config_file = "#{File.dirname(__FILE__)}/../../etc/staticd.yml.erb"
           config = Staticd::Config.parse config_file, staticd_environment
@@ -54,7 +55,7 @@ module Staticd
             config: "#{File.dirname(__FILE__)}/../../config.ru",
             server: "puma",
             Port: options[:port],
-            environment: staticd_environment
+            environment: rack_environment
           )
         end
       end

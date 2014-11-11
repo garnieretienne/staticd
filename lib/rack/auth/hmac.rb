@@ -11,6 +11,10 @@ class Rack::Auth::HMAC
   end
 
   def call(env)
+    dup._call(env)
+  end
+
+  def _call(env)
 
     # Fix an issue with the HMAC canonical string calculation:
     # Ensure the request Content-Type is not set to nothing when a GET or DELETE

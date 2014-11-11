@@ -17,6 +17,10 @@ module Staticd
     end
 
     def call(env)
+      dup._call(env)
+    end
+
+    def _call(env)
       req = Rack::Request.new env
       file_path = @http_root + req.path
       send file_path

@@ -2,7 +2,9 @@ require 'yaml'
 require 'staticdctl'
 require 'staticd_utils/gli_object'
 require 'staticd_utils/archive'
+require 'staticd_utils/sitemap'
 require 'staticd_utils/file_size'
+require 'digest/sha1'
 
 module Staticdctl
   class CLI
@@ -283,10 +285,14 @@ module Staticdctl
       @gli.arg_name '[path]'
       @gli.command :push do |c|
         c.action do |global_options,options,args|
+          source_path = args.any? ? args.first : "."
+
+          print "Counting resources... "
+          sitemap = StaticdUtils::Sitemap.create(source_path)
+          puts "done. (#{sitemap.routes.count} resources)"
 
           print "Building the archive... "
-          source_path = args.any? ? args.first : "."
-          archive = StaticdUtils::Archive.create source_path
+          archive = StaticdUtils::Archive.create source_path, sitemap
           file_size = StaticdUtils::FileSize.new(archive.size)
           puts "done. (#{file_size})"
 

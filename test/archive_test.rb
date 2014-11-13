@@ -1,5 +1,6 @@
 require "test_helper"
 require "staticd_utils/archive"
+require "staticd_utils/sitemap"
 
 class ArchiveTest < Minitest::Unit::TestCase
   include TestHelper
@@ -34,6 +35,15 @@ EOF
 
   def test_archive_creation
     archive = StaticdUtils::Archive.create fixtures_path('sites/hello_world')
+    assert archive.stream.read
+    archive.close
+  end
+
+  def test_archive_creation_with_sitemap
+    archive = StaticdUtils::Archive.create(
+      fixtures_path('sites/hello_world'),
+      StaticdUtils::Sitemap.new({"fake_sha1" => "hello/world.html"})
+    )
     assert archive.stream.read
     archive.close
   end

@@ -23,8 +23,20 @@ module StaticdUtils
       self.new map
     end
 
+    def self.open(yaml)
+      self.new YAML.load(yaml)
+    end
+
     def routes
       @map.map{|sha1, path| path}
+    end
+
+    def digests
+      @map.map{|sha1, path| sha1}
+    end
+
+    def each_resources(&block)
+      @map.each{|key, value| yield key, value}
     end
 
     def to_h

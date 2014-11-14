@@ -68,16 +68,17 @@ module TestHelper
     return @sample_resource unless @sample_resource.nil?
 
     existing_resource = Staticd::Model::Resource.get(
-      url: fixtures_path("files/mywebsite.fr.tar.gz")
+      "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6"
     )
     unless existing_resource.nil?
       @sample_resource = existing_resource
     else
       new_resource = Staticd::Model::Resource.create(
-        url: fixtures_path("files/mywebsite.fr.tar.gz")
+        sha1: "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6",
+        url: fixtures_path("sites/hello_world/index.html")
       )
       release_map = Staticd::Model::ReleaseMap.create(
-        resource_id: new_resource.id,
+        resource_sha1: new_resource.sha1,
         release_id: sample_release.id,
         path: "/index.html"
       )

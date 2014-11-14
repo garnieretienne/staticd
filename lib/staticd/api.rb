@@ -6,6 +6,8 @@ require "staticd/json_request"
 require "staticd/domain_generator"
 require "rack/auth/hmac"
 require "staticd_utils/archive"
+require "staticd_utils/sitemap"
+require "digest/sha1"
 
 module Staticd
   class API < Sinatra::Base
@@ -112,18 +114,35 @@ module Staticd
             archive.extract tmp
             storage = Store.new ENV["STATICD_DATASTORE"]
             Dir.chdir(tmp) do
-              Dir.glob('**/*') do |file_path|
-                next unless File.file? file_path
 
-                resource_url = storage.exist?(file_path) ||
-                    storage.put(file_path)
+              # Open the sitemap file
+              sitemap_file = "sitemap.yml"
+              raise "No sitemap file found" unless File.exist?(sitemap_file)
+              sitemap = StaticdUtils::Sitemap.open File.read(sitemap_file)
 
-                resource = Resource.first(url: resource_url) ||
-                    Resource.new(url: resource_url)
+              # Store each new resources and build routes for known resources
+              sitemap.each_resources do |sha1, path|
+                relative_path = "." + path
+                resource = if File.exist? relative_path
 
+                  # Verify file integrity
+                  calc_sha1 = Digest::SHA1.hexdigest File.read(relative_path)
+                  raise "Integrity error" unless sha1 == calc_sha1
+
+                  # Store the file
+                  resource_url = storage.put(relative_path)
+
+                  # Create the resource
+                  Resource.new(sha1: sha1, url: resource_url)
+                else
+
+                  Resource.get sha1
+                end
+
+                # Create the release route
                 release.release_maps.new(
                   resource: resource,
-                  path: "/#{file_path}"
+                  path: path
                 )
               end
             end
@@ -254,6 +273,28 @@ module Staticd
           "This site (#{params[:site_name]}) does not exist"
         )
       end
+    end
+
+    # Get all already known resources included in a sitemap
+    #
+    # @param raw [Hash] the sitemap hash
+    # @return [Hash] the sitemap minus already known resources entry
+    # @example Using curl
+    #   curl --data '{"92136ff551f50188f46486ab80db269eda4dfd4e":"/hi.html"}' \
+    #       localhost/api/resources/get_cached
+    # @example Output (when resource is known)
+    #   {}
+    # @example Output (when resource is not known)
+    #   {"92136ff551f50188f46486ab80db269eda4dfd4e":"/hi.html"}
+    post "/resources/get_cached" do
+      map = JSONRequest.parse request.body.read
+      unknow_resources_map = map
+      sitemap = StaticdUtils::Sitemap.new(map)
+      known_resources = Resource.all sha1: sitemap.digests
+      known_resources.each do |resource|
+        unknow_resources_map.delete resource.sha1
+      end
+      JSONResponse.send :success, unknow_resources_map
     end
   end
 end

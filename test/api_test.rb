@@ -151,4 +151,14 @@ class APITest < Minitest::Unit::TestCase
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
   end
+
+  def test_it_should_return_a_list_of_unknown_resources_when_provided_with_sitemap
+    post "/resources/get_cached", JSON.generate({
+      sample_resource.sha1 => "/fake/path",
+      "unknown_sha1" => "/another/fake/path"
+    })
+    assert last_response.ok?
+    response_data = JSON.parse last_response.body
+    assert_equal({"unknown_sha1" => "/another/fake/path"}, response_data)
+  end
 end

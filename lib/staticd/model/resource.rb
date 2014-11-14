@@ -4,7 +4,7 @@ module Staticd
       include DataMapper::Resource
       include Staticd::Model::Serializer
 
-      property :id, Serial, unique: true
+      property :sha1, String, key: true, unique: true
       property :url, String, required: true, length: 1..200
 
       has n, :release_maps

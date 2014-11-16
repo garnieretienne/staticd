@@ -15,7 +15,7 @@ class ArchiveTest < Minitest::Unit::TestCase
 
   def mywebsite_base64
 <<-EOF
-H4sIAJ7bO1QAA8vMS0mt0Msoyc1hoBkwMDAwMzNRANKG5qYGyDQUGJkpGBqZ
+H4sIAAOpaFQAA8vMS0mt0Msoyc1hoBkwMDAwMzNRANKG5qYGyDQUGJkpGBqZ
 GBqbGZuaGJgrGBgamRsaMSgY0M5JCFBaXJJYBHRKdmlRCT512aV4paGeUYDT
 QwTYZBjaeaTm5OQrhOcX5aTY6AP5XFwD7apRMApGwSgYBbQGAHOa9g0ACAAA
 EOF
@@ -35,15 +35,6 @@ EOF
 
   def test_archive_creation
     archive = StaticdUtils::Archive.create fixtures_path('sites/hello_world')
-    assert archive.stream.read
-    archive.close
-  end
-
-  def test_archive_creation_with_sitemap
-    archive = StaticdUtils::Archive.create(
-      fixtures_path('sites/hello_world'),
-      StaticdUtils::Sitemap.new({"fake_sha1" => "hello/world.html"})
-    )
     assert archive.stream.read
     archive.close
   end

@@ -3,7 +3,6 @@ require "zlib"
 require "base64"
 require "open-uri"
 require "staticd_utils/archive_file"
-require "staticd_utils/sitemap"
 
 module StaticdUtils
   class Archive
@@ -26,23 +25,16 @@ module StaticdUtils
       self.new StringIO.new(Base64.decode64(base64))
     end
 
-    def self.create(directory_path, sitemap=nil)
-      sitemap ||= Sitemap.create(directory_path)
-
+    def self.create(directory_path)
       tar_stream = StringIO.new
       tar = Gem::Package::TarWriter.new(tar_stream)
-      tar.add_file("sitemap.yml", 0644) do |file|
-        file.write sitemap.to_yaml
-      end
       Dir.chdir(directory_path) do
         Dir["**/*"].each do |entry|
           if File.directory? entry
             tar.mkdir entry, 0755
           else
-            if sitemap.routes.include?(entry)
-              tar.add_file(entry, 0644) do |file|
-                file.write File.read(entry)
-              end
+            tar.add_file(entry, 0644) do |file|
+              file.write File.read(entry)
             end
           end
         end

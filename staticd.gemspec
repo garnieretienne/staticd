@@ -13,7 +13,8 @@ spec = Gem::Specification.new do |s|
   s.homepage = 'http://www.yuweb.fr'
   s.platform = Gem::Platform::RUBY
   s.summary = 'Staticd API and HTTP server'
-  s.description = 'Staticd is a Rack app serving static content and supporting virtual hosts'
+  s.description = 'Staticd is a Rack app serving static content and ' +
+    'supporting virtual hosts'
   s.files = Dir["lib/staticd/**/*"] + Dir["lib/staticd_utils/**/*"] + [
     "bin/staticd",
     "config.ru"
@@ -23,7 +24,7 @@ spec = Gem::Specification.new do |s|
   s.executables << 'staticd'
   %w(
     rack puma sinatra rack-test data_mapper dm-postgres-adapter
-    gli api-auth aws-sdk
+    gli api-auth aws-sdk sendfile
   ).each do |name|
     s.add_runtime_dependency name, *gemfile.find_requirements(name)
   end

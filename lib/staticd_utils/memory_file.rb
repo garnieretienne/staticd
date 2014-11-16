@@ -1,6 +1,6 @@
 module StaticdUtils
 
-  class ArchiveFile
+  class MemoryFile
 
     def initialize(stream)
       @stream = stream
@@ -15,11 +15,11 @@ module StaticdUtils
     end
 
     def original_filename
-      "archive.tar.gz"
+      "memory_file"
     end
 
     def content_type
-      "application/x-tar-gz"
+      "application/octet-stream"
     end
   end
 end

@@ -2,7 +2,7 @@ require "rubygems/package"
 require "zlib"
 require "base64"
 require "open-uri"
-require "staticd_utils/archive_file"
+require "staticd_utils/memory_file"
 require 'digest/sha1'
 
 module StaticdUtils
@@ -80,8 +80,8 @@ module StaticdUtils
       path
     end
 
-    def to_archive_file
-      StaticdUtils::ArchiveFile.new @stream
+    def to_memory_file
+      StaticdUtils::MemoryFile.new @stream
     end
 
     def extract(path)

@@ -307,18 +307,14 @@ module Staticdctl
           file_size = StaticdUtils::FileSize.new(archive.size)
           puts "done. (#{file_size})"
 
-          # TODO: work on it
-          require "staticd_utils/archive_file"
-          sitemap_file = StaticdUtils::ArchiveFile.new StringIO.new(sitemap.to_yaml)
-
           staticd_client global_options do |client|
 
             print "Uploading the archive... "
             timer_start = Time.now
             client.create_release(
               global_options[:site],
-              archive.to_archive_file,
-              sitemap_file
+              archive.to_memory_file,
+              sitemap.to_memory_file
             ) do |release|
               timer_stop = Time.now
               time_spent = timer_stop - timer_start

@@ -1,5 +1,6 @@
 require 'yaml'
 require 'digest/sha1'
+require "staticd_utils/memory_file"
 
 module StaticdUtils
 
@@ -46,6 +47,10 @@ module StaticdUtils
 
     def to_yaml
       @map.to_yaml
+    end
+
+    def to_memory_file
+      StaticdUtils::MemoryFile.new StringIO.new(to_yaml)
     end
   end
 end

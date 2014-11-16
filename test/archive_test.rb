@@ -84,7 +84,7 @@ EOF
 
   def test_get_archive_stream_to_look_like_a_file
     sample_archive do |archive|
-      duck_file = archive.to_archive_file
+      duck_file = archive.to_memory_file
       assert_respond_to duck_file, :read
       assert_respond_to duck_file, :path
       assert_respond_to duck_file, :original_filename

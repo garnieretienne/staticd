@@ -52,10 +52,11 @@ class APITest < Minitest::Unit::TestCase
 
   def test_it_should_create_a_new_release_of_a_site
     file_path = fixtures_path "files/mywebsite.fr.tar.gz"
-    base64 = Base64.encode64 File.read(file_path)
+    sitemap_path = fixtures_path "files/sitemap.yml"
     post(
       "/sites/#{sample_site.name}/releases",
-      file: Rack::Test::UploadedFile.new(file_path, "application/x-tar-gz")
+      file: Rack::Test::UploadedFile.new(file_path, "application/x-tar-gz"),
+      sitemap: Rack::Test::UploadedFile.new(sitemap_path, "text/yaml")
     )
     assert last_response.ok?
     response_data = JSON.parse last_response.body

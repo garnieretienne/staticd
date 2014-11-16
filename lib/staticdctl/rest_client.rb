@@ -27,7 +27,7 @@ module Staticdctl
       send_request request, block
     end
 
-    def send_file(path, file, &block)
+    def send_files(path, files, &block)
       headers = {
        "Accept" => "application/json",
        "Content-Type" => "multipart/form-data"
@@ -36,7 +36,7 @@ module Staticdctl
         url: "#{@url}#{path}",
         method: :post,
         headers: headers,
-        payload: {file: file},
+        payload: files,
         timeout: -1
       )
 

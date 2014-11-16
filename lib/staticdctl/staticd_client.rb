@@ -56,8 +56,17 @@ module Staticdctl
       end
     end
 
-    def create_release(site, archive_file, &block)
-      @staticd_api.send_file "/sites/#{site}/releases", archive_file do |data|
+    def create_release(site, archive_file, sitemap_file, &block)
+      @staticd_api.send_files(
+        "/sites/#{site}/releases",
+        {file: archive_file, sitemap: sitemap_file}
+      ) do |data|
+        yield build_response(data)
+      end
+    end
+
+    def cached_resources(params)
+      @staticd_api.call :post, "/resources/get_cached", params do |data|
         yield build_response(data)
       end
     end

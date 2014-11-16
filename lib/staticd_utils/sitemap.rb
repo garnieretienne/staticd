@@ -15,7 +15,7 @@ module StaticdUtils
           Dir["**/*"].each do |object|
             if File.file?(object)
               sha1 = Digest::SHA1.hexdigest(File.read(object))
-              map[sha1] = object
+              map[sha1] = "/#{object}"
             end
           end
         end

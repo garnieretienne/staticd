@@ -291,10 +291,22 @@ module Staticdctl
           sitemap = StaticdUtils::Sitemap.create(source_path)
           puts "done. (#{sitemap.routes.count} resources)"
 
+          # print "Asking host to identify new resources"
+          # diff_sitemap = staticd_client global_options do |client|
+          #   client.cached_resources(sitemap.to_h) do |new_map|
+          #     StaticdUtils::Sitemap.new new_map
+          #   end
+          # end
+          # puts "done. (#{diff_sitemap.routes.count} new resources)"
+
           print "Building the archive... "
-          archive = StaticdUtils::Archive.create source_path, sitemap
+          archive = StaticdUtils::Archive.create source_path
           file_size = StaticdUtils::FileSize.new(archive.size)
           puts "done. (#{file_size})"
+
+          # TODO: work on it
+          require "staticd_utils/archive_file"
+          sitemap_file = StaticdUtils::ArchiveFile.new StringIO.new(sitemap.to_yaml)
 
           staticd_client global_options do |client|
 
@@ -302,7 +314,8 @@ module Staticdctl
             timer_start = Time.now
             client.create_release(
               global_options[:site],
-              archive.to_archive_file
+              archive.to_archive_file,
+              sitemap_file
             ) do |release|
               timer_stop = Time.now
               time_spent = timer_stop - timer_start

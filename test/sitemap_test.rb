@@ -7,8 +7,8 @@ class SitemapTest < Minitest::Unit::TestCase
 
   def setup
     @hello_world_map = {
-      "92136ff551f50188f46486ab80db269eda4dfd4e" => "hello/world.html",
-      "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6" => "index.html"
+      "92136ff551f50188f46486ab80db269eda4dfd4e" => "/hello/world.html",
+      "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6" => "/index.html"
     }
   end
 
@@ -23,7 +23,7 @@ class SitemapTest < Minitest::Unit::TestCase
 
   def test_sitemap_routes
     sitemap = StaticdUtils::Sitemap.new(@hello_world_map)
-    assert_equal ["hello/world.html", "index.html"], sitemap.routes
+    assert_equal ["/hello/world.html", "/index.html"], sitemap.routes
   end
 
   def test_sitemap_digest

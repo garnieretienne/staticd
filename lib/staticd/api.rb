@@ -102,65 +102,81 @@ module Staticd
     #     "site_name":"my_app"
     #   }
     post "/sites/:site_name/releases" do
-      JSONResponse.send :error, "No archive file sent" unless params[:file]
-      site = Site.get params[:site_name]
-      if site
-        if params.has_key?("file") && params[:file].has_key?(:tempfile)
-          tag = "v#{site.releases.count + 1}"
-          release = Release.new site: site, tag: tag
-          archive_path = params[:file][:tempfile].path
-          Dir.mktmpdir do |tmp|
-            archive = StaticdUtils::Archive.open_file archive_path
-            archive.extract tmp
-            storage = Store.new ENV["STATICD_DATASTORE"]
-            Dir.chdir(tmp) do
 
-              # Open the sitemap file
-              sitemap_file = "sitemap.yml"
-              raise "No sitemap file found" unless File.exist?(sitemap_file)
-              sitemap = StaticdUtils::Sitemap.open File.read(sitemap_file)
-
-              # Store each new resources and build routes for known resources
-              sitemap.each_resources do |sha1, path|
-                relative_path = "." + path
-                resource = if File.exist? relative_path
-
-                  # Verify file integrity
-                  calc_sha1 = Digest::SHA1.hexdigest File.read(relative_path)
-                  raise "Integrity error" unless sha1 == calc_sha1
-
-                  # Store the file
-                  resource_url = storage.put(relative_path)
-
-                  # Create the resource
-                  Resource.new(sha1: sha1, url: resource_url)
-                else
-
-                  Resource.get sha1
-                end
-
-                # Create the release route
-                release.release_maps.new(
-                  resource: resource,
-                  path: path
-                )
-              end
-            end
-          end
-          if release.save
-            JSONResponse.send :success, release.to_h
-          else
-            msg = release.errors.full_messages.first
-            JSONResponse.send :error, "Cannot create the new release (#{msg})"
-          end
-        else
-          JSONResponse.send :error, "No valid archive file submitted"
+      [:file, :sitemap].each do |param|
+        unless params.has_key?(param.to_s) && params[param].has_key?(:tempfile)
+          return JSONResponse.send :error, "No valid #{param} file submitted"
         end
+      end
+      archive_path = params[:file][:tempfile].path
+      sitemap_path = params[:sitemap][:tempfile].path
+
+      # Get the current site
+      site = Site.get params[:site_name]
+      return JSONResponse.send :error,
+        "This site (#{params[:site_name]}) does not exist" unless site
+
+      # Create a new release
+      release = Release.new site: site, tag: "v#{site.releases.count + 1}"
+
+      # Open the sitemap file
+      sitemap = StaticdUtils::Sitemap.open File.read(sitemap_path)
+
+      # Open the archive file
+      archive = StaticdUtils::Archive.open_file archive_path
+
+      # Open the storage adapter
+      storage = Store.new ENV["STATICD_DATASTORE"]
+
+      Dir.mktmpdir do |tmp|
+        Dir.chdir(tmp) do
+          archive.extract tmp
+
+          # Store each new resources and build routes for known resources
+          sitemap.each_resources do |sha1, path|
+            relative_path = "." + path
+
+            # Store of retrieve each resources
+            resource = if File.exist? relative_path
+
+              # Verify file integrity
+              calc_sha1 = Digest::SHA1.hexdigest File.read(relative_path)
+              unless sha1 == calc_sha1
+                return JSONResponse.send :error,
+                  "The file #{path} digest recorded inside the sitemap file " +
+                  "is not correct"
+              end
+
+              # Store the file
+              resource_url = storage.put(relative_path)
+
+              # Create the resource
+              Resource.new(sha1: sha1, url: resource_url)
+            else
+
+              # Get the resource from the database
+              cached = Resource.get sha1
+              unless cached
+                return JSONResponse.send :error,
+                  "A resource is missing (missing file and database record)"
+              end
+              cached
+            end
+
+            # Create the release route
+            release.release_maps.new(
+              resource: resource,
+              path: path
+            )
+          end
+        end
+      end
+
+      if release.save
+        JSONResponse.send :success, release.to_h
       else
-        JSONResponse.send(
-          :error,
-          "This site (#{params[:site_name]}) does not exist"
-        )
+        msg = release.errors.full_messages.first
+        JSONResponse.send :error, "Cannot create the new release (#{msg})"
       end
     end
 

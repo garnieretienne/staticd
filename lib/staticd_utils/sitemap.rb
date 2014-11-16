@@ -1,4 +1,5 @@
 require 'yaml'
+require 'digest/sha1'
 
 module StaticdUtils
 

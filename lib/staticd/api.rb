@@ -134,13 +134,12 @@ module Staticd
 
           # Store each new resources and build routes for known resources
           sitemap.each_resources do |sha1, path|
-            relative_path = "." + path
 
             # Store of retrieve each resources
-            resource = if File.exist? relative_path
+            resource = if File.exist? sha1
 
               # Verify file integrity
-              calc_sha1 = Digest::SHA1.hexdigest File.read(relative_path)
+              calc_sha1 = Digest::SHA1.hexdigest File.read(sha1)
               unless sha1 == calc_sha1
                 return JSONResponse.send :error,
                   "The file #{path} digest recorded inside the sitemap file " +
@@ -148,7 +147,7 @@ module Staticd
               end
 
               # Store the file
-              resource_url = storage.put(relative_path)
+              resource_url = storage.put(sha1)
 
               # Create the resource
               Resource.new(sha1: sha1, url: resource_url)

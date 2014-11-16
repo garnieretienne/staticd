@@ -39,6 +39,19 @@ EOF
     archive.close
   end
 
+  # TODO
+  # def test_archive_creation_including_only_specified_files
+  #   full_archive = StaticdUtils::Archive.create fixtures_path('sites/hello_world')
+  #   partial_archive = StaticdUtils::Archive.create(
+  #     fixtures_path('sites/hello_world'),
+  #     ["/index.html"]
+  #   )
+  #   assert partial_archive.stream.read
+  #   refute_equal partial_archive.size, full_archive.size
+  #   full_archive.close
+  #   partail_archive.close
+  # end
+
   def test_archive_export_to_file
     Dir.mktmpdir do |tmp|
       sample_archive do |archive|

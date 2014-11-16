@@ -291,16 +291,19 @@ module Staticdctl
           sitemap = StaticdUtils::Sitemap.create(source_path)
           puts "done. (#{sitemap.routes.count} resources)"
 
-          # print "Asking host to identify new resources"
-          # diff_sitemap = staticd_client global_options do |client|
-          #   client.cached_resources(sitemap.to_h) do |new_map|
-          #     StaticdUtils::Sitemap.new new_map
-          #   end
-          # end
-          # puts "done. (#{diff_sitemap.routes.count} new resources)"
+          print "Asking host to identify new resources... "
+          diff_sitemap = staticd_client global_options do |client|
+            client.cached_resources(sitemap.to_h) do |new_map|
+              StaticdUtils::Sitemap.new new_map.to_h
+            end
+          end
+          puts "done. (#{diff_sitemap.routes.count} new resources to upload)"
 
           print "Building the archive... "
-          archive = StaticdUtils::Archive.create source_path
+          archive = StaticdUtils::Archive.create(
+            source_path,
+            diff_sitemap.routes
+          )
           file_size = StaticdUtils::FileSize.new(archive.size)
           puts "done. (#{file_size})"
 

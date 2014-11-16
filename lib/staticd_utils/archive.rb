@@ -37,6 +37,13 @@ module StaticdUtils
       tar = Gem::Package::TarWriter.new(tar_stream)
       Dir.chdir(directory_path) do
         manifest ||= Dir["**/*"].select{|f| File.file? f}.map{|f| '/' + f}
+
+        # Tar reader raise an exeption extracting empty tarball,
+        # this add one useless file to extract
+        tar.add_file("about", 0644) do |file|
+          file.write "staticdctl generated package"
+        end
+
         manifest.each do |entry|
           content = File.read('.' + entry)
           sha1 = Digest::SHA1.hexdigest(content)
@@ -85,12 +92,8 @@ module StaticdUtils
       tar = Gem::Package::TarReader.new gzip
       tar.rewind
       tar.each do |entry|
-        if entry.directory?
-          FileUtils.mkdir_p "#{path}/#{entry.full_name}"
-        elsif entry.file?
-          File.open("#{path}/#{entry.full_name}", "w") do |file|
-            file.write entry.read
-          end
+        File.open("#{path}/#{entry.full_name}", "w") do |file|
+          file.write entry.read
         end
       end
       gzip.close

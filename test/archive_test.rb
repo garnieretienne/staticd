@@ -15,9 +15,10 @@ class ArchiveTest < Minitest::Unit::TestCase
 
   def mywebsite_base64
 <<-EOF
-H4sIAAOpaFQAA8vMS0mt0Msoyc1hoBkwMDAwMzNRANKG5qYGyDQUGJkpGBqZ
-GBqbGZuaGJgrGBgamRsaMSgY0M5JCFBaXJJYBHRKdmlRCT512aV4paGeUYDT
-QwTYZBjaeaTm5OQrhOcX5aTY6AP5XFwD7apRMApGwSgYBbQGAHOa9g0ACAAA
+H4sIAKbVaFQAA+3PwQrDIAwG4J77FL7BEqNRoey8N9h5amVQodDV95+HMnYq
+gzLGwO/yExJIkjiEyJGS9JpVtI60c6Mk65kiGuU1BYs2dQcAALMSNdFoeM+N
+ZIFSITFpBUYAstTUCTiy9FPlsd6WespUlnVvbiq77e0Z8co/MdzxfBlznsV1
+XnIcTrXu+19f1TRN03zbE5w5Z+MACAAA
 EOF
   end
 
@@ -70,7 +71,7 @@ EOF
     Dir.mktmpdir do |tmp|
       sample_archive do |archive|
         archive.extract "#{tmp}"
-        assert File.exist? "#{tmp}/index.html"
+        assert File.exist? "#{tmp}/f6ccd6d3f2b564d893599e238b63d174b53c818f"
       end
     end
   end

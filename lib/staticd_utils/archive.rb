@@ -26,13 +26,19 @@ module StaticdUtils
       self.new StringIO.new(Base64.decode64(base64))
     end
 
+    # Create an archive from a repository path
+    #
+    # Can include a manifest as an array of full file path (from directory path
+    # as root).
+    # Example: ['/index.html'] => only the #{directory_path}/index.html file
+    #          will be included into the archive.
     def self.create(directory_path, manifest=nil)
       tar_stream = StringIO.new
       tar = Gem::Package::TarWriter.new(tar_stream)
       Dir.chdir(directory_path) do
-        manifest ||= Dir["**/*"].select{|entry| File.file? entry}
+        manifest ||= Dir["**/*"].select{|f| File.file? f}.map{|f| '/' + f}
         manifest.each do |entry|
-          content = File.read(entry)
+          content = File.read('.' + entry)
           sha1 = Digest::SHA1.hexdigest(content)
           tar.add_file(sha1, 0644) do |file|
             file.write content

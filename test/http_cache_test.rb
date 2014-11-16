@@ -1,7 +1,7 @@
 require "test_helper"
 require "staticd/http_cache"
 
-class HTTPServerTest < Minitest::Unit::TestCase
+class HTTPCacheTest < Minitest::Unit::TestCase
   include TestHelper
 
   def app
@@ -24,7 +24,8 @@ class HTTPServerTest < Minitest::Unit::TestCase
     get first_release_map.path
     assert_includes(
       last_response.body,
-      "\"SCRIPT_NAME\"=>\"/#{sample_site.name}\""
+      "\"SCRIPT_NAME\"=>\"/#{sample_site.name}/" +
+        "#{sample_site.releases.last.tag}\""
     )
   end
 

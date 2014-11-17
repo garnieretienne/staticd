@@ -3,17 +3,75 @@ require "sendfile"
 module Staticd
   class HTTPServer
 
-    EXT_MIME_TYPE = {
-      ".html" => "text/html",
-      ".css"  => "text/css",
-      ".js"   => "application/javascript",
-      ".jpg"  => "image/jpeg",
-      ".png"  => "image/png",
-      ".gif"  => "image/gif",
-      ".avi"  => "video/avi"
-    }
-
+    # Mime types served by the webserver
+    # Take from NGiNX mime.types file.
     DEFAULT_MIME_TYPE = 'application/octet-stream'
+    EXT_MIME_TYPE = {
+      ".html"    => "text/html"
+      ".html"    => "text/htm"
+      ".html"    => "text/shtml"
+      ".css"     => "text/css"
+      ".xml"     => "text/xml"
+      ".rss"     => "text/xml"
+      ".gif"     => "image/gif"
+      ".jpeg"    => "image/jpeg"
+      ".jpg"     => "image/jpeg"
+      ".js"      => "application/x-javascript"
+      ".txt"     => "text/plain"
+      ".htc"     => "text/x-component"
+      ".mml"     => "text/mathml"
+      ".png"     => "image/png"
+      ".ico"     => "image/x-icon"
+      ".jng"     => "image/x-jng"
+      ".wbmp"    => "image/vnd.wap.wbmp"
+      ".jar"     => "application/java-archive"
+      ".war"     => "application/java-archive"
+      ".ear"     => "application/java-archive"
+      ".hqx"     => "application/mac-binhex40"
+      ".pdf"     => "application/pdf"
+      ".cco"     => "application/x-cocoa"
+      ".jardiff" => "application/x-java-archive-diff"
+      ".jnlp"    => "application/x-java-jnlp-file"
+      ".run"     => "application/x-makeself"
+      ".pm"      => "application/x-perl"
+      ".pl"      => "application/x-perl"
+      ".prc"     => "application/x-pilot"
+      ".pdb"     => "application/x-pilot"
+      ".rar"     => "application/x-rar-compressed"
+      ".rpm"     => "application/x-redhat-package-manager"
+      ".sea"     => "application/x-sea"
+      ".swf"     => "application/x-shockwave-flash"
+      ".sit"     => "application/x-stuffit"
+      ".tcl"     => "application/x-tcl"
+      ".tk"      => "application/x-tcl"
+      ".der"     => "application/x-x509-ca-cert"
+      ".pem"     => "application/x-x509-ca-cert"
+      ".crt"     => "application/x-x509-ca-cert"
+      ".xpi"     => "application/x-xpinstall"
+      ".zip"     => "application/zip"
+      ".deb"     => "application/octet-stream"
+      ".bin"     => "application/octet-stream"
+      ".exe"     => "application/octet-stream"
+      ".dll"     => "application/octet-stream"
+      ".dmg"     => "application/octet-stream"
+      ".eot"     => "application/octet-stream"
+      ".iso"     => "application/octet-stream"
+      ".img"     => "application/octet-stream"
+      ".msi"     => "application/octet-stream"
+      ".msp"     => "application/octet-stream"
+      ".msm"     => "application/octet-stream"
+      ".mp3"     => "audio/mpeg"
+      ".ra"      => "audio/x-realaudio"
+      ".mpeg"    => "video/mpeg"
+      ".mpg"     => "video/mpeg"
+      ".mov"     => "video/quicktime"
+      ".flv"     => "video/x-flv"
+      ".avi"     => "video/x-msvideo"
+      ".wmv"     => "video/x-ms-wmv"
+      ".asx"     => "video/x-ms-asf"
+      ".asf"     => "video/x-ms-asf"
+      ".mng"     => "video/x-mng"
+    }
 
     def initialize(http_root)
       @http_root = http_root

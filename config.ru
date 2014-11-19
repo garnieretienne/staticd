@@ -25,6 +25,13 @@ ENV["RACK_ENV"] ||= "development"
 # Database URL
 ENV["STATICD_DATABASE"] ||= "sqlite::memory:"
 
+# Fix DATABASE_URL using 'postgresql://' scheme which is not recognized by
+# datamapper
+ENV["STATICD_DATABASE"] = ENV["STATICD_DATABASE"].sub(
+  "postgresql://",
+  "postgres://"
+)
+
 # Datastore URL
 ENV["STATICD_DATASTORE"] ||= Dir.mktmpdir
 

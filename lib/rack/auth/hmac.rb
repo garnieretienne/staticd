@@ -1,7 +1,17 @@
 require "api_auth"
 require "base64"
 
-# Rack middleware to authenticate requests usin the HMAC-SHA1 protocol
+# Rack middleware to authenticate requests using the HMAC-SHA1 protocol.
+#
+# It take a Proc as argument to find the entity secret key using the request
+# access id. Once returned, the entity secret key is compared with the request
+# secret key. Unless the two keys match, a 401 Unauthorized HTTP Error page is
+# sent.
+#
+# Example:
+#   use Rack::Auth::HMAC do |request_access_id|
+#     return entity_secret_key if request_access_id == entity_access_id
+#   end
 class Rack::Auth::HMAC
 
   def initialize(app, rack_env=ENV["RACK_ENV"], &block)
@@ -15,14 +25,10 @@ class Rack::Auth::HMAC
   end
 
   def _call(env)
-
-    # Fix an issue with the HMAC canonical string calculation:
-    # Ensure the request Content-Type is not set to nothing when a GET or DELETE
-    # method is used as Sinatra or Rack seems to set it to 'plain/text' when not
-    # specified.
-    env["CONTENT_TYPE"] = "" if ["GET", "DELETE"].include? env["REQUEST_METHOD"]
-
     return @app.call(env) if @rack_env == "test"
+
+    env = fix_content_type(env)
+
     request = Rack::Request.new(env)
     access_id = ApiAuth.access_id(request)
     secret_key = @block.call(access_id)
@@ -30,23 +36,41 @@ class Rack::Auth::HMAC
     if ApiAuth.authentic?(request, secret_key)
       status, headers, response = @app.call(env)
     else
-      accept = env["HTTP_ACCEPT"] || "text/plain"
-      realm = "Valid ACCESS ID and SECRET KEY required."
-      snonce = Base64.encode64(Time.now.to_s + request.ip)
-      headers = {
-        "WWW-Authenticate" =>
-          "HMACDigest realm=\"#{realm}\" snonce=\"#{snonce}\"",
-        "Content-Type" => accept
-      }
-      body = case accept
-        when "application/json"
-          "{\"error\": \"#{realm}\"}"
-        when "text/html"
-          "<h1>#{realm}</h1>"
-        else
-          realm
-      end
-      [401, headers, [body]]
+      send_401(content_type: env["HTTP_ACCEPT"], ip: request.ip)
     end
+  end
+
+  private
+
+  # Fix an issue with the HMAC canonical string calculation.
+  #
+  # Ensure the request Content-Type is not set to anything when a GET or
+  # DELETE method is used. Sinatra (or Rack) seems to set it to 'plain/text'
+  # when not specified.
+  def fix_content_type(env)
+    if ["GET", "DELETE"].include?(env["REQUEST_METHOD"])
+      env["CONTENT_TYPE"] = ""
+    end
+    env
+  end
+
+  def send_401(content_type: "text/plain", ip: nil)
+    message = "Valid access ID and secret key are required."
+    snonce = Base64.encode64(Time.now.to_s + ip)
+
+    body =
+      case content_type
+      when "application/json" then %("error": "#{message}")
+      when "text/html" then "<h1>#{message}</h1>"
+      else
+        message
+      end
+
+    headers = {
+      "Content-Type" => content_type,
+      "WWW-Authenticate" => %(HMACDigest realm="#{message}" snonce="#{snonce}")
+    }
+
+    Rack::Response.new body, 401, headers
   end
 end

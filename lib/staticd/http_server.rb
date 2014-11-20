@@ -108,6 +108,8 @@ module Staticd
     # see: https://github.com/codeslinger/sendfile
     # see: http://blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/
     def sendfile(file_path)
+      return send(file_path) unless @env['rack.hijack']
+
       @env['rack.hijack'].call
       io = @env['rack.hijack_io']
 
@@ -133,13 +135,13 @@ module Staticd
       res.finish
     end
 
-    def mime(file)
-      ext = File.extname(file).downcase
+    def mime(file_path)
+      ext = File.extname(file_path).downcase
       EXT_MIME_TYPE.has_key?(ext) ? EXT_MIME_TYPE[ext] : DEFAULT_MIME_TYPE
     end
 
-    def size(file)
-      File.size(file).to_s
+    def size(file_path)
+      File.size(file_path).to_s
     end
   end
 end

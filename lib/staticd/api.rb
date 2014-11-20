@@ -1,6 +1,6 @@
 require "sinatra/base"
 require "staticd/database"
-require "staticd/store"
+require "staticd/datastore"
 require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
@@ -126,7 +126,7 @@ module Staticd
       archive = StaticdUtils::Archive.open_file archive_path
 
       # Open the storage adapter
-      storage = Store.new ENV["STATICD_DATASTORE"]
+      storage = Datastore.new ENV["STATICD_DATASTORE"]
 
       Dir.mktmpdir do |tmp|
         Dir.chdir(tmp) do

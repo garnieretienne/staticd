@@ -1,7 +1,7 @@
 require 'digest/sha1'
 
 module Staticd
-  module Datastore
+  module Datastores
     class Local
 
       def initialize(params)

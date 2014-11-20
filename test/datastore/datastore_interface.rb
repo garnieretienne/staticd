@@ -1,7 +1,7 @@
 require "test_helper"
 
 module Test
-  module StoreInterface
+  module DatastoreInterface
     include TestHelper
 
     def test_datastore_interface

@@ -2,9 +2,7 @@ require 'digest/sha1'
 require 'aws-sdk'
 
 module Staticd
-
-  module Datastore
-
+  module Datastores
     class S3
 
       def initialize(params)

@@ -1,9 +1,9 @@
 require "uri"
-require "staticd/datastore/local"
-require "staticd/datastore/s3"
+require "staticd/datastores/local"
+require "staticd/datastores/s3"
 
 module Staticd
-  class Store
+  class Datastore
 
     def initialize(url)
       @uri = URI(url)
@@ -20,7 +20,7 @@ module Staticd
     private
 
     def datastoreClass
-      @datastoreClass ||= Datastore.const_get(@uri.scheme.capitalize)
+      @datastoreClass ||= Datastores.const_get(@uri.scheme.capitalize)
     end
 
     def datastore

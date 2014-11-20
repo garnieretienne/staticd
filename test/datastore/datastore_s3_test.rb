@@ -1,12 +1,12 @@
 require "test_helper"
-require "staticd/datastore/s3"
-require "datastore/store_interface"
+require "staticd/datastores/s3"
+require "datastore/datastore_interface"
 
 class DatastoreS3Test < Minitest::Unit::TestCase
   include TestHelper
-  include Test::StoreInterface
+  include Test::DatastoreInterface
 
   def setup
-    @datastore = Staticd::Datastore::S3.new({})
+    @datastore = Staticd::Datastores::S3.new({})
   end
 end

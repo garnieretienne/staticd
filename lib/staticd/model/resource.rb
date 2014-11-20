@@ -7,8 +7,8 @@ module Staticd
       property :sha1, String, key: true, unique: true
       property :url, String, required: true, length: 1..200
 
-      has n, :release_maps
-      has n, :releases, through: :release_maps
+      has n, :routes
+      has n, :releases, through: :routes
     end
   end
 end

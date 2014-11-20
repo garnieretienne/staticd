@@ -6,7 +6,7 @@ require "staticd/model/site"
 require "staticd/model/release"
 require "staticd/model/domain_name"
 require "staticd/model/resource"
-require "staticd/model/release_map"
+require "staticd/model/route"
 
 module Staticd
 

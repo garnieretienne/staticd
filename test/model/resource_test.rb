@@ -7,8 +7,8 @@ class ResourceTest < Minitest::Unit::TestCase
     init_fixtures
   end
 
-  def test_it_must_have_path_throug_release_map
-    refute_nil sample_resource.release_maps.first.path
+  def test_it_must_have_path_through_routes
+    refute_nil sample_resource.routes.first.path
   end
 
   def test_it_must_have_an_url

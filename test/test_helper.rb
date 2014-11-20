@@ -77,7 +77,7 @@ module TestHelper
         sha1: "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6",
         url: fixtures_path("sites/hello_world/index.html")
       )
-      release_map = Staticd::Model::ReleaseMap.create(
+      route = Staticd::Model::Route.create(
         resource_sha1: new_resource.sha1,
         release_id: sample_release.id,
         path: "/index.html"

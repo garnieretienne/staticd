@@ -8,8 +8,8 @@ module Staticd
       property :tag, String, required: true
 
       belongs_to :site
-      has n, :release_maps, constraint: :destroy
-      has n, :resources, through: :release_maps
+      has n, :routes, constraint: :destroy
+      has n, :resources, through: :routes
     end
   end
 end

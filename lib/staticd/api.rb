@@ -163,7 +163,7 @@ module Staticd
             end
 
             # Create the release route
-            release.release_maps.new(
+            release.routes.new(
               resource: resource,
               path: path
             )

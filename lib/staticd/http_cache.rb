@@ -39,8 +39,8 @@ module Staticd
 
       # Get the resource to cache
       resource = Resource.first({
-        Resource.release_maps.release_id => release.id,
-        Resource.release_maps.path => req.path_info
+        Resource.routes.release_id => release.id,
+        Resource.routes.path => req.path_info
       })
       return next_middleware unless resource
 

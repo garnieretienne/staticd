@@ -1,6 +1,6 @@
 module Staticd
   module Model
-    class ReleaseMap
+    class Route
       include DataMapper::Resource
 
       property :id, Serial, unique: true

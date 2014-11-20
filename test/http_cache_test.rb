@@ -20,8 +20,8 @@ class HTTPCacheTest < Minitest::Unit::TestCase
   end
 
   def test_script_name_should_be_altered_to_include_site_name
-    first_release_map = sample_resource.release_maps.first
-    get first_release_map.path
+    first_route = sample_resource.routes.first
+    get first_route.path
     assert_includes(
       last_response.body,
       "\"SCRIPT_NAME\"=>\"/#{sample_site.name}/" +

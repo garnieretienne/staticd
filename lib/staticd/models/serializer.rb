@@ -1,5 +1,5 @@
 module Staticd
-  module Model
+  module Models
     module Serializer
 
       # Return a hash of public attributes

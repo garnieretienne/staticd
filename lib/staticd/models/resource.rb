@@ -1,8 +1,8 @@
 module Staticd
-  module Model
+  module Models
     class Resource
       include DataMapper::Resource
-      include Staticd::Model::Serializer
+      include Staticd::Models::Serializer
 
       property :sha1, String, key: true, unique: true
       property :url, String, required: true, length: 1..200

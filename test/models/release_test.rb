@@ -17,6 +17,6 @@ class ReleaseTest < Minitest::Unit::TestCase
   end
 
   def test_it_must_belong_to_a_site
-    assert_instance_of Staticd::Model::Site, sample_release.site
+    assert_instance_of Site, sample_release.site
   end
 end

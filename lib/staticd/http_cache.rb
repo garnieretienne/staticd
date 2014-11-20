@@ -4,7 +4,7 @@ require "staticd/cache_engine"
 # Rack middleware to manage remote resource caching
 module Staticd
   class HTTPCache
-    include Staticd::Model
+    include Staticd::Models
 
     def initialize(http_root, app)
       @app = app

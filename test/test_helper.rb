@@ -9,6 +9,7 @@ require 'staticd/config'
 module TestHelper
   include Rack::Test::Methods
   include Staticd::Database
+  include Staticd::Models
 
   def root_path
     File.expand_path File.dirname(__FILE__)
@@ -49,15 +50,15 @@ module TestHelper
   def sample_site
     check_testing_database
     @sample_site ||=
-      Staticd::Model::Site.get("test") ||
-      Staticd::Model::Site.create(name: "test")
+      Site.get("test") ||
+      Site.create(name: "test")
   end
 
   def sample_release
     check_testing_database
     @sample_release ||=
-      Staticd::Model::Release.get(site_name: sample_site.name, tag: "v1") ||
-      Staticd::Model::Release.create(
+      Release.get(site_name: sample_site.name, tag: "v1") ||
+      Release.create(
         site: sample_site,
         tag: "v1"
       )
@@ -67,17 +68,17 @@ module TestHelper
     check_testing_database
     return @sample_resource unless @sample_resource.nil?
 
-    existing_resource = Staticd::Model::Resource.get(
+    existing_resource = Resource.get(
       "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6"
     )
     unless existing_resource.nil?
       @sample_resource = existing_resource
     else
-      new_resource = Staticd::Model::Resource.create(
+      new_resource = Resource.create(
         sha1: "058ec3fa8aab4c0ccac27d80fd24f30a8730d3f6",
         url: fixtures_path("sites/hello_world/index.html")
       )
-      route = Staticd::Model::Route.create(
+      route = Route.create(
         resource_sha1: new_resource.sha1,
         release_id: sample_release.id,
         path: "/index.html"
@@ -90,10 +91,10 @@ module TestHelper
   def sample_domain
     check_testing_database
     @sample_domain ||=
-      Staticd::Model::DomainName.get(
+      DomainName.get(
         site_name: sample_site.name,
         name: "example.org"
       ) ||
-      Staticd::Model::DomainName.create(site: sample_site, name: "example.org")
+      DomainName.create(site: sample_site, name: "example.org")
   end
 end

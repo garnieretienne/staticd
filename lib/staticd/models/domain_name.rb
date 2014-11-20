@@ -1,8 +1,8 @@
 module Staticd
-  module Model
+  module Models
     class DomainName
       include DataMapper::Resource
-      include Staticd::Model::Serializer
+      include Staticd::Models::Serializer
 
       property :name, String, key: true, unique: true
 

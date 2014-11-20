@@ -1,5 +1,5 @@
 module Staticd
-  module Model
+  module Models
     class Route
       include DataMapper::Resource
 

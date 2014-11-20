@@ -16,6 +16,6 @@ class ResourceTest < Minitest::Unit::TestCase
   end
 
   def test_it_must_belong_to_at_least_one_release
-    assert_instance_of Staticd::Model::Release, sample_resource.releases.first
+    assert_instance_of Release, sample_resource.releases.first
   end
 end

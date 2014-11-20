@@ -1,12 +1,12 @@
 require "data_mapper"
 
 # Load models
-require "staticd/model/serializer"
-require "staticd/model/site"
-require "staticd/model/release"
-require "staticd/model/domain_name"
-require "staticd/model/resource"
-require "staticd/model/route"
+require "staticd/models/serializer"
+require "staticd/models/site"
+require "staticd/models/release"
+require "staticd/models/domain_name"
+require "staticd/models/resource"
+require "staticd/models/route"
 
 module Staticd
 

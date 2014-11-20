@@ -11,7 +11,7 @@ require "digest/sha1"
 
 module Staticd
   class API < Sinatra::Base
-    include Staticd::Model
+    include Staticd::Models
 
     # Configure the app
     configure do

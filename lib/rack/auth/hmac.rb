@@ -60,7 +60,7 @@ class Rack::Auth::HMAC
 
     body =
       case content_type
-      when "application/json" then %("error": "#{message}")
+      when "application/json" then %({"error": "#{message}"})
       when "text/html" then "<h1>#{message}</h1>"
       else
         message

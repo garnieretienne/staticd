@@ -3,7 +3,7 @@ require "digest/sha1"
 module Staticd
   module Datastores
 
-    # Datastore storing file on local directory.
+    # Datastore storing files on local directory.
     #
     # It use the file SHA1 digest as a filename so two identical files are not
     # stored twice.

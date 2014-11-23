@@ -1,8 +1,9 @@
+require "staticd/models/base"
+
 module Staticd
   module Models
-    class Resource
+    class Resource < Staticd::Models::Base
       include DataMapper::Resource
-      include Staticd::Models::Serializer
 
       property :sha1, String, key: true, unique: true
       property :url, String, required: true, length: 1..200

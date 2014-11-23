@@ -1,6 +1,8 @@
+require "staticd/models/base"
+
 module Staticd
   module Models
-    class Route
+    class Route < Staticd::Models::Base
       include DataMapper::Resource
 
       property :id, Serial, unique: true

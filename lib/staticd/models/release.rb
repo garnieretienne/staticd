@@ -1,8 +1,9 @@
+require "staticd/models/base"
+
 module Staticd
   module Models
-    class Release
+    class Release < Staticd::Models::Base
       include DataMapper::Resource
-      include Staticd::Models::Serializer
 
       property :id, Serial, unique: true
       property :tag, String, required: true

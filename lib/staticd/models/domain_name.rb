@@ -1,8 +1,9 @@
+require "staticd/models/base"
+
 module Staticd
   module Models
-    class DomainName
+    class DomainName < Staticd::Models::Base
       include DataMapper::Resource
-      include Staticd::Models::Serializer
 
       property :name, String, key: true, unique: true
 

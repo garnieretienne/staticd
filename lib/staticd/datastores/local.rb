@@ -33,7 +33,7 @@ module Staticd
       private
 
       def check_store_directory
-        Dir.mkdir(@path) unless File.directory?(@path)
+        Dir.mkdir_p(@path) unless File.directory?(@path)
       end
 
       def sha1(file_path)

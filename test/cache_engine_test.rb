@@ -11,13 +11,10 @@ class CacheEngineTest < Minitest::Unit::TestCase
   def test_it_should_cache_a_resource
     local_path = "/i/am/here.html"
     Dir.mktmpdir do |cache_root|
-      Staticd::CacheEngine.cache(
-        cache_root,
-        local_path,
-        @archive_url
-      )
-      assert File.exist? cache_root + local_path
-      assert Staticd::CacheEngine.cached? cache_root, local_path
+      cache_engine = Staticd::CacheEngine.new(cache_root)
+      cache_engine.cache(local_path, @archive_url)
+      assert File.exist?(cache_root + local_path)
+      assert cache_engine.cached?(local_path)
     end
   end
 end

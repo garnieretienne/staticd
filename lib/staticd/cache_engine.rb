@@ -1,27 +1,42 @@
-require 'open-uri'
+require "open-uri"
 
 module Staticd
 
+  # Class to manage HTTP resources caching.
+  #
+  # Example:
+  #   cache_engine = CacheEngine.new("/tmp/cache")
+  #   unless cache.cached?("/index.html")
+  #     cache_engine.cache("/index.html", "http://storage.tld/0000000")
+  #   end
+  #
   # TODO: add a purge method based on file's atime attribute
   class CacheEngine
 
-    def self.cache(http_root, resource_path, resource_url)
-      local_resource_path = "#{http_root}/#{resource_path}"
-      init(File.dirname(local_resource_path))
-      open(resource_url) do |remote_file|
-        File.open("#{http_root}/#{resource_path}", "w+") do |cached_file|
-          cached_file.write remote_file.read
-        end
+    def initialize(http_root)
+      @http_root = http_root
+      check_cache_directory
+    end
+
+    def cache(resource_path, resource_url)
+      open(resource_url) do |resource|
+        FileUtils.mkdir_p(File.dirname(local_path(resource_path)))
+        FileUtils.copy_file(resource.path, local_path(resource_path))
       end
-      local_resource_path
     end
 
-    def self.init(cache_path)
-      FileUtils.mkdir_p cache_path
+    def cached?(resource_path)
+      File.exist?(local_path(resource_path))
     end
 
-    def self.cached?(http_root, resource_path)
-      File.exist? "#{http_root}/#{resource_path}"
+    private
+
+    def local_path(resource_path)
+      @http_root + resource_path
+    end
+
+    def check_cache_directory
+      FileUtils.mkdir_p(http_root) unless File.directory?(@http_root)
     end
   end
 end

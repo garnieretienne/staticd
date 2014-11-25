@@ -30,10 +30,11 @@ module Staticd
       # Change the script name to include the site name and release version
       @env["SCRIPT_NAME"] = "/#{release.site_name}/#{release.tag}"
 
-      req = Rack::Request.new @env
+      req = Rack::Request.new(@env)
+      cache_engine = CacheEngine.new(@http_root)
 
       # Do nothing else if the resource is already cached
-      if CacheEngine.cached? @http_root, req.path
+      if cache_engine.cached?(req.path)
         return next_middleware
       end
 
@@ -45,7 +46,7 @@ module Staticd
       return next_middleware unless resource
 
       # Cache the resource
-      CacheEngine.cache @http_root, req.path, resource.url
+      cache_engine.cache(req.path, resource.url)
       next_middleware
     end
 

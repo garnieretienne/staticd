@@ -11,6 +11,10 @@ module Staticd
       belongs_to :site
       has n, :routes, constraint: :destroy
       has n, :resources, through: :routes
+
+      def to_s
+        tag
+      end
     end
   end
 end

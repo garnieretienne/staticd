@@ -10,6 +10,10 @@ module Staticd
 
       belongs_to :release
       belongs_to :resource
+
+      def to_s
+        path
+      end
     end
   end
 end

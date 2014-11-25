@@ -64,6 +64,15 @@ module StaticdUtils
       self.new gz_stream
     end
 
+    def open
+      Dir.mktmpdir do |tmp|
+        Dir.chdir(tmp) do
+          extract(tmp)
+          yield tmp
+        end
+      end
+    end
+
     def to_base64
       return false if @stream.closed?
       base64 = Base64.encode64 @stream.read

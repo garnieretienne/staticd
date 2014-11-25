@@ -10,6 +10,10 @@ module Staticd
 
       has n, :routes
       has n, :releases, through: :routes
+
+      def to_s
+        url
+      end
     end
   end
 end

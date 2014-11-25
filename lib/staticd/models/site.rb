@@ -9,6 +9,10 @@ module Staticd
 
       has n, :releases, constraint: :destroy
       has n, :domain_names, constraint: :destroy
+
+      def to_s
+        name
+      end
     end
   end
 end

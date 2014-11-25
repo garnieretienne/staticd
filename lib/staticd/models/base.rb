@@ -33,6 +33,11 @@ module Staticd
           attributes
         end
       end
+
+      # Get the first error message in the datamapper error list
+      def error
+        errors.full_messages.first
+      end
     end
   end
 end

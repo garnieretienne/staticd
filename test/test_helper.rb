@@ -97,4 +97,8 @@ module TestHelper
       ) ||
       DomainName.create(site: sample_site, name: "example.org")
   end
+
+  def post_json(uri, json={})
+    post uri, JSON.generate(json), {"CONTENT_TYPE" => "application/json"}
+  end
 end

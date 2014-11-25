@@ -15,14 +15,14 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_create_a_new_site
-    post "/sites", JSON.generate(name: "testing")
+    post_json "/sites", name: "testing"
     assert last_response.ok?
     response_data = JSON.parse last_response.body
     assert_equal "testing", response_data["name"]
   end
 
   def test_it_should_return_an_error_creating_a_bad_new_site
-    post "/sites"
+    post_json "/sites"
     refute last_response.ok?
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
@@ -95,8 +95,7 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_add_new_domain_name_to_a_site
-    post "/sites/#{sample_site.name}/domain_names",
-      JSON.generate(name: "hi.com")
+    post_json "/sites/#{sample_site.name}/domain_names", name: "hi.com"
     assert last_response.ok?
     response_data = JSON.parse last_response.body
     assert_equal "hi.com", response_data["name"]
@@ -104,7 +103,7 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_return_an_error_adding_a_new_domain_to_an_unknown_site
-    post "/sites/unknown/domain_names"
+    post_json "/sites/unknown/domain_names"
     refute last_response.ok?
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
@@ -131,7 +130,7 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_return_an_error_adding_a_bad_new_domain_to_a_site
-    post "/sites/#{sample_site.name}/domain_names"
+    post_json "/sites/#{sample_site.name}/domain_names"
     refute last_response.ok?
     response_data = JSON.parse last_response.body
     refute response_data["error"].empty?
@@ -154,10 +153,8 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_return_a_list_of_unknown_resources_when_provided_with_sitemap
-    post "/resources/get_cached", JSON.generate({
-      sample_resource.sha1 => "/fake/path",
+    post_json "/resources/get_cached", sample_resource.sha1 => "/fake/path",
       "unknown_sha1" => "/another/fake/path"
-    })
     assert last_response.ok?
     response_data = JSON.parse last_response.body
     assert_equal({"unknown_sha1" => "/another/fake/path"}, response_data)

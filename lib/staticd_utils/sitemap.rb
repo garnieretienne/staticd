@@ -29,6 +29,10 @@ module StaticdUtils
       self.new YAML.load(yaml)
     end
 
+    def self.open_file(path)
+      open(File.read(path))
+    end
+
     def routes
       @map.map{|sha1, path| path}
     end

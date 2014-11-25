@@ -8,6 +8,10 @@ module Staticd
       property :name, String, key: true, unique: true
 
       belongs_to :site
+
+      def to_s
+        name
+      end
     end
   end
 end

@@ -52,7 +52,10 @@ module Staticd
     #   {"name":"my_app"}
     post "/sites" do
       site = Site.new(name: @json["name"])
-      domain = DomainGenerator.new(site, ENV["STATICD_WILDCARD_DOMAIN"])
+      domain_suffix = ENV["STATICD_WILDCARD_DOMAIN"]
+      domain = DomainGenerator.new(suffix: domain_suffix) do |generated_domain|
+        !DomainName.get(generated_domain)
+      end
       site.domain_names << DomainName.new(name: domain)
 
       if site.save

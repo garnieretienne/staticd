@@ -1,16 +1,26 @@
 module StaticdUtils
+
+  # Class to convert file size in octect to human readable size.
+  #
+  # Example:
+  #   Staticd::FileSize.new(1000).to_s
+  #   # => "1KB"
   class FileSize
 
     def initialize(size)
       @size = size
     end
 
-    # Source: https://www.ruby-forum.com/topic/126876#565940
     def to_s
-      units = %w{B KB MB GB TB}
-      e = (Math.log(@size)/Math.log(1024)).floor
-      s = "%.3f" % (@size.to_f / 1024**e).to_i
-      s.sub(/\.?0*$/, units[e])
+      units = %w(B KB MB GB TB)
+      base = 1000
+      return "#{@size}#{units[0]}" if @size < base
+
+      exponent = (Math.log(@size) / Math.log(base)).to_i
+      exponent = units.size - 1 if exponent > units.size - 1
+
+      human_size = @size / base**exponent
+      "#{human_size}#{units[exponent]}"
     end
   end
 end

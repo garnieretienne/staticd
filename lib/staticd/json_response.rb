@@ -1,7 +1,13 @@
 require "json"
 
 module Staticd
+
+  # Simple HTTP response constructor for JSON content.
+  #
+  # Example:
+  #   response = JSONResponse.send(:success, {foo: :bar})
   class JSONResponse
+
     def self.send(type, content=nil)
       case type
       when :success
@@ -14,7 +20,7 @@ module Staticd
         @body = {error: content}
       else
         @status = 500
-        @body = {error: "Something went wrong"}
+        @body = {error: "Something went wrong on our side."}
       end
       json_body = @body ? JSON.generate(@body) : nil
       [@status, json_body]

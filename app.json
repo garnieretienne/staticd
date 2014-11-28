@@ -1,0 +1,31 @@
+{
+  "name": "Staticd",
+  "description": "Staticd API and HTTP services",
+  "website": "https://github.com/garnieretienne/staticd#staticd-toolbelt",
+  "repository": "https://github.com/garnieretienne/staticd.git",
+  "env": {
+    "STATICD_WILDCARD_DOMAIN": {
+      "description": "Wildcard domain used to generate each site subdomain.",
+      "value": "domain.tld"
+    },
+    "STATICD_DATASTORE_URL": {
+      "description": "Datastore URL where sites resources are stored.",
+      "value": "s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@AWS_S3_BUCKET.AWS_S3_HOSTNAME"
+    },
+    "STATICD_ACCESS_ID": {
+      "description": "Access ID used by the API HMAC authentication.",
+      "value": "1000"
+    },
+    "STATICD_SECRET_KEY": {
+      "description": "Secret key used by the API HMAC authentication.",
+      "generator": "secret"
+    },
+    "STATICD_HTTP_CACHE": {
+      "description": "Local path where cached resources are stored.",
+      "value": "/var/cache/staticd"
+    }
+  },
+  "addons": {
+    "heroku-postgresql"
+  }
+}

@@ -25,7 +25,7 @@
       "value": "/var/cache/staticd"
     }
   },
-  "addons": {
+  "addons": [
     "heroku-postgresql"
-  }
+  ]
 }

@@ -1,54 +1,48 @@
 require "rubygems/package"
 require "zlib"
 require "base64"
+require "digest/sha1"
 require "open-uri"
 require "staticd_utils/memory_file"
-require 'digest/sha1'
 
 module StaticdUtils
-  class Archive
 
+  class Archive
     attr_reader :stream
 
-    def initialize(stream)
-      @stream = stream
-    end
-
-    def close
-      @stream.close unless @stream.closed?
-    end
-
     def self.open_file(url)
-      self.new open(url)
+      new(open(url))
     end
 
-    def self.open_base64(base64)
-      self.new StringIO.new(Base64.decode64(base64))
-    end
-
-    # Create an archive from a repository path
+    # Create an archive from a folder.
     #
-    # Can include a manifest as an array of full file path (from directory path
+    # Can include a manifest as an array of files full path (from directory path
     # as root).
-    # Example: ['/index.html'] => only the #{directory_path}/index.html file
-    #          will be included into the archive.
+    #
+    # Example:
+    #   StaticdUtils::Archive.create("/tmp/my_site", ["/index.html"])
+    #   # Only the /tmp/my_site/index.html file will be included into
+    #     the archive.
     def self.create(directory_path, manifest=nil)
       tar_stream = StringIO.new
       tar = Gem::Package::TarWriter.new(tar_stream)
       Dir.chdir(directory_path) do
-        manifest ||= Dir["**/*"].select{|f| File.file? f}.map{|f| '/' + f}
+        manifest ||=
+          Dir["**/*"].
+            select { |f| File.file?(f) }.
+            map { |f| "/#{f}" }
 
-        # Tar reader raise an exeption extracting empty tarball,
-        # this add one useless file to extract
+        # Gem::Package::TarReader raise an exeption extracting an empty tarball,
+        # this add at least one useless file to extract.
         tar.add_file("about", 0644) do |file|
-          file.write "staticdctl generated package"
+          file.write("Hello.")
         end
 
         manifest.each do |entry|
-          content = File.read('.' + entry)
+          content = File.read(".#{entry}")
           sha1 = Digest::SHA1.hexdigest(content)
           tar.add_file(sha1, 0644) do |file|
-            file.write content
+            file.write(content)
           end
         end
       end
@@ -56,12 +50,16 @@ module StaticdUtils
 
       gz_stream = StringIO.new
       gzip = Zlib::GzipWriter.new(gz_stream)
-      gzip.write tar_stream.read
+      gzip.write(tar_stream.read)
       gzip.finish
       tar_stream.close
 
       gz_stream.rewind
-      self.new gz_stream
+      new(gz_stream)
+    end
+
+    def initialize(stream)
+      @stream = stream
     end
 
     def open
@@ -73,46 +71,45 @@ module StaticdUtils
       end
     end
 
-    def to_base64
-      return false if @stream.closed?
-      base64 = Base64.encode64 @stream.read
-      self.close
-      base64
-    end
-
-    def to_file(path)
-      return false if @stream.closed?
-      File.open(path, 'w') do |file|
-        file.write @stream.read
-      end
-      self.close
-      path
-    end
-
-    def to_memory_file
-      StaticdUtils::MemoryFile.new @stream
+    def close
+      @stream.close unless @stream.closed?
     end
 
     def extract(path)
       return false if @stream.closed?
-      FileUtils.mkdir_p "#{path}"
+
+      FileUtils.mkdir_p("#{path}")
+
       gzip = Zlib::GzipReader.new(@stream)
       gzip.rewind
-      tar = Gem::Package::TarReader.new gzip
+
+      tar = Gem::Package::TarReader.new(gzip)
       tar.rewind
       tar.each do |entry|
-        File.open("#{path}/#{entry.full_name}", "w") do |file|
-          file.write entry.read
+        File.open("#{path}/#{entry.full_name}", "w+") do |file|
+          file.write(entry.read)
         end
       end
       gzip.close
       tar.close
-      self.close
+      close
       path
     end
 
     def size
       @stream.size
+    end
+
+    def to_file(path)
+      return false if @stream.closed?
+
+      File.open(path, 'w') { |file| file.write(@stream.read) }
+      self.close
+      path
+    end
+
+    def to_memory_file
+      StaticdUtils::MemoryFile.new(@stream)
     end
   end
 end

@@ -24,7 +24,7 @@ module Staticd
       set :raise_errors, false
     end
 
-    # Manage API errors
+    # Manage API errors.
     error do
       raise env['sinatra.error']
     end
@@ -32,7 +32,7 @@ module Staticd
       JSONResponse.send(:error, env['sinatra.error'].message)
     end
 
-    # Require HMAC authentication
+    # Require HMAC authentication.
     use Rack::Auth::HMAC do |access_id|
       ENV["STATICD_SECRET_KEY"] if access_id.to_s == ENV["STATICD_ACCESS_ID"]
     end

@@ -1,4 +1,4 @@
-require 'gli'
+require "gli"
 
 # Move the GLI::App module into its own class.
 #

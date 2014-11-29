@@ -47,7 +47,17 @@ toolbelt:
 
 ## Installing the Staticd CLI client
 
-TODO: Installing the `staticdctl` utility by downloading a gemfile.
+_The staticdctl gem is not yet distributed on rubygems. Until them, It must be
+build locally._
+
+**You must have a working ruby stack to install and use the staticdctl gem.**
+
+```
+$> git clone https://github.com/garnieretienne/staticd.git
+$> cd staticd
+$> gem build staticdctl.gemspec
+$> gem install staticdctl-*.gem
+```
 
 ## Creating a site
 

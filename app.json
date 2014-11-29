@@ -4,13 +4,13 @@
   "website": "https://github.com/garnieretienne/staticd#staticd-toolbelt",
   "repository": "https://github.com/garnieretienne/staticd.git",
   "env": {
+    "DATASTORE_URL": {
+      "description": "Datastore URL where sites resources are stored.",
+      "value": "s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@AWS_S3_BUCKET.AWS_S3_HOSTNAME"
+    },
     "STATICD_WILDCARD_DOMAIN": {
       "description": "Wildcard domain used to generate each site subdomain.",
       "value": "domain.tld"
-    },
-    "STATICD_DATASTORE_URL": {
-      "description": "Datastore URL where sites resources are stored.",
-      "value": "s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@AWS_S3_BUCKET.AWS_S3_HOSTNAME"
     },
     "STATICD_ACCESS_ID": {
       "description": "Access ID used by the API HMAC authentication.",

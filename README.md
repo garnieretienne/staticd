@@ -21,6 +21,7 @@ In order to run the REST API and HTTP service, you will need:
 * A datastore used to store your sites resources
 
 Currently supported databases interfaces are: SQLite, MySQL and PostgreSQL.
+
 Currently supported datastores interfaces are: Local and S3.
 
 ## The journey of a site ressource
@@ -47,7 +48,7 @@ toolbelt:
 
 ## Installing the Staticd CLI client
 
-_The staticdctl gem is not yet distributed on rubygems. Until them, It must be
+_The staticdctl gem is not yet distributed on rubygems. Until then, It must be
 build locally._
 
 **You must have a working ruby stack to install and use the staticdctl gem.**

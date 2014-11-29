@@ -23,8 +23,10 @@ In order to run the REST API and HTTP service, you will need:
 Currently supported databases interfaces are: SQLite, MySQL and PostgreSQL.
 Currently supported datastores interfaces are: Local and S3.
 
-## The journey of a site ressource, deployed and distributed by the Staticd
-   toolbelt
+## The journey of a site ressource
+
+The journey of a site ressource, deployed and distributed by the Staticd
+toolbelt:
 
 * The site ressources are packaged and sent to a Staticd API endpoint.
 * A release of the site is created and each resources is stored into the
@@ -43,7 +45,7 @@ Currently supported datastores interfaces are: Local and S3.
 
 # Getting Started
 
-## Installing the `staticdctl` utility
+## Installing the Staticd CLI client
 
 TODO: Installing the `staticdctl` utility by downloading a gemfile.
 

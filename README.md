@@ -42,7 +42,27 @@ toolbelt:
 
 ## Deploying on Heroku
 
+Before deploying on heroku, be sure you have:
+* A dedicated wildcard domain (or subdomain) name available
+* An S3 URL (`s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@S3_BUCKET`)
+  You can look a this script to generate s3 URL using the configured `aws`
+  command.
+  **Your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` must not contain any
+  `/` character as the URI module will faild to parse them. Fixing this issue
+  is in my TODO list.**
+
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+Once deployed, you need to:
+
+* Configure your wildcard domain to resolve on your heroku app url.
+  (`CNAME to your_heroku_app.herokuapp.com.`)
+* Add your wildcard domain into your heroku app domain.
+  (`Heroku Panel > App > Settings > Domains`)
+
+You will also need the `STATICD_ACCESS_ID` and `STATICD_SECRET_KEY`
+environment variables values
+(`Heroku Panel > App > Settings > Reveal Config Vars`).
 
 # Getting Started
 
@@ -60,14 +80,49 @@ $> gem build staticdctl.gemspec
 $> gem install staticdctl-*.gem
 ```
 
+## Configuring the Staticd CLI client
+
+You need to configure the `access_id` and `secret_key` for the Staticd API
+endpoint you intend to use.
+
+```
+$> staticdctl --host http://wildcard_domain.tld/api config:set access_id your_access_id
+The access_id config key has been set to your_access_id
+$> staticdctl --host http://wildcard_domain.tld/api config:set secret_key your_secret_key
+The secret_key config key has been set to your_secret_key
+```
+
+You can test if the authentication is done correctly listing all the sites
+hosted on this Staticd app:
+`staticdctl --host http://wildcard_domain.tld/api sites`.
+
 ## Creating a site
 
-TODO
+```
+# Inside your project folder:
+$:website> staticdctl --host http://wildcard_domain.tld/api sites:create`
+The website site has been created.
+http://beslfu.wildcard_domain.tld
+```
 
 ## Deploying a site
 
-TODO
+```
+# Inside your project folder, assuming source files are in the 'built' folder:
+$:website> staticdctl --host http://wildcard_domain.tld/api push build/
+Counting resources... done. (6 resources)
+Asking host to identify new resources... done. (6 new resources to upload)
+Building the archive... done. (30KB)
+Uploading the archive... done. (1.44s / 21.18kbps)
+The yuweb release (v1) has been created.
+```
 
 ## Adding custom domain names
 
-TODO
+```
+$:website> staticdctl --host http://wildcard_domain.tld/api domains:attach www.domain.tld
+The www.domain.tld domain has been attached to the website site
+```
+
+_Note: If you use heroku to host the app, do not forget to also add your custom
+domain to the heroku app._

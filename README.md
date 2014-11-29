@@ -39,7 +39,7 @@ Currently supported datastores interfaces are: Local and S3.
 
 ## Deploying on Heroku
 
-TODO: Heroku Button
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 # Getting Started
 

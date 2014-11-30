@@ -30,7 +30,7 @@ module Staticd
         s3_object = object(file_path)
         s3_object.write(file: file_path)
         s3_object.acl = :public_read
-        s3_object.public_url(secure: false)
+        s3_object.public_url(secure: false).to_s
       end
 
       def exist?(file_path)

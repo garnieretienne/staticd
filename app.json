@@ -22,7 +22,7 @@
     },
     "STATICD_HTTP_CACHE": {
       "description": "Local path where cached resources are stored.",
-      "value": "/var/cache/staticd"
+      "value": "/tmp/staticd/cache"
     }
   },
   "addons": [

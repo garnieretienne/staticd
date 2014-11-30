@@ -36,7 +36,7 @@ module Staticd
     end
 
     def check_cache_directory
-      FileUtils.mkdir_p(http_root) unless File.directory?(@http_root)
+      FileUtils.mkdir_p(@http_root) unless File.directory?(@http_root)
     end
   end
 end

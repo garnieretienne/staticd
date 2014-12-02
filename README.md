@@ -44,12 +44,10 @@ toolbelt:
 
 Before deploying on heroku, be sure you have:
 * A dedicated wildcard domain (or subdomain) name available
-* An S3 URL (`s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@S3_BUCKET`)
-  You can look a this script to generate s3 URL using the configured `aws`
-  command.
-  **Your `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` must not contain any
-  `/` character as the URI module will faild to parse them. Fixing this issue
-  is in my TODO list.**
+* An S3 URL (`s3://S3_BUCKET`) and the correct Amazon Access Key ID and Amazon
+  Secret Access Key.
+  You can look a [this script](https://github.com/garnieretienne/s3build) to
+  generate s3 URL using the configured `aws` command.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 

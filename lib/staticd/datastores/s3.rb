@@ -22,8 +22,8 @@ module Staticd
 
       def initialize(params)
         @bucket_name = params[:host]
-        @access_key = params[:username]
-        @secret_key = params[:password]
+        @access_key = ENV["AWS_ACCESS_KEY_ID"]
+        @secret_key = ENV["AWS_SECRET_ACCESS_KEY"]
       end
 
       def put(file_path)

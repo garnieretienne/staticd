@@ -6,7 +6,15 @@
   "env": {
     "DATASTORE_URL": {
       "description": "Datastore URL where sites resources are stored.",
-      "value": "s3://AWS_ACCESS_KEY_ID:AWS_SECRET_ACCESS_KEY@AWS_S3_BUCKET.AWS_S3_HOSTNAME"
+      "value": "s3://S3_BUCKET"
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "description": "Amazom Access Key ID (only needed if the datastore is an S3 bucket)",
+      "required": false
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "description": "Amazom Secret Access Key (only needed if the datastore is an S3 bucket)",
+      "required": false
     },
     "STATICD_WILDCARD_DOMAIN": {
       "description": "Wildcard domain used to generate each site subdomain.",

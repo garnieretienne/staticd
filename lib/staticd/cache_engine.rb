@@ -1,4 +1,5 @@
 require "open-uri"
+require "sendfile"
 
 module Staticd
 
@@ -19,9 +20,11 @@ module Staticd
     end
 
     def cache(resource_path, resource_url)
-      open(resource_url) do |resource|
+      open(resource_url, "rb") do |resource|
         FileUtils.mkdir_p(File.dirname(local_path(resource_path)))
-        FileUtils.copy_file(resource.path, local_path(resource_path))
+        File.open(local_path(resource_path), "w+") do |file|
+          resource.each { |chunk| file.write(chunk) }
+        end
       end
     end
 

@@ -51,7 +51,7 @@ class APITest < Minitest::Unit::TestCase
   end
 
   def test_it_should_create_a_new_release_of_a_site
-    file_path = fixtures_path "files/mywebsite.fr.tar.gz"
+    file_path = fixtures_path "files/mywebsite.tar"
     sitemap_path = fixtures_path "files/sitemap.yml"
     post(
       "/sites/#{sample_site.name}/releases",

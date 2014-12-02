@@ -7,7 +7,7 @@ class ArchiveTest < Minitest::Unit::TestCase
 
   def sample_archive(&block)
     archive = StaticdUtils::Archive.open_file(
-      fixtures_path('files/mywebsite.fr.tar.gz')
+      fixtures_path('files/mywebsite.tar')
     )
     yield archive
     archive.close

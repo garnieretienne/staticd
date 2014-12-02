@@ -105,7 +105,7 @@ module Staticd
     # Responds with the new releases attributes.
     # Parameters:
     # * site_name: the name of the site (url)
-    # * file: the gzipped tarball containing the site resources
+    # * file: the archive containing the site resources
     # * sitemap: a sitemap file indexing the site resources
     #
     # Example:

@@ -294,7 +294,7 @@ module Staticdctl
           print "Asking host to identify new resources... "
           diff_sitemap = staticd_client global_options do |client|
             client.cached_resources(sitemap.to_h) do |new_map|
-              StaticdUtils::Sitemap.new new_map.to_h
+              StaticdUtils::Sitemap.new(new_map.to_h)
             end
           end
           puts "done. (#{diff_sitemap.routes.count} new resources to upload)"

@@ -5,9 +5,9 @@ require "datastore/datastore_interface"
 
 class DatastoreS3Test < Minitest::Unit::TestCase
   include TestHelper
-  include Test::DatastoreInterface
 
   if ENV["TESTING_S3_URL"]
+    include Test::DatastoreInterface
 
     def setup
       uri = URI(ENV["TESTING_S3_URL"])

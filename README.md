@@ -117,10 +117,10 @@ The yuweb release (v1) has been created.
 
 ## Adding custom domain names
 
+_Note: If you use heroku to host the app, do not forget to also add your custom
+domain to the heroku app._
+
 ```
 $:website> staticdctl --host http://wildcard_domain.tld/api domains:attach www.domain.tld
 The www.domain.tld domain has been attached to the website site
 ```
-
-_Note: If you use heroku to host the app, do not forget to also add your custom
-domain to the heroku app._

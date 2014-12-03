@@ -12,9 +12,7 @@ require "staticd/datastore"
 require "staticd_utils/archive"
 require "staticd_utils/sitemap"
 
-begin
-  require "byebug"
-end
+require "byebug" rescue true
 
 module Staticd
   class APIError < StandardError; end

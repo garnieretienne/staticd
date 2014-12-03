@@ -12,7 +12,7 @@ require "staticd/datastore"
 require "staticd_utils/archive"
 require "staticd_utils/sitemap"
 
-require "byebug" if RACK_ENV["development"]
+require "byebug" if ENV["RACK_ENV"] == "development"
 
 module Staticd
   class APIError < StandardError; end

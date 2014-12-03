@@ -22,9 +22,9 @@ module Staticd
             linked_data = send(link)
             linked_data_value =
               if linked_data.respond_to?(:map)
-                linked_data.map{ |element| element.attributes }
+                linked_data.map{ |element| element.to_h }
               else
-                linked_data.attributes
+                linked_data.to_h
               end
             data.merge!({link => linked_data_value})
           end

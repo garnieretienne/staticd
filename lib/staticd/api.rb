@@ -12,6 +12,10 @@ require "staticd/datastore"
 require "staticd_utils/archive"
 require "staticd_utils/sitemap"
 
+begin
+  require "byebug"
+end
+
 module Staticd
   class APIError < StandardError; end
 
@@ -171,7 +175,7 @@ module Staticd
       end
 
       if release.save
-        JSONResponse.send(:success, release.to_h)
+        JSONResponse.send(:success, release.to_h(:full))
       else
         raise APIError, "Cannot create the new release (#{release.error})"
       end

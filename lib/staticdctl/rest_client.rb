@@ -65,7 +65,7 @@ module Staticdctl
 
     private
 
-    def send_request(request, &block)
+    def send_request(request, block)
       signed_request = ApiAuth.sign!(request, @access_id, @secret_key)
       signed_request.execute do |response, request, result|
         res_data = JSON.parse(response.to_s) unless response.to_s.empty?

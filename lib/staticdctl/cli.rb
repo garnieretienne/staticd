@@ -104,7 +104,8 @@ module Staticdctl
       @gli.command(:config) do |c|
         c.action do |global_options, options, args|
           config = load_config(global_options[:config], global_options[:host])
-          puts("Current configuration for #{global_options[:host]}:")
+          puts "Current configuration for #{global_options[:host]}:"
+          puts "No config." unless config.any?
           config.each do |key, value|
             puts " * #{key}: #{value}"
           end
@@ -122,7 +123,7 @@ module Staticdctl
           global_config[global_options[:host]][args[0]] = args[1]
           File.open(global_options[:config], 'w+') do |file|
             file.write(global_config.to_yaml)
-            puts "The #{args[0]} config key has been set to #{args[1]}"
+            puts "The #{args[0]} config key has been set to #{args[1]}."
           end
         end
       end
@@ -139,13 +140,13 @@ module Staticdctl
             global_config.has_key?(global_options[:host]) &&
             global_config[global_options[:host]].has_key?(args.first)
           ) then
-            puts "The #{args.first} config key cannot be found"
+            puts "The #{args.first} config key cannot be found."
           end
 
           global_config[global_options[:host]].delete(args.first)
           File.open(global_options[:config], 'w+') do |file|
             file.write(global_config.to_yaml)
-            puts "The #{args.first} config key has been removed"
+            puts "The #{args.first} config key has been removed."
           end
         end
       end
@@ -158,14 +159,14 @@ module Staticdctl
           staticd_client(global_options) do |client|
             client.sites do |sites|
               puts "Sites hosted on #{global_options[:host]}:"
+              puts "No sites yet." unless sites.any?
               sites.each do |site|
                 last_release = site.releases.last
                 last_release_string = last_release ? last_release.tag : "-"
                 domains =
                   site.domain_names.map{ |domain| domain.name }.join(", ")
                 domains_string = domains.empty? ? "no domains" : domains
-                puts " * #{site.name} (#{last_release_string}): " +
-                  "#{domains_string}"
+                puts " * #{site.name} (#{last_release_string}): #{site.url}"
               end
             end
           end
@@ -180,9 +181,7 @@ module Staticdctl
           staticd_client global_options do |client|
             client.create_site(name: global_options[:site]) do |site|
               puts "The #{site.name} site has been created."
-              if site.domain_names.any?
-                puts "http://#{site.domain_names.first.name}"
-              end
+              puts site.url if site.url
             end
           end
         end
@@ -209,6 +208,7 @@ module Staticdctl
           staticd_client(global_options) do |client|
             client.domains(global_options[:site]) do |domains|
               puts "Domain names attached to #{global_options[:site]}:"
+              puts "No domain names attached." unless domains.any?
               domains.each do |domain|
                 puts " * #{domain.name}"
               end
@@ -229,7 +229,7 @@ module Staticdctl
               name: args.first
             ) do |domain|
               puts "The #{domain.name} domain has been attached to the " +
-                "#{domain.site_name} site"
+                "#{domain.site_name} site."
             end
           end
         end
@@ -244,7 +244,7 @@ module Staticdctl
           staticd_client(global_options) do |client|
             client.detach_domain(global_options[:site], args.first) do |domain|
               puts "The #{args.first} domain has been detached from the " +
-                "#{global_options[:site]} site"
+                "#{global_options[:site]} site."
             end
           end
         end
@@ -258,8 +258,12 @@ module Staticdctl
           staticd_client(global_options) do |client|
             client.releases(global_options[:site]) do |releases|
               releases_string =
-                releases.map { |release| release.tag }.join(", ")
-              puts "Releases of #{global_options[:site]}: #{releases_string}"
+                if releases.any?
+                  releases.map { |release| release.tag }.join(", ")
+                else
+                  "no release deployed yet"
+                end
+              puts "Releases of #{global_options[:site]}: #{releases_string}."
             end
           end
         end
@@ -275,7 +279,7 @@ module Staticdctl
 
           print "Counting resources... "
           sitemap = StaticdUtils::Sitemap.create(source_path)
-          puts "done. (#{sitemap.routes.size} resources)"
+          puts "done (#{sitemap.routes.size} resources)."
 
           print "Asking host to identify new resources... "
           diff_sitemap = staticd_client(global_options) do |client|
@@ -283,7 +287,7 @@ module Staticdctl
               StaticdUtils::Sitemap.new(new_map.to_h)
             end
           end
-          puts "done. (#{diff_sitemap.routes.size} new resources to upload)"
+          puts "done (#{diff_sitemap.routes.size} new resources to upload)."
 
           print "Building the archive... "
           archive = StaticdUtils::Archive.create(
@@ -291,7 +295,7 @@ module Staticdctl
             diff_sitemap.routes
           )
           file_size = StaticdUtils::FileSize.new(archive.size)
-          puts "done. (#{file_size})"
+          puts "done (#{file_size})."
 
           staticd_client(global_options) do |client|
 
@@ -304,9 +308,13 @@ module Staticdctl
             ) do |release|
               time_spent = Time.now - timer_start
               speed = archive.size / time_spent / 1000
-              puts "done. (#{'%.2f' % time_spent}s / #{'%.2f' % speed}kbps)"
+              puts "done (#{'%.2f' % time_spent}s / #{'%.2f' % speed}kbps)."
+              puts ""
               puts "The #{release.site_name} release (#{release.tag}) has " +
-                  "been created"
+                  "been created."
+              if release.site.url
+                puts release.site.url
+              end
             end
           end
         end

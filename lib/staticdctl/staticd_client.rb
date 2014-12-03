@@ -1,6 +1,15 @@
 require "staticdctl/rest_client"
 
 module Staticdctl
+
+  # Class to interact with the Staticd API.
+  #
+  # Example:
+  #   staticd_client = Staticdctl::StaticdClient.new(
+  #     url: "http://staticd.domain.tld/api",
+  #     access_id: ENV["STATICD_ACCESS_ID"],
+  #     secret_key: ENV["STATICD_SECRET_KEY"]
+  #   )
   class StaticdClient
 
     def initialize(url, hmac={})
@@ -14,59 +23,72 @@ module Staticdctl
       )
     end
 
-    def sites(&block)
-      @staticd_api.call :get, "/sites" do |data|
+    def sites
+      @staticd_api.call(:get, "/sites") do |data|
         yield build_response(data)
       end
     end
 
-    def create_site(params, &block)
-      @staticd_api.call :post, "/sites", params do |data|
+    def create_site(site_params)
+      @staticd_api.call(:post, "/sites", site_params) do |data|
         yield build_response(data)
       end
     end
 
-    def destroy_site(site, &block)
-      @staticd_api.call :delete, "/sites/#{site}" do
+    def destroy_site(site_name)
+      @staticd_api.call(:delete, "/sites/#{site_name}") do
         yield
       end
     end
 
-    def domains(site, &block)
-      @staticd_api.call :get, "/sites/#{site}/domain_names" do |data|
+    def domains(site_name)
+      @staticd_api.call(:get, "/sites/#{site_name}/domain_names") do |data|
         yield build_response(data)
       end
     end
 
-    def attach_domain(site, params, &block)
-      @staticd_api.call :post, "/sites/#{site}/domain_names", params do |data|
+    def attach_domain(site_name, domain_params)
+      @staticd_api.call(
+        :post,
+        "/sites/#{site_name}/domain_names",
+        domain_params
+      ) do |data|
         yield build_response(data)
       end
     end
 
-    def detach_domain(site, domain, &block)
-      @staticd_api.call :delete, "/sites/#{site}/domain_names/#{domain}" do
+    def detach_domain(site_name, domain_name)
+      @staticd_api.call(
+        :delete,
+        "/sites/#{site_name}/domain_names/#{domain_name}"
+      ) do
         yield
       end
     end
 
-    def releases(site, &block)
-      @staticd_api.call :get, "/sites/#{site}/releases" do |data|
+    def releases(site_name)
+      @staticd_api.call :get, "/sites/#{site_name}/releases" do |data|
         yield build_response(data)
       end
     end
 
-    def create_release(site, archive_file, sitemap_file, &block)
+    def create_release(site_name, archive_file, sitemap_file)
       @staticd_api.send_files(
-        "/sites/#{site}/releases",
+        "/sites/#{site_name}/releases",
         {file: archive_file, sitemap: sitemap_file}
       ) do |data|
         yield build_response(data)
       end
     end
 
-    def cached_resources(params)
-      @staticd_api.call :post, "/resources/get_cached", params do |data|
+    # Parse a sitemap of resources digest and return of sitemap purged of
+    # already know resources.
+    #
+    # Submit a list of resources sha1 digests with HTTP path (in the sitemap
+    # format) and get a list purged of already known resources (resources
+    # already stored in database).
+    def cached_resources(digests)
+      @staticd_api.call(:post, "/resources/get_cached", digests) do |data|
         yield build_response(data)
       end
     end
@@ -74,27 +96,22 @@ module Staticdctl
     private
 
     def build_response(data)
-      if data.kind_of? Array
-        build_collection(data)
-      else
-        build_object(data)
-      end
+      data.kind_of?(Array) ? build_collection(data) : build_object(data)
     end
 
     def build_collection(data)
-      data.map{|element| build_object(element)}
+      data.map { |element| build_object(element) }
     end
 
     def build_object(data)
       struct = OpenStruct.new
       data.each do |key, value|
-        if value.kind_of? Array
-          struct[key] = build_collection(value)
-        elsif value.kind_of? Hash
-          struct[key] = build_object(value)
-        else
-          struct[key] = value
-        end
+        struct[key] =
+          case
+          when value.kind_of?(Array) then build_collection(value)
+          when value.kind_of?(Hash) then build_object(value)
+          else value
+          end
       end
       struct
     end

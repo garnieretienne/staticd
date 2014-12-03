@@ -1,4 +1,3 @@
-require "staticd/version"
-require "staticd/api"
-require "staticd/http_cache"
-require "staticd/http_server"
+Dir["#{File.dirname(__FILE__)}/staticd/**/*.rb"].each do |model_library|
+  require model_library
+end

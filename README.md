@@ -99,8 +99,8 @@ hosted on this Staticd app:
 ```
 # Inside your project folder:
 $:website> staticdctl --host http://wildcard_domain.tld/api sites:create`
-The website site has been created.
-http://beslfu.wildcard_domain.tld
+The vagrant site has been created.
+http://jtbghu.staticd.yuweb.fr
 ```
 
 ## Deploying a site
@@ -108,11 +108,13 @@ http://beslfu.wildcard_domain.tld
 ```
 # Inside your project folder, assuming source files are in the 'built' folder:
 $:website> staticdctl --host http://wildcard_domain.tld/api push build/
-Counting resources... done. (6 resources)
-Asking host to identify new resources... done. (6 new resources to upload)
-Building the archive... done. (30KB)
-Uploading the archive... done. (1.44s / 21.18kbps)
-The yuweb release (v1) has been created.
+Counting resources... done (2 resources).
+Asking host to identify new resources... done (2 new resources to upload).
+Building the archive... done (3KB).
+Uploading the archive... done (2.08s / 1.48kbps).
+
+The vagrant release (v1) has been created.
+http://jtbghu.staticd.yuweb.fr
 ```
 
 ## Adding custom domain names
@@ -122,5 +124,5 @@ domain to the heroku app._
 
 ```
 $:website> staticdctl --host http://wildcard_domain.tld/api domains:attach www.domain.tld
-The www.domain.tld domain has been attached to the website site
+The www.domain.tld domain has been attached to the website site.
 ```

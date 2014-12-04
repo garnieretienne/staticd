@@ -55,8 +55,8 @@ module Staticd
     # Display a welcome page with instructions to finish setup and configure
     # the Staticd toolbelt.
     get "/welcome" do
-      config_disable_welcome_page = StaticdConfig.get("disable_welcome_page")
-      if config_disable_welcome_page && !config_disable_welcome_page.value
+      config_disable_welcome = StaticdConfig.get("disable_welcome_page")
+      if config_disable_welcome && config_disable_welcome.value == "true"
         haml :welcome, layout: :main
       else
         @domain_resolve = ping?(ENV["STATICD_WILDCARD_DOMAIN"])
@@ -70,7 +70,12 @@ module Staticd
     # After initial setup, you want to hide the welcome page displaying
     # sensitive data.
     delete "/welcome" do
-      StaticdConfig.create(name: "disable_welcome_page", value: true)
+      if config_disable_welcome = StaticdConfig.get("disable_welcome_page")
+        config_disable_welcome.value = "true"
+        config_disable_welcome.save
+      else
+        StaticdConfig.create(name: "disable_welcome_page", value: "true")
+      end
     end
 
     # Ping page.

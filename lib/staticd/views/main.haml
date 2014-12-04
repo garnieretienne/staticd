@@ -1,0 +1,9 @@
+!!! 5
+%html
+  %head
+    %title= "Staticd"
+    %link{rel: "stylesheet", href: "#{url("main.css")}"}
+  %body
+    = yield
+    %script{src: "#{url("jquery-1.11.1.min.js")}"}
+    %script{src: "#{url("main.js")}"}

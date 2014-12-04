@@ -1,0 +1,41 @@
+%header
+  %h1 Welcome to Staticd.
+  %h2 It's almost ready.
+
+%article
+  %h3 Configure your wildcard domain
+
+  %p
+    %ul
+      %li{class: @domain_resolve ? "green" : "red"}
+        = "The '#{ENV["STATICD_WILDCARD_DOMAIN"]}' domain must resolve to this app."
+      %li{class: @wildcard_resolve ? "green" : "red"}
+        = "The wildcard '*.#{ENV["STATICD_WILDCARD_DOMAIN"]}' domain must resolve to this app."
+
+  - unless @domain_resolve && @wildcard_resolve
+    %p
+      %button#refresh Refresh!
+
+  %h3 Install the staticdctl gem
+
+  %p
+    %code git clone https://github.com/garnieretienne/staticd.git
+    %br
+    %code cd staticd
+    %br
+    %code gem build staticdctl.gemspec
+    %br
+    %code gem install staticdctl-*.gem
+
+  %h3 Configure your Staticd client to use this endpoint
+
+  %p
+    %code= "staticdctl --host http://#{ENV["STATICD_WILDCARD_DOMAIN"]}/api config:set access_id #{ENV["STATICD_ACCESS_ID"] || "your_access_id"}"
+    %br
+    %code= "staticdctl --host http://#{ENV["STATICD_WILDCARD_DOMAIN"]}/api config:set secret_key #{ENV["STATICD_SECRET_KEY"] || "your_secret_key"}"
+
+  %h3 Almost finish
+
+  %p Once configuration is over, you want to hide this page as it contains sensitive informations.
+  %p
+    %button#done I'm done!

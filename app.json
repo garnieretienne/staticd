@@ -3,6 +3,7 @@
   "description": "Staticd API and HTTP services",
   "website": "https://github.com/garnieretienne/staticd#staticd-toolbelt",
   "repository": "https://github.com/garnieretienne/staticd.git",
+  "success_url": "/api/welcome",
   "env": {
     "DATASTORE_URL": {
       "description": "Datastore URL where sites resources are stored.",

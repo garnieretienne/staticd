@@ -8,15 +8,21 @@ require "base64"
 # secret key. Unless the two keys match, a 401 Unauthorized HTTP Error page is
 # sent.
 #
+# Options:
+# * environment: bypass authentication if set to "test"
+# * except: list of HTTP paths with no authentication required
+#
 # Example:
 #   use Rack::Auth::HMAC do |request_access_id|
 #     return entity_secret_key if request_access_id == entity_access_id
 #   end
 class Rack::Auth::HMAC
 
-  def initialize(app, rack_env=ENV["RACK_ENV"], &block)
+  def initialize(app, options={}, &block)
     @app = app
-    @rack_env = rack_env
+    options[:environment] ||= ENV["RACK_ENV"]
+    options[:except] ||= []
+    @options = options
     @block = block
   end
 
@@ -25,7 +31,8 @@ class Rack::Auth::HMAC
   end
 
   def _call(env)
-    return @app.call(env) if @rack_env == "test"
+    return @app.call(env) if @options[:environment] == "test"
+    return @app.call(env) if @options[:except].include?(env["PATH_INFO"])
 
     env = fix_content_type(env)
 

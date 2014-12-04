@@ -1,6 +1,8 @@
 require "sinatra/base"
 require "rack/auth/hmac"
 require "digest/sha1"
+require "haml"
+require "open-uri"
 
 require "staticd/json_response"
 require "staticd/json_request"
@@ -20,6 +22,8 @@ module Staticd
   class API < Sinatra::Base
     include Staticd::Models
 
+    PING_KEY = ENV["STATICD_WILDCARD_DOMAIN"]
+
     configure do
       set :app_file, __FILE__
       set :show_exceptions, false
@@ -35,12 +39,45 @@ module Staticd
     end
 
     # Require HMAC authentication.
-    use Rack::Auth::HMAC do |access_id|
+    NOT_AUTHENTICATED = %w(
+      /welcome /ping /main.css /main.js /jquery-1.11.1.min.js
+    )
+    use(Rack::Auth::HMAC, except: NOT_AUTHENTICATED) do |access_id|
       ENV["STATICD_SECRET_KEY"] if access_id.to_s == ENV["STATICD_ACCESS_ID"]
     end
 
     before do
       load_json_body
+    end
+
+    # Getting the Welcome Page.
+    #
+    # Display a welcome page with instructions to finish setup and configure
+    # the Staticd toolbelt.
+    get "/welcome" do
+      config_disable_welcome_page = StaticdConfig.get("disable_welcome_page")
+      if config_disable_welcome_page && !config_disable_welcome_page.value
+        haml :welcome, layout: :main
+      else
+        @domain_resolve = ping?(ENV["STATICD_WILDCARD_DOMAIN"])
+        @wildcard_resolve = ping?("wildcard.#{ENV["STATICD_WILDCARD_DOMAIN"]}")
+        haml :setup, layout: :main
+      end
+    end
+
+    # Hide the Welcome Page.
+    #
+    # After initial setup, you want to hide the welcome page displaying
+    # sensitive data.
+    delete "/welcome" do
+      StaticdConfig.create(name: "disable_welcome_page", value: true)
+    end
+
+    # Ping page.
+    #
+    # Used by the ping command to verify a specified domain resolve to this app.
+    get "/ping" do
+      PING_KEY
     end
 
     # Create a new site.
@@ -278,6 +315,14 @@ module Staticd
     end
 
     private
+
+    def ping?(domain)
+      open("http://#{domain}/api/ping", read_timeout: 1) do |response|
+        response.read == PING_KEY
+      end
+    rescue
+      false
+    end
 
     def load_json_body
       if request.content_type == "application/json"

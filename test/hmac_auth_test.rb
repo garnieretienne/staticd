@@ -13,7 +13,9 @@ class HMACAuthTest < Minitest::Unit::TestCase
 
   def app
     hello = Proc.new {|env| [200, {}, ['Hello World']]}
-    Rack::Auth::HMAC.new(hello, :hmac_test){|access_id| @secret_key}
+    Rack::Auth::HMAC.new(hello, environment: :hmac_test) do |access_id|
+      @secret_key
+    end
   end
 
   def test_accessing_without_key

@@ -1,3 +1,5 @@
+![Staticd Logo](http://www.imagesup.net/di-15141822884313.png)
+
 # Staticd toolbelt
 
 The Staticd toolbelt is an ensemble of utilities (`staticd` and `staticdctl`)

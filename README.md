@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/garnieretienne/staticd.svg?branch=master)](https://travis-ci.org/garnieretienne/staticd)
+-----
+
 ![Staticd Logo](http://www.imagesup.net/?di=16141830503310)
 
 # Staticd toolbelt
@@ -31,7 +34,7 @@ In order to run the REST API and HTTP service, you will need:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-Once deployed, visit the `http://yourapp.herokuapp.com/api/welcome` page to finish the setup.
+Once deployed, visit the `/api/welcome` page to finish the setup.
 
 # The journey of a site ressource
 

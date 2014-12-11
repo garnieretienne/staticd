@@ -131,17 +131,15 @@ GEM
     thor (0.19.1)
     tilt (1.4.1)
     uuidtools (2.1.5)
-    yard (0.8.7.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   byebug (= 3.5.1)
-  dm-sqlite-adapter
+  dm-sqlite-adapter (= 1.2.0)
   foreman (= 0.75.0)
   racksh (= 1.0.0)
   rake (= 10.3.2)
   staticd!
   staticdctl!
-  yard (= 0.8.7.6)

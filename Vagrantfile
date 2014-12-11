@@ -64,7 +64,7 @@ sudo apt-get install --assume-yes build-essential libssl-dev
 gem install bundler
 rbenv rehash
 cd /vagrant
-bundle install --path vendor/bundle --without production
+bundle install --path vendor/bundle
 
 EOF
 

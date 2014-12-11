@@ -1,4 +1,4 @@
-![Staticd Logo](http://www.imagesup.net/di-15141822884313.png)
+![Staticd Logo](http://www.imagesup.net/?di=16141830503310)
 
 # Staticd toolbelt
 
@@ -22,9 +22,9 @@ ready to be served by the Staticd HTTP service.
 
 In order to run the REST API and HTTP service, you will need:
 * A domain name (or sub-domain) supporting wildcard DNS record.
-* A database used to store your sites data.  
+* A database used to store your sites data.
   Currently supported databases interfaces are: SQLite, MySQL and PostgreSQL.
-* A datastore used to store your sites resources.  
+* A datastore used to store your sites resources.
   Currently supported datastores interfaces are: Local and S3.
 
 ## Heroku

@@ -1,10 +1,10 @@
 require "test_helper"
 require "staticd/datastores/local"
-require "datastore/datastore_interface"
+require "staticd/datastores/datastore_test_interface"
 
 class DatastoreLocalTest < Minitest::Unit::TestCase
   include TestHelper
-  include Test::DatastoreInterface
+  include DatastoreTestInterface
 
   def setup
     @datastore = Staticd::Datastores::Local.new(path: Dir.mktmpdir)

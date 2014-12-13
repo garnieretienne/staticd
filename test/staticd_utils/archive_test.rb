@@ -5,7 +5,7 @@ require "staticd_utils/sitemap"
 class ArchiveTest < Minitest::Unit::TestCase
   include TestHelper
 
-  def sample_archive(&block)
+  def sample_archive
     archive = StaticdUtils::Archive.open_file(
       fixtures_path('files/mywebsite.tar')
     )
@@ -14,9 +14,7 @@ class ArchiveTest < Minitest::Unit::TestCase
   end
 
   def test_archive_import_from_an_url_or_file_path
-    sample_archive do |archive|
-      assert archive.stream.read
-    end
+    sample_archive { |archive| assert archive.stream.read }
   end
 
   def test_archive_creation

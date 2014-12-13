@@ -1,20 +1,23 @@
 require "test_helper"
 require "open-uri"
 require "staticd/datastores/s3"
-require "datastore/datastore_interface"
+require "staticd/datastores/datastore_test_interface"
 
 class DatastoreS3Test < Minitest::Unit::TestCase
   include TestHelper
 
-  if ENV["TESTING_S3_URL"]
-    include Test::DatastoreInterface
+  if ENV["TESTING_S3_URL"] &&
+     ENV["TESTING_AWS_ACCESS_KEY_ID"] &&
+     ENV["TESTING_AWS_SECRET_ACCESS_KEY"]
+  then
+    include DatastoreTestInterface
 
     def setup
       uri = URI(ENV["TESTING_S3_URL"])
       @datastore = Staticd::Datastores::S3.new(
         host: uri.host,
-        username: uri.user,
-        password: uri.password
+        username: ENV["TESTING_AWS_ACCESS_KEY_ID"],
+        password: ENV["TESTING_AWS_SECRET_ACCESS_KEY"]
       )
     end
 

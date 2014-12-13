@@ -5,7 +5,7 @@ class HTTPServerTest < Minitest::Unit::TestCase
   include TestHelper
 
   def app
-    Staticd::HTTPServer.new fixtures_path('sites/hello_world')
+    Staticd::HTTPServer.new(fixtures_path('sites/hello_world'))
   end
 
   def setup

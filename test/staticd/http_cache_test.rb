@@ -4,15 +4,13 @@ require "staticd/http_cache"
 class HTTPCacheTest < Minitest::Unit::TestCase
   include TestHelper
 
-  def app
-    tmp = Dir.mktmpdir
-    Staticd::HTTPCache.new tmp, env_app
+  def env_app
+    Proc.new { |env| [200, {}, [env]] }
   end
 
-  def env_app
-    Proc.new do |env|
-      [200, {}, [env]]
-    end
+  def app
+    tmp = Dir.mktmpdir
+    Staticd::HTTPCache.new(tmp, env_app)
   end
 
   def setup

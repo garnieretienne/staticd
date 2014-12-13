@@ -1,6 +1,6 @@
 require "test_helper"
+require "yaml"
 require "staticd_utils/sitemap"
-require 'yaml'
 
 class SitemapTest < Minitest::Unit::TestCase
   include TestHelper
@@ -38,25 +38,25 @@ class SitemapTest < Minitest::Unit::TestCase
   end
 
   def test_sitemap_creation_from_folder
-    sitemap = StaticdUtils::Sitemap.create fixtures_path("sites/hello_world")
+    sitemap = StaticdUtils::Sitemap.create(fixtures_path("sites/hello_world"))
     assert_equal @hello_world_map, sitemap.to_h
   end
 
   def test_sitemap_export_to_yaml
-    sitemap = StaticdUtils::Sitemap.create fixtures_path("sites/hello_world")
+    sitemap = StaticdUtils::Sitemap.create(fixtures_path("sites/hello_world"))
     assert @hello_world_map.to_yaml, sitemap.to_yaml
   end
 
   def test_sitemap_open_from_yaml
-    sitemap = StaticdUtils::Sitemap.open @hello_world_map.to_yaml
+    sitemap = StaticdUtils::Sitemap.open(@hello_world_map.to_yaml)
     assert_equal @hello_world_map, sitemap.to_h
   end
 
   def test_sitemap_each_resources_iterator
-    sitemap = StaticdUtils::Sitemap.new @hello_world_map
+    sitemap = StaticdUtils::Sitemap.new(@hello_world_map)
     sitemap.each_resources do |digest, path|
-      assert @hello_world_map.keys.include? digest
-      assert @hello_world_map.map{|key, value| value}.include? path
+      assert @hello_world_map.keys.include?(digest)
+      assert @hello_world_map.map { |key, value| value }.include?(path)
     end
   end
 end

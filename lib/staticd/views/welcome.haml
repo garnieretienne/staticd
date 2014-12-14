@@ -21,9 +21,9 @@
             0.0.1
 
         GLOBAL OPTIONS
-            -c, --config=Staticd configuration file - Staticd configuration file (default: /home/vagrant/.staticdctl.yml)
+            -c, --config=Staticd configuration file - Staticd configuration file (default: ~/.staticdctl.yml)
             -d, --[no-]debug                        - Enable debugging (raise exception on error)
-            -h, --host=Staticd API endpoint         - Staticd API endpoint (default: http://localhost:8080/api)
+            -h, --host=Staticd API endpoint         - Staticd API endpoint (default: http://localhost/api)
             --help                                  - Show this message
             -s, --site=Site name                    - Site name (default: vagrant)
             --version                               - Display the program version
@@ -74,5 +74,8 @@
       $:website> staticdctl --host http://wildcard_domain.tld/api domains:attach www.domain.tld
       The www.domain.tld domain has been attached to the website site.
 
-  %p
-    %i Note: If you use heroku to host the app, do not forget to also add your custom domain to the heroku app.
+  %p <i><b>Note</b>: If you use heroku to host the app, do not forget to also add your custom domain to the heroku app.</i>
+
+  %h3 Using an environment variable to specify the host flag
+
+  %p The <code>--host</code> flag can also be provided through the <code>STATICDCTL_ENDPOINT</code> environment variable.

@@ -60,21 +60,21 @@ module Staticdctl
     def set_global_option_config
       @gli.desc("Staticd configuration file")
       @gli.default_value("#{ENV['HOME']}/.staticdctl.yml")
-      @gli.arg_name("Staticd configuration file")
+      @gli.arg_name("<Staticd configuration file>")
       @gli.flag([:c, :config])
     end
 
     def set_global_option_host
       @gli.desc("Staticd API endpoint")
-      @gli.default_value("http://localhost:8080/api")
-      @gli.arg_name("Staticd API endpoint")
+      @gli.default_value(ENV["STATICDCTL_ENDPOINT"] || "http://localhost/api")
+      @gli.arg_name("<Staticd API endpoint>")
       @gli.flag([:h, :host])
     end
 
     def set_global_option_site
       @gli.desc("Site name")
       @gli.default_value(File.basename(Dir.pwd))
-      @gli.arg_name("Site name")
+      @gli.arg_name("<Site name>")
       @gli.flag([:s, :site])
     end
 

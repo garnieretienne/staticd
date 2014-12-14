@@ -58,6 +58,7 @@ http://localhost:8080/api:
   access_id: '1000'
   secret_key: XAQCxLanQwGNTS99+EAkBRDf/it4nZVa2Ct5zugRn/QorNdN+hxBrjvPLExhuFpwnQLpGIF641eddgknEbbAiw==
 EOC
+echo "export STATICDCTL_ENDPOINT=http://localhost:8080/api" >> ~/.bashrc
 
 # Install gem dependencies using bundler
 sudo apt-get install --assume-yes build-essential libssl-dev
@@ -71,7 +72,6 @@ EOF
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.network "forwarded_port", guest: 8080, host: 8080
-  config.vm.network "forwarded_port", guest: 8808, host: 8808
   config.vm.network "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
   config.vm.provision "shell", inline: $provision_script, privileged: false

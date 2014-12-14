@@ -19,6 +19,8 @@ The `staticdctl` utility is a command line interface to the Staticd API service.
 It provide heroku like functionnalities to manage, configure and deploy sites
 ready to be served by the Staticd HTTP service.
 
+<script type="text/javascript" src="https://asciinema.org/a/14710.js" id="asciicast-14710" async></script>
+
 # Deployment
 
 ## Prerequisites

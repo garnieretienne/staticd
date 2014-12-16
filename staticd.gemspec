@@ -28,7 +28,7 @@ spec = Gem::Specification.new do |s|
   ).each do |name|
     s.add_runtime_dependency name, *gemfile.find_requirements(name)
   end
-  %w(dm-sqlite-adapter rake byebug foreman racksh).each do |name|
+  %w(dm-sqlite-adapter rake byebug foreman).each do |name|
     s.add_development_dependency name, *gemfile.find_requirements(name)
   end
 end

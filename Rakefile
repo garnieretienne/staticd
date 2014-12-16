@@ -9,10 +9,18 @@ task :test do
   end
 end
 
+desc "Run an IRB console"
+task :console do
+  require "irb"
+  require "staticd"
+  init_database
+  ARGV.clear
+  IRB.start
+end
+
 desc "Disable the setup page"
 task :disable_setup_page do
   require "staticd"
-  include Staticd::Models
 
   init_database
   print "Disabling setup page... "
@@ -23,7 +31,6 @@ end
 desc "Enable the setup page"
 task :enable_setup_page do
   require "staticd"
-  include Staticd::Models
 
   init_database
   print "Enabling setup page... "

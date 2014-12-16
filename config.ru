@@ -69,7 +69,7 @@ if ENV["RACK_ENV"] == "development"
   puts "* Database: #{ENV["STATICD_DATABASE"]}"
   puts "* Datastore: #{ENV["STATICD_DATASTORE"]}"
 end
-extend Staticd::Database
-init_database ENV["RACK_ENV"], ENV["STATICD_DATABASE"]
+
+Staticd::Database.init_database ENV["RACK_ENV"], ENV["STATICD_DATABASE"]
 
 run Rack::URLMap.new routes

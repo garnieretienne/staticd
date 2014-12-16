@@ -13,7 +13,7 @@ module Staticd
     # It support the test, development and production environment.
     # Database logger is silent in test environment, verbose in development
     # environment, and only displaying errors in production.
-    def init_database(environment, database_url)
+    def self.init_database(environment, database_url)
       environment = environment.to_sym
       puts "Running database in #{environment} mode." unless environment == :test
 

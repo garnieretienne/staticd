@@ -8,7 +8,6 @@ require 'staticd/config'
 
 module TestHelper
   include Rack::Test::Methods
-  include Staticd::Database
   include Staticd::Models
 
   def root_path
@@ -29,7 +28,7 @@ module TestHelper
 
   def check_testing_database
     unless @database_initialized
-      init_database(:test, app_config.database)
+      Staticd::Database.init_database(:test, app_config.database)
       @database_initialized = true
     end
   end

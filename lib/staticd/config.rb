@@ -48,11 +48,9 @@ module Staticd
     #     secret: <%= ENV['SECRET'] %>
     def self.parse(config_file, environment)
       environment = environment.to_s
-
       content = File.read(config_file)
       erb = ERB.new(content)
       yaml = YAML.load(erb.result)
-
       config = yaml.key?(environment) ? yaml[environment] : {}
       new config
     end
@@ -65,7 +63,9 @@ module Staticd
     #   Staticd::Config.verify(["STATICD_GOD_MODE"])
     def self.verify(*settings)
       settings.each do |setting|
-        raise "#{setting} environment variable is not set" unless ENV[setting]
+        if ENV[setting].nil? || ENV[setting].empty?
+          raise "#{setting} environment variable is not set"
+        end
       end
     end
 

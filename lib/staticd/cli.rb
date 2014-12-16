@@ -28,9 +28,17 @@ module Staticd
     def build_command_server
       @gli.desc("Start the staticd API and HTTP server")
       @gli.command(:server) do |c|
+        staticd_root = "#{File.dirname(__FILE__)}/../.."
+        default_config_file = "#{staticd_root}/etc/staticd.yml.erb"
+
         c.switch([:api], desc: "Enable the API service", default_value: false)
         c.switch([:http], desc: "Enable the HTTP service", default_value: true)
         c.flag([:p, :port], desc: "Port to listen to", default_value: 8080)
+        c.flag(
+          [:c, :config],
+          desc: "Path to the config file to use",
+          default_value: default_config_file
+        )
 
         c.action do |global_options, options,args|
           ENV["STATICD_API_ENABLED"] = options[:api] ? "true" : "false"
@@ -38,16 +46,10 @@ module Staticd
 
           staticd_environment = ENV["RACK_ENV"] || "development"
           rack_environment =
-            if staticd_environment == "production"
-              :deployment
-            else
-              :development
-            end
+            staticd_environment == "production" ? :deployment : :development
 
-          staticd_root = "#{File.dirname(__FILE__)}/../.."
-
-          config_file = "#{staticd_root}/etc/staticd.yml.erb"
-          config = Staticd::Config.parse(config_file, staticd_environment)
+          puts "Using configuration file: #{options[:config]}."
+          config = Staticd::Config.parse(options[:config], staticd_environment)
           config.to_env!
 
           Rack::Server.start(

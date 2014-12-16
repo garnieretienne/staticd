@@ -21,6 +21,10 @@ ul {
   padding: 0;
 }
 
+ul.monitor > li {
+  padding: 0.8em;
+ }
+
 li {
   margin: 0.5em 0;
 }
@@ -47,9 +51,11 @@ article {
 }
 
 .green {
-  color: #53A826;
+  color: white;
+  background-color: #53A826;
 }
 
 .red {
-  color: #A82524;
+  color: white;
+  background-color: #A82524;
 }

@@ -55,6 +55,7 @@ module Staticd
         case boolean_string
         when "true" then true
         when "false" then false
+        when nil then false
         else
           raise "Cannot convert a string into a boolean value"
         end

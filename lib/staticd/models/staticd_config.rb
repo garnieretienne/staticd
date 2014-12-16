@@ -45,10 +45,10 @@ module Staticd
       # Convert boolean string into boolean value.
       #
       # Example:
-      #   if Staticd::Models::StaticdConfig.ask_value?(:enable_god_mod)
-      #     puts "God mod is enabled!"
+      #   if Staticd::Models::StaticdConfig.ask_value?(:enable_god_mode)
+      #     puts "God mode is enabled!"
       #   else
-      #     puts "God mod is disabled!"
+      #     puts "God mode is disabled!"
       #   end
       def self.ask_value?(name)
         boolean_string = get_value(name)

@@ -59,7 +59,7 @@ module Staticd
         haml :welcome, layout: :main
       else
         @domain_resolve = ping?(ENV["STATICD_WILDCARD_DOMAIN"])
-        @wildcard_resolve = ping?("*.#{ENV["STATICD_WILDCARD_DOMAIN"]}")
+        @wildcard_resolve = ping?("ping.#{ENV["STATICD_WILDCARD_DOMAIN"]}")
         haml :setup, layout: :main
       end
     end

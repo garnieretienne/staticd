@@ -1,75 +1,70 @@
 require "staticd"
-require "tmpdir"
 
-# Enable Staticd API service
-ENV["STATICD_API_ENABLED"] ||= "true"
-
-# Default wildcard domain
-ENV["STATICD_WILDCARD_DOMAIN"] ||= "local"
-
-# Access ID used to authenticate client in the API service
-ENV["STATICD_ACCESS_ID"] ||= "1000"
-
-# Secret Key used to authenticate client in the API service
-ENV["STATICD_SECRET_KEY"] ||= "staticd"
-
-# Enable Staticd HTTP service
-ENV["STATICD_HTTP_ENABLED"] ||= "true"
-
-# Directory used to cache HTTP resources locally
-ENV["STATICD_HTTP_CACHE"] ||= Dir.mktmpdir
-
-# Environment
-ENV["RACK_ENV"] ||= "development"
-
-# Database URL
-ENV["STATICD_DATABASE"] ||= "sqlite::memory:"
-
-# Fix DATABASE_URL using 'postgresql://' scheme which is not recognized by
-# datamapper
+# Quick fix on database url using 'postgresql://' scheme which is not recognized
+# by datamapper.
 ENV["STATICD_DATABASE"] = ENV["STATICD_DATABASE"].sub(
-  "postgresql://",
-  "postgres://"
+  "postgresql://", "postgres://"
 )
 
-# Datastore URL
-ENV["STATICD_DATASTORE"] ||= Dir.mktmpdir
+# Default values:
+# * Enable Staticd API service
+# * Enable Staticd HTTP service
+# * Run the app in development environment
+ENV["STATICD_API_ENABLED"] ||= "true"
+ENV["STATICD_HTTP_ENABLED"] ||= "true"
+ENV["RACK_ENV"] ||= "development"
+
+# Verify every needed configuration is specified.
+Staticd::Config.verify("STATICD_DATABASE", "STATICD_DATASTORE")
 
 routes = {}
 
+# Start the Staticd API service.
 if ENV["STATICD_API_ENABLED"] == "true"
 
-  puts "Staticd API service enabled (/api)"
+  # Verify every needed configuration for the API service is specified.
+  Staticd::Config.verify(
+    "STATICD_WILDCARD_DOMAIN", "STATICD_ACCESS_ID", "STATICD_SECRET_KEY"
+  )
 
-  if ENV["RACK_ENV"] == "development"
+  mount_point = "/api"
+  routes[mount_point] = Staticd::API
+  puts "Staticd API service enabled (#{mount_point})."
+end
+
+# Start the Staticd HTTP service.
+if ENV["STATICD_HTTP_ENABLED"] == "true"
+
+  # Verify every needed configuration for the HTTP service is specified.
+  Staticd::Config.verify("STATICD_HTTP_CACHE")
+
+  mount_point = "/"
+  http_server = Staticd::HTTPServer.new(ENV["STATICD_HTTP_CACHE"])
+  http_cache = Staticd::HTTPCache.new(ENV["STATICD_HTTP_CACHE"], http_server)
+  routes[mount_point] = http_cache
+  puts "Staticd HTTP service enabled (#{mount_point})."
+end
+
+# Display current configuration if in development environment.
+if ENV["RACK_ENV"] == "development"
+  puts "Configuration:"
+
+  if ENV["STATICD_API_ENABLED"] == "true"
     puts "* Wildcard domain: #{ENV["STATICD_WILDCARD_DOMAIN"]}"
     puts "* Access ID: #{ENV["STATICD_ACCESS_ID"]}"
     puts "* Secret Key: #{ENV["STATICD_SECRET_KEY"]}"
   end
 
-  routes['/api'] = Staticd::API
-end
-
-if ENV["STATICD_HTTP_ENABLED"] == "true"
-
-  puts "Staticd HTTP service enabled (/)"
-
-  if ENV["RACK_ENV"] == "development"
-    puts "* Using #{ENV["STATICD_HTTP_CACHE"]} as HTTP cache"
+  if ENV["STATICD_HTTP_ENABLED"] == "true"
+    puts "* HTTP cache: #{ENV["STATICD_HTTP_CACHE"]}"
   end
 
-  http_server = Staticd::HTTPServer.new ENV["STATICD_HTTP_CACHE"]
-  http_cache = Staticd::HTTPCache.new ENV["STATICD_HTTP_CACHE"], http_server
-  routes['/'] = http_cache
-end
-
-
-if ENV["RACK_ENV"] == "development"
-  puts "Other components configuration:"
   puts "* Database: #{ENV["STATICD_DATABASE"]}"
   puts "* Datastore: #{ENV["STATICD_DATASTORE"]}"
 end
 
-Staticd::Database.init_database ENV["RACK_ENV"], ENV["STATICD_DATABASE"]
+# Initialize database.
+Staticd::Database.init_database(ENV["RACK_ENV"], ENV["STATICD_DATABASE"])
 
-run Rack::URLMap.new routes
+# Start the engine.
+run Rack::URLMap.new(routes)

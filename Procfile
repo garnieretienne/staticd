@@ -1,1 +1,1 @@
-web: bin/staticd server --port $PORT --api --http
+web: staticd server --port $PORT --api --http

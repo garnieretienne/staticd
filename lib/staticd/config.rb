@@ -57,6 +57,18 @@ module Staticd
       new config
     end
 
+    # Verify each environment variable settings are set.
+    #
+    # Raise exeption if one setting is not set.
+    #
+    # Example:
+    #   Staticd::Config.verify(["STATICD_GOD_MODE"])
+    def self.verify(*settings)
+      settings.each do |setting|
+        raise "#{setting} environment variable is not set" unless ENV[setting]
+      end
+    end
+
     def initialize(config)
       @config = config
     end

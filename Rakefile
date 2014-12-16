@@ -14,7 +14,7 @@ task :disable_setup_page do
   require "staticd"
   include Staticd::Models
 
-  Staticd::Database.init_database(ENV["RACK_ENV"], ENV["STATICD_DATABASE"])
+  init_database
   print "Disabling setup page... "
   StaticdConfig.set_value(:disable_setup_page, true)
   puts "done."
@@ -25,8 +25,13 @@ task :enable_setup_page do
   require "staticd"
   include Staticd::Models
 
-  Staticd::Database.init_database(ENV["RACK_ENV"], ENV["STATICD_DATABASE"])
+  init_database
   print "Enabling setup page... "
   StaticdConfig.set_value(:disable_setup_page, false)
   puts "done."
+end
+
+def init_database
+  Staticd::Config.verify("RACK_ENV", "STATICD_DATABASE")
+  Staticd::Database.init_database(ENV["RACK_ENV"], ENV["STATICD_DATABASE"])
 end

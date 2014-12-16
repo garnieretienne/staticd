@@ -1,18 +1,19 @@
-development:
-  wildcard_domain: <%= ENV["STATICD_WILDCARD_DOMAIN"] %>
-  access_id: <%= ENV["STATICD_ACCESS_ID"] %>
-  secret_key: <%= ENV["STATICD_SECRET_KEY"] %>
-  database: <%= ENV["DATABASE_URL"] %>
-  datastore: <%= ENV["DATASTORE_URL"] %>
-  http_cache: <%= ENV["STATICD_HTTP_CACHE"] %>
-
+# Configured to used Heroku environment variable configuration style.
 production:
-  wildcard_domain: <%= ENV["STATICD_WILDCARD_DOMAIN"] %>
-  access_id: <%= ENV["STATICD_ACCESS_ID"] %>
-  secret_key: <%= ENV["STATICD_SECRET_KEY"] %>
-  database: <%= ENV["DATABASE_URL"] %>
-  datastore: <%= ENV["DATASTORE_URL"] %>
-  http_cache: <%= ENV["STATICD_HTTP_CACHE"] %>
+  wildcard_domain: "<%= ENV["STATICD_WILDCARD_DOMAIN"] %>"
+  access_id: "<%= ENV["STATICD_ACCESS_ID"] %>"
+  secret_key: "<%= ENV["STATICD_SECRET_KEY"] %>"
+  database: "<%= ENV["DATABASE_URL"] %>"
+  datastore: "<%= ENV["DATASTORE_URL"] %>"
+  http_cache: "<%= ENV["STATICD_HTTP_CACHE"] %>"
+
+development:
+  wildcard_domain: "<%= ENV["STATICD_WILDCARD_DOMAIN"] %>"
+  access_id: "<%= ENV["STATICD_ACCESS_ID"] %>"
+  secret_key: "<%= ENV["STATICD_SECRET_KEY"] %>"
+  database: "<%= ENV["STATICD_DATABASE"] %>"
+  datastore: "<%= ENV["STATICD_DATASTORE"] %>"
+  http_cache: "<%= ENV["STATICD_HTTP_CACHE"] %>"
 
 test:
   wildcard_domain: "example.org"

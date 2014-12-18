@@ -54,6 +54,10 @@ instructions to configure the staticdctl utility.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
+Other deployment guides:
+
+* [Manual deployment on Heroku PaaS](https://github.com/garnieretienne/staticd/wiki/Manual-deployment-on-Heroku-PaaS)
+
 ## Staticd Usage
 
 ### Create a site

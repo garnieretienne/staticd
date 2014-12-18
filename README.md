@@ -48,7 +48,7 @@ In order to run the Staticd API and HTTP services, you will need:
 ### Once deployed
 
 Once deployed, visit the `/api/welcome` page to complete the setup and get
-instructions to configure the `staticdctl` utility.
+instructions to configure the staticdctl utility.
 
 ### Deployment
 
@@ -96,7 +96,7 @@ http://jtbghu.wildcard_domain.tld
 
 ## Vagrant
 
-A [Vagrant file](blob/master/Vagrantfile) is available and will install and
+A [Vagrant file](Vagrantfile) is available and will install and
 configure the following components:
 
 * A Ruby stack

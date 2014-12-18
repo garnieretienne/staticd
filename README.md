@@ -8,13 +8,13 @@
 The Staticd toolbelt is an ensemble of utilities (`staticd` and `staticdctl`)
 designed to provide an easy way to deploy and serve static content over HTTP.
 
-The `staticd` utility is a ruby app providing a REST API service to manage sites
+The staticd utility is a ruby app providing a REST API service to manage sites
 and a simple HTTP service to serve these sites. A site, in the context of
 Staticd, is an ensemble of resources accessible over HTTP using a domain name.
 These services can be started independently and scaled using the usual
 capabilities of the PaaS or the Hosting provider used to host the app.
 
-The `staticdctl` utility is a ruby command line interface to the Staticd API
+The staticdctl utility is a ruby command line interface to the Staticd API
 service. It provide heroku like functionalities to manage, configure and deploy
 sites ready to be served by the Staticd HTTP service.
 
@@ -68,7 +68,7 @@ http://jtbghu.wildcard_domain.tld
 
 ### Deploying changes to a site
 
-Inside your project folder, assuming resources to upload are in the 'built'
+Inside your project folder, assuming resources to upload are in the "built"
 folder:
 
 ```
@@ -81,6 +81,35 @@ Uploading the archive... done (2.08s / 1.48kbps).
 The website release (v1) has been created.
 http://jtbghu.wildcard_domain.tld
 ```
+
+# Contributing
+
+* Pull requests are welcome.
+* Documentation is available on the
+  [Github Wiki](https://github.com/garnieretienne/staticd/wiki).
+* Issues are managed in
+  [Github](https://github.com/garnieretienne/staticd/issues).
+* The staticd and staticdctl gems use
+  [Sementic Versionning](http://semver.org/).
+* The project use this
+  [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide#the-ruby-style-guide).
+
+## Vagrant
+
+A [Vagrant file](blob/master/Vagrantfile) is available and will install and
+configure the following components:
+
+* A Ruby stack
+* The SQLite tool
+* A PostgreSQL service (database, user and password are "vagrant")
+* The staticdctl configuration file configured for local use
+* The project source available in the `/vagrant` directory
+
+To start the staticd API and HTTP services: `bundle exec foreman start`.
+
+To execute a rake task: `bundle exec foreman run rake -T`.
+
+To use the staticdctl utility: `bundle exec bin/staticdctl --help`.
 
 # License
 

@@ -115,26 +115,22 @@ module Staticd
     # See: https://github.com/codeslinger/sendfile
     # See: http://blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/
     def sendfile(file_path)
-      return send(file_path) unless @env['rack.hijack']
+      return send(file_path) unless @env['rack.hijack?']
 
-      @env['rack.hijack'].call
-      io = @env['rack.hijack_io']
-
-      # Rescue: Do not raise a Errno::EPIPE: Broken pipe - sendfile if
-      # transfert is canceled by the client.
-      begin
-        io.write("HTTP/1.1 200 OK\r\n")
-        io.write("Connection: close\r\n")
-        io.write("Content-Type: #{mime(file_path)}\r\n")
-        io.write("Content-Length: #{size(file_path)}\r\n")
-        io.write("\r\n")
-        File.open(file_path) { |file| io.sendfile(file) }
-        io.flush
-      rescue Errno::EPIPE => e
-        true
-      ensure
-        io.close
+      response_header = {
+        "Content-Type" => mime(file_path),
+        "Content-Length" => size(file_path),
+        "Connection" => "close"
+      }
+      response_header["rack.hijack"] = lambda do |io|
+        begin
+          File.open(file_path) { |file| io.sendfile(file) }
+          io.flush
+        ensure
+          io.close
+        end
       end
+      [200, response_header]
     end
 
     def send_404

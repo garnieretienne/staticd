@@ -11,15 +11,13 @@
       "value": "s3://"
     },
     "AWS_ACCESS_KEY_ID": {
-      "description": "Amazom Access Key ID (only needed if the datastore is an S3 bucket)",
-      "required": false
+      "description": "Amazom Access Key ID (only needed if the datastore is an S3 bucket)"
     },
     "AWS_SECRET_ACCESS_KEY": {
-      "description": "Amazom Secret Access Key (only needed if the datastore is an S3 bucket)",
-      "required": false
+      "description": "Amazom Secret Access Key (only needed if the datastore is an S3 bucket)"
     },
     "STATICD_DOMAIN": {
-      "description": "Domain used to generate each site subdomain.",
+      "description": "Domain used to generate each site subdomain."
     },
     "STATICD_ACCESS_ID": {
       "description": "Access ID used by the API HMAC authentication.",

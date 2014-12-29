@@ -7,7 +7,7 @@ class APITest < Minitest::Unit::TestCase
   include TestHelper
 
   def app
-    Staticd::API
+    Staticd::API.new(domain: Staticd::Config[:domain])
   end
 
   def setup

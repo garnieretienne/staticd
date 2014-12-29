@@ -1,6 +1,7 @@
+require "singleton"
 require "uri"
 
-# Load datastores
+# Load datastores libraries.
 Dir["#{File.dirname(__FILE__)}/datastores/*.rb"].each do |datastore_library|
   require datastore_library
 end
@@ -15,11 +16,25 @@ module Staticd
   # It use the URL scheme to guess wich datastore library to use.
   #
   # Example:
-  #   Staticd::Datastore.new("s3://[...]") => Staticd::Datastores::S3
-  #   Staticd::Datastore.new("local:/[...]") => Staticd::Datastores::Local
+  #   Staticd::Datastore.setup("s3://[...]")   # Staticd::Datastores::S3
+  #   Staticd::Datastore.setup("local:/[...]") # Staticd::Datastores::Local
+  #   Staticd::Datastore.put(file_path)
   class Datastore
+    include Singleton
 
-    def initialize(url)
+    def self.setup(url)
+      instance.setup(url)
+    end
+
+    def self.put(file_path)
+      instance.put(file_path)
+    end
+
+    def self.exist?(file_path)
+      instance.exist?(file_path)
+    end
+
+    def setup(url)
       @uri = URI(url)
     end
 

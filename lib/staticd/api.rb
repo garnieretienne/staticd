@@ -7,14 +7,10 @@ require "open-uri"
 require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
-
-require "staticd/database"
 require "staticd/datastore"
 
 require "staticd_utils/archive"
 require "staticd_utils/sitemap"
-
-require "byebug" if ENV["RACK_ENV"] == "development"
 
 module Staticd
   class APIError < StandardError; end
@@ -22,7 +18,9 @@ module Staticd
   class API < Sinatra::Base
     include Staticd::Models
 
-    PING_KEY = ENV["STATICD_WILDCARD_DOMAIN"]
+    PUBLIC_URI = %w(
+      /welcome /ping /main.css /main.js /jquery-1.11.1.min.js
+    )
 
     configure do
       set :app_file, __FILE__
@@ -31,24 +29,18 @@ module Staticd
     end
 
     # Manage API errors.
-    error do
-      raise env['sinatra.error']
-    end
-    error APIError do
-      JSONResponse.send(:error, env['sinatra.error'].message)
+    error { raise env['sinatra.error'] }
+    error(APIError) { JSONResponse.send(:error, env['sinatra.error'].message) }
+
+    def initialize(params={})
+      raise "Missing :domain parameter" unless params[:domain]
+
+      @domain = params[:domain]
+      super
     end
 
-    # Require HMAC authentication.
-    NOT_AUTHENTICATED = %w(
-      /welcome /ping /main.css /main.js /jquery-1.11.1.min.js
-    )
-    use(Rack::Auth::HMAC, except: NOT_AUTHENTICATED) do |access_id|
-      ENV["STATICD_SECRET_KEY"] if access_id.to_s == ENV["STATICD_ACCESS_ID"]
-    end
-
-    before do
-      load_json_body
-    end
+    # Auto parse the request body when JSON and present.
+    before { load_json_body }
 
     # Getting the Welcome Page.
     #
@@ -58,8 +50,8 @@ module Staticd
       if StaticdConfig.ask_value?(:disable_setup_page)
         haml :welcome, layout: :main
       else
-        @domain_resolve = ping?(ENV["STATICD_WILDCARD_DOMAIN"])
-        @wildcard_resolve = ping?("ping.#{ENV["STATICD_WILDCARD_DOMAIN"]}")
+        @domain_resolve = ping?(@domain)
+        @wildcard_resolve = ping?("ping.#{@domain}")
         haml :setup, layout: :main
       end
     end
@@ -76,7 +68,7 @@ module Staticd
     #
     # Used by the ping command to verify a specified domain resolve to this app.
     get "/ping" do
-      PING_KEY
+      @domain
     end
 
     # Create a new site.
@@ -90,7 +82,7 @@ module Staticd
     #   {"name":"my_app"}
     post "/sites" do
       site = Site.new(name: @json["name"])
-      domain_suffix = ".#{ENV["STATICD_WILDCARD_DOMAIN"]}"
+      domain_suffix = ".#{@domain}"
       domain = DomainGenerator.new(suffix: domain_suffix) do |generated_domain|
         !DomainName.get(generated_domain)
       end
@@ -168,9 +160,6 @@ module Staticd
       archive = StaticdUtils::Archive.open_file(archive_path)
       sitemap = StaticdUtils::Sitemap.open_file(sitemap_path)
 
-      # Open the storage adapter.
-      storage = Datastore.new(ENV["STATICD_DATASTORE"])
-
       archive.open do
 
         # Store each new resources and build routes for known resources.
@@ -188,7 +177,7 @@ module Staticd
               end
 
               # Store the file.
-              resource_url = storage.put(sha1)
+              resource_url = Datastore.put(sha1)
 
               # Create the resource.
               Resource.new(sha1: sha1, url: resource_url)
@@ -317,7 +306,7 @@ module Staticd
 
     def ping?(domain)
       open("http://#{domain}/api/ping", read_timeout: 1) do |response|
-        response.read == PING_KEY
+        response.read == @domain
       end
     rescue
       false
@@ -338,20 +327,19 @@ module Staticd
     end
 
     def current_site
-      if (@current_site ||= Site.get(params[:site_name]))
-        @current_site
-      else
+      unless (@current_site ||= Site.get(params[:site_name]))
         raise APIError, "This site (#{params[:site_name]}) does not exist"
       end
+      @current_site
     end
 
     def current_domain
-      if (@domain ||= current_site.domain_names.get(params[:domain_name]))
-        @domain
-      else
+      @current_domain ||= current_site.domain_names.get(params[:domain_name])
+      unless @current_domain
         raise APIError, "This domain name (#{params[:domain_name]}) is not " +
               "attached to the #{current_site} site"
       end
+      @current_domain
     end
   end
 end

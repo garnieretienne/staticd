@@ -82,6 +82,8 @@ module Staticd
 
     def initialize(http_root)
       @http_root = http_root
+
+      raise "No HTTP root folder provided" unless @http_root
     end
 
     def call(env)

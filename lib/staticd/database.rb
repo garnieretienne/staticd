@@ -1,6 +1,6 @@
 require "data_mapper"
 
-# Load models
+# Load models.
 Dir["#{File.dirname(__FILE__)}/models/*.rb"].each do |model_library|
   require model_library
 end
@@ -13,9 +13,11 @@ module Staticd
     # It support the test, development and production environment.
     # Database logger is silent in test environment, verbose in development
     # environment, and only displaying errors in production.
-    def self.init_database(environment, database_url)
+    def self.setup(environment, database_url)
+      raise "No environment given for the database" unless environment
+      raise "No database_url given" unless database_url
+
       environment = environment.to_sym
-      puts "Running database in #{environment} mode." unless environment == :test
 
       log_enabled, destination, level =
         case environment
@@ -28,7 +30,6 @@ module Staticd
         end
 
       if log_enabled
-        puts "Database #{level} info are logged to #{destination}."
         DataMapper::Logger.new(eval(destination), level)
       end
 

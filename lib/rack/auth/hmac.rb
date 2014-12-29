@@ -3,10 +3,10 @@ require "base64"
 
 # Rack middleware to authenticate requests using the HMAC-SHA1 protocol.
 #
-# It take a Proc as argument to find the entity secret key using the request
-# access id. Once returned, the entity secret key is compared with the request
-# secret key. Unless the two keys match, a 401 Unauthorized HTTP Error page is
-# sent.
+# It take a Proc as argument to find the entity secret key using the access id
+# provided in the request. Once returned, the entity secret key is compared
+# with secret key provided by the the request.
+# Unless the two keys match, a 401 Unauthorized HTTP Error page is sent.
 #
 # Options:
 # * environment: bypass authentication if set to "test"
@@ -20,7 +20,6 @@ class Rack::Auth::HMAC
 
   def initialize(app, options={}, &block)
     @app = app
-    options[:environment] ||= ENV["RACK_ENV"]
     options[:except] ||= []
     @options = options
     @block = block
@@ -31,7 +30,6 @@ class Rack::Auth::HMAC
   end
 
   def _call(env)
-    return @app.call(env) if @options[:environment] == "test"
     return @app.call(env) if @options[:except].include?(env["PATH_INFO"])
 
     env = fix_content_type(env)
@@ -78,6 +76,6 @@ class Rack::Auth::HMAC
       "WWW-Authenticate" => %(HMACDigest realm="#{message}" snonce="#{snonce}")
     }
 
-    Rack::Response.new body, 401, headers
+    Rack::Response.new(body, 401, headers)
   end
 end

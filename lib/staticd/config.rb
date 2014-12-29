@@ -1,91 +1,110 @@
-require "yaml"
-require "erb"
+require "singleton"
 
 module Staticd
 
-  # Manage Staticd configuration.
+  # Manage Staticd Configuration.
   #
-  # Staticd code use environment variables to look for configuration.
-  # This class can read a hash of configuration settings and export them
-  # into environment variables used by the Staticd code.
+  # Can load configuration from a hash, from environment variables with the
+  # STATICD_ prefix or from a config file in yaml format.
   #
-  # Available configuration settings are:
-  # * wildcard_domain: the base wildcard domain name used to generate
-  #   sub-domain name for each sites
-  # * http_cache: the local directory path where the HTTP server will cache
-  #   each resources it serve
-  # * access_id: the access ID key used by the staticdctl client to
-  #   authenticate against the API server (HMAC)
-  # * secret_key: the secret access key used by the staticdctl client to
-  #   authenticate against the API server (HMAC)
-  # * database: the database url (ex: postgres://user:password@server/database)
-  # * datastore: the datastore url (ex: s3://access:secret@host/bucket)
-  #
-  # Example:
-  #   config = Staticd::Config.new(wildcard_domain: "my_domain.tld")
-  #   config.to_env!
-  #   puts ENV["STATICD_WILDCARD_DOMAIN"]
-  #   # => "my_domain.tld"
+  # Once loaded,configuration is available from anywhere in the app using
+  # Staticd::Config[:setting].
   class Config
-    SETTINGS =
-      %i(wildcard_domain access_id secret_key database datastore http_cache)
+    include Singleton
 
-    # Read Staticd configuration from a config file.
-    #
-    # The config file must be a YAML file and have the following structure:
-    #   environment:
-    #     setting: value
-    #     another_setting: another_value
-    # Only the settings present under the selected environment will be loaded.
-    # The config file can be an ERB template.
-    #
-    # Example config file:
-    #   staging:
-    #     user: admin
-    #     secret: password
-    #   production
-    #     user: <%= ENV['USER'] %>
-    #     secret: <%= ENV['SECRET'] %>
-    def self.parse(config_file, environment)
-      environment = environment.to_s
-      content = File.read(config_file)
-      erb = ERB.new(content)
-      yaml = YAML.load(erb.result)
-      config = yaml.key?(environment) ? yaml[environment] : {}
-      new config
-    end
-
-    # Verify each environment variable settings are set.
-    #
-    # Raise exeption if one setting is not set.
+    # Load configuration from environment variables.
     #
     # Example:
-    #   Staticd::Config.verify(["STATICD_GOD_MODE"])
-    def self.verify(*settings)
-      settings.each do |setting|
-        if ENV[setting].nil? || ENV[setting].empty?
-          raise "#{setting} environment variable is not set"
-        end
+    #   ENV["STATICD_FOO"] = "bar"
+    #   Staticd::Config.load_env
+    #   Staticd::Config[:foo]
+    #   # => "bar"
+    def self.load_env
+      settings = {}
+      env = ENV.select { |name, value| name =~ /^STATICD_/ }
+      env.each do |name, value|
+        setting = name[/^STATICD_(.*)/, 1].downcase.to_sym
+        settings[setting] = value
       end
+      instance << settings
     end
 
-    def initialize(config)
-      @config = config
+    # Load configuration from a YAML file.
+    #
+    # The configuration file can contain ERB code.
+    #
+    # Example (config file)
+    #   ---
+    #   foo: bar
+    #
+    # Example:
+    #   Staticd::Config.load_file("/etc/staticd/staticd.yml")
+    #   Staticd::Config[:foo]
+    #   # => "bar"
+    def self.load_file(config_file)
+      content = File.read(config_file)
+      erb = ERB.new(content)
+      settings = YAML.load(erb.result)
+      instance << settings
+    end
+
+    # Push settings into Staticd global configuration.
+    #
+    # String setting keys are converted to symbols.
+    #
+    # Example:
+    #   Staticd::Config << {"foo" => bar}
+    #   Staticd::Config[:foo]
+    #   # => "bar"
+    def self.<<(settings)
+      instance << settings
+    end
+
+    # Get a setting value from the Staticd global configuration.
+    def self.[](setting)
+      instance[setting]
+    end
+
+    def self.key?(setting_name)
+      instance.key?(setting_name)
+    end
+
+    def self.to_s
+      instance.to_s
+    end
+
+    def initialize
+      @settings = {}
+    end
+
+    def <<(settings)
+      settings = hash_symbolize_keys(settings)
+      mutex.synchronize { @settings.merge!(settings) }
     end
 
     def [](setting)
-      @config[setting.to_s] if @config.key?(setting.to_s)
+      mutex.synchronize { @settings.key?(setting) ? @settings[setting] : nil }
     end
 
-    def to_env!
-      SETTINGS.each do |setting|
-        setting_name = "STATICD_#{setting.to_s.upcase}"
-        ENV[setting_name] = send(setting).to_s if send(setting)
+    def key?(setting_name)
+      mutex.synchronize { @settings.key?(setting_name) }
+    end
+
+    def to_s
+      mutex.synchronize { @settings.to_s }
+    end
+
+    private
+
+    def hash_symbolize_keys(hash)
+      hash.keys.each do |key|
+        hash[(key.to_sym rescue key) || key] = hash.delete(key)
       end
+      hash
     end
 
-    SETTINGS.each do |setting|
-      define_method(setting) { self[setting] }
+    def mutex
+      @mutex ||= Mutex.new
     end
   end
 end

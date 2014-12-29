@@ -1,8 +1,5 @@
-require "rack"
-require "staticd/version"
-require "staticd/config"
-require "staticd/database"
 require "staticd_utils/gli_object"
+require "staticd"
 
 module Staticd
   class CLI
@@ -26,38 +23,41 @@ module Staticd
     end
 
     def build_command_server
-      @gli.desc("Start the staticd API and HTTP server")
+      @gli.desc("Start the staticd API and HTTP services")
       @gli.command(:server) do |c|
-        staticd_root = "#{File.dirname(__FILE__)}/../.."
-        default_config_file = "#{staticd_root}/etc/staticd.yml.erb"
-
-        c.switch([:api], desc: "Enable the API service", default_value: false)
-        c.switch([:http], desc: "Enable the HTTP service", default_value: true)
-        c.flag([:p, :port], desc: "Port to listen to", default_value: 8080)
+        c.switch([:api], desc: "enable the API service", default_value: true)
+        c.switch([:http], desc: "enable the HTTP service", default_value: true)
         c.flag(
-          [:c, :config],
-          desc: "Path to the config file to use",
-          default_value: default_config_file
+          [:environment],
+          desc: "application environment",
+          default_value: :development
         )
-
+        c.flag(
+          [:domain],
+          desc: "domain to use to generate site sub-domain urls"
+        )
+        c.flag([:access_id], desc: "HMAC auth access id for the API service")
+        c.flag([:secret_key], desc: "HMAC auth secret key for the API service")
+        c.flag([:database], desc: "URL for the database")
+        c.flag([:datastore], desc: "URL for the datastore")
+        c.flag(
+          [:http_cache],
+          desc: "directory path where HTTP resources are cached",
+          default_value: "/var/cache/staticd"
+        )
+        c.flag([:port], desc: "port to listen to", default_value: 80)
+        c.flag([:config], desc: "load a config file")
         c.action do |global_options, options,args|
-          ENV["STATICD_API_ENABLED"] = options[:api] ? "true" : "false"
-          ENV["STATICD_HTTP_ENABLED"] = options[:http] ? "true" : "false"
 
-          staticd_environment = ENV["RACK_ENV"] || "development"
-          rack_environment =
-            staticd_environment == "production" ? :deployment : :development
+          # Load configuration from command line options, environment variables
+          # options and config file.
+          Staticd::Config << options
+          Staticd::Config.load_env
+          Staticd::Config.load_file(options[:config]) if options[:config]
 
-          puts "Using configuration file: #{options[:config]}."
-          config = Staticd::Config.parse(options[:config], staticd_environment)
-          config.to_env!
-
-          Rack::Server.start(
-            config: "#{staticd_root}/config.ru",
-            server: "puma",
-            environment: rack_environment,
-            Port: options[:port]
-          )
+          # Initialize and start the Staticd app.
+          app = Staticd::App.new(Staticd::Config)
+          app.run
         end
       end
     end

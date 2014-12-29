@@ -8,9 +8,9 @@
   %p
     %ul.monitor
       %li{class: @domain_resolve ? "green" : "red"}
-        = "The '#{ENV["STATICD_WILDCARD_DOMAIN"]}' domain must resolve to this app."
+        = "The '#{Staticd::Config[:domain]}' domain must resolve to this app."
       %li{class: @wildcard_resolve ? "green" : "red"}
-        = "The wildcard '*.#{ENV["STATICD_WILDCARD_DOMAIN"]}' domain must resolve to this app."
+        = "The wildcard '*.#{Staticd::Config[:domain]}' domain must resolve to this app."
 
   - unless @domain_resolve && @wildcard_resolve
     %p
@@ -36,9 +36,9 @@
   %h3 Configure your Staticd client to use this endpoint
 
   %p
-    %code= "staticdctl --host http://#{ENV["STATICD_WILDCARD_DOMAIN"]}/api config:set access_id #{ENV["STATICD_ACCESS_ID"] || "your_access_id"}"
+    %code= "staticdctl --host http://#{Staticd::Config[:domain]}/api config:set access_id #{Staticd::Config[:access_id] || "your_access_id"}"
     %br
-    %code= "staticdctl --host http://#{ENV["STATICD_WILDCARD_DOMAIN"]}/api config:set secret_key #{ENV["STATICD_SECRET_KEY"] || "your_secret_key"}"
+    %code= "staticdctl --host http://#{Staticd::Config[:domain]}/api config:set secret_key #{Staticd::Config[:secret_key] || "your_secret_key"}"
 
   %h3 Almost finish
 

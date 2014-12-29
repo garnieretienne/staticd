@@ -14,6 +14,9 @@ module Staticd
     def initialize(http_root, app)
       @app = app
       @http_root = http_root
+
+      raise "No HTTP root folder provided" unless @http_root
+      raise "No rack app provided" unless @app
     end
 
     def call(env)

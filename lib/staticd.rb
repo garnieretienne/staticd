@@ -1,5 +1,7 @@
-Dir["#{File.dirname(__FILE__)}/staticd/**/*.rb"].each do |model_library|
-  require model_library
+Dir["#{File.dirname(__FILE__)}/staticd/**/*.rb"].each do |library|
+  require library
 end
 
-include Staticd::Models
+module Staticd
+  include Staticd::Models
+end

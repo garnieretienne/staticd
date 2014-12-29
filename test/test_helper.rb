@@ -1,10 +1,7 @@
-ENV["RACK_ENV"] = "test"
-
 require "minitest/autorun"
 require "rack/test"
 require "byebug"
-require "staticd/database"
-require 'staticd/config'
+require "staticd"
 
 module TestHelper
   include Rack::Test::Methods
@@ -27,20 +24,16 @@ module TestHelper
   end
 
   def check_testing_database
-    unless @database_initialized
-      Staticd::Database.init_database(:test, app_config.database)
-      @database_initialized = true
+    unless @app_initialized
+      Staticd::Config << {
+        domain: "example.org",
+        database: "sqlite::memory:",
+        datastore: "local:/tmp/store-testing",
+        environment: "test"
+      }
+      Staticd::App.new(Staticd::Config)
+      @app_initialized = true
     end
-  end
-
-  def app_config
-    return @app_config if @app_config
-
-    @app_config = Staticd::Config.parse(
-      "#{File.dirname(__FILE__)}/../etc/staticd.yml.erb", :test
-    )
-    @app_config.to_env!
-    @app_config
   end
 
   def sample_site

@@ -96,7 +96,10 @@ module Staticd
     end
 
     def build_api_service
-      api_service = Staticd::API.new(domain: @config[:domain])
+      api_service = Staticd::API.new(
+        domain: @config[:domain],
+        port: @config[:port]
+      )
 
       # Do not require HMAC authentication in test environment.
       return api_service unless @config[:environment] == "test"

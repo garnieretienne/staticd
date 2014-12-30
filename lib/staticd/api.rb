@@ -33,9 +33,11 @@ module Staticd
     error(APIError) { JSONResponse.send(:error, env['sinatra.error'].message) }
 
     def initialize(params={})
-      raise "Missing :domain parameter" unless params[:domain]
+      @config = params
 
-      @domain = params[:domain]
+      raise "Missing :domain parameter" unless @config[:domain]
+      raise "Missing :port parameter" unless @config[:port]
+
       super
     end
 
@@ -50,8 +52,8 @@ module Staticd
       if StaticdConfig.ask_value?(:disable_setup_page)
         haml :welcome, layout: :main
       else
-        @domain_resolve = ping?(@domain)
-        @wildcard_resolve = ping?("ping.#{@domain}")
+        @domain_resolve = ping?(@config[:domain], @config[:port])
+        @wildcard_resolve = ping?("ping.#{@config[:domain]}", @config[:port])
         haml :setup, layout: :main
       end
     end
@@ -68,7 +70,7 @@ module Staticd
     #
     # Used by the ping command to verify a specified domain resolve to this app.
     get "/ping" do
-      @domain
+      @config[:domain]
     end
 
     # Create a new site.
@@ -82,7 +84,7 @@ module Staticd
     #   {"name":"my_app"}
     post "/sites" do
       site = Site.new(name: @json["name"])
-      domain_suffix = ".#{@domain}"
+      domain_suffix = ".#{@config[domain]}"
       domain = DomainGenerator.new(suffix: domain_suffix) do |generated_domain|
         !DomainName.get(generated_domain)
       end
@@ -304,9 +306,9 @@ module Staticd
 
     private
 
-    def ping?(domain)
-      open("http://#{domain}/api/ping", read_timeout: 1) do |response|
-        response.read == @domain
+    def ping?(domain, port=80)
+      open("http://#{domain}:8080/api/ping", read_timeout: 1) do |response|
+        response.read == @config[:domain]
       end
     rescue
       false

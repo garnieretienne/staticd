@@ -90,7 +90,7 @@ module Staticd
     #   {"name":"my_app"}
     post "/sites" do
       site = Site.new(name: @json["name"])
-      domain_suffix = ".#{@config[domain]}"
+      domain_suffix = ".#{@config[:domain]}"
       domain = DomainGenerator.new(suffix: domain_suffix) do |generated_domain|
         !DomainName.get(generated_domain)
       end

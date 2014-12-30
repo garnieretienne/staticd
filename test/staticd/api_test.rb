@@ -7,7 +7,7 @@ class APITest < Minitest::Unit::TestCase
   include TestHelper
 
   def app
-    Staticd::API.new(domain: Staticd::Config[:domain])
+    Staticd::API.new(domain: Staticd::Config[:domain], port: 80)
   end
 
   def setup

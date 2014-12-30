@@ -6,7 +6,7 @@
   "repository": "https://github.com/garnieretienne/staticd.git",
   "success_url": "/api/welcome",
   "env": {
-    "S3_URL": {
+    "DATASTORE_URL": {
       "description": "S3 URL where sites resources are stored.",
       "value": "s3://"
     },

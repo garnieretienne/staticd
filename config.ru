@@ -6,6 +6,7 @@ require "staticd"
 
 # Load configuration from environment variables.
 Staticd::Config.load_env
+Staticd::Config.load_file(ENV["STATICD_CONFIG"]) if ENV["STATICD_CONFIG"]
 
 # Initialize and start the Staticd app.
 app = Staticd::App.new(Staticd::Config)

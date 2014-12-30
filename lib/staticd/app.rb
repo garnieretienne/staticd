@@ -18,6 +18,7 @@ module Staticd
     # * domain: base to generate per app sub-domain
     # * database: database url to store resources metadata
     # * datastore: datastore url to store resources
+    # * port: port to listen to
     #
     # API service configuration:
     # * api: enable the API service
@@ -29,15 +30,7 @@ module Staticd
     # * http_cache: folder where resources are cached
     def initialize(config)
       @config = config
-
-      required_config = %i(environment domain database datastore)
-      required_config += %i(access_id secret_key) if @config[:api]
-      required_config += %i(http_cache) if @config[:http]
-      required_config.each do |setting|
-        unless @config.key?(setting) && !@config[setting].nil?
-          raise "Missing '#{setting}' setting"
-        end
-      end
+      require_settings(:environment, :domain, :database, :datastore)
 
       env = @config[:environment]
       puts "Starting Staticd in #{env} environment." unless env == "test"
@@ -49,20 +42,32 @@ module Staticd
 
     # Start the application.
     def run
+      require_settings(:host, :port)
+      require_settings(:http_cache) if @config[:http]
+      require_settings(:access_id, :secret_key) if @config[:api]
+
       routes = {}
       routes["/"] = build_http_service if @config[:http]
       routes["/api"] = build_api_service if @config[:api]
       router = Rack::URLMap.new(routes)
 
       Rack::Server.start(
+        Host: @config[:host],
+        Port: @config[:port],
         app: router,
-        environment: @config[:environment],
-        Host: "0.0.0.0",
-        Port: @config[:port]
+        environment: @config[:environment]
       )
     end
 
     private
+
+    def require_settings(*settings)
+      settings.each do |setting|
+        unless @config.key?(setting) && !@config[setting].nil?
+          raise "Missing '#{setting}' setting"
+        end
+      end
+    end
 
     def display_current_config
       puts "Configuration:"
@@ -70,6 +75,8 @@ module Staticd
       puts "* Datastore: #{@config[:datastore]}"
 
       if Staticd::Config[:api]
+        puts "* Host: #{@config[:host]}"
+        puts "* Port: #{@config[:port]}"
         puts "* Domain: #{@config[:domain]}"
         puts "* Access ID: #{@config[:access_id]}"
         puts "* Secret Key: #{@config[:secret_key]}"

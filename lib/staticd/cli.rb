@@ -45,6 +45,7 @@ module Staticd
           desc: "directory path where HTTP resources are cached",
           default_value: "/var/cache/staticd"
         )
+        c.flag([:host], desc: "address to listen to", default_value: "0.0.0.0")
         c.flag([:port], desc: "port to listen to", default_value: 80)
         c.flag([:config], desc: "load a config file")
         c.action do |global_options, options,args|

@@ -1,4 +1,5 @@
 require "staticd/models/base"
+require "staticd/config"
 
 module Staticd
   module Models
@@ -11,7 +12,10 @@ module Staticd
       has n, :domain_names, constraint: :destroy
 
       def url
-        "http://#{domain_names.first.name}" if domain_names.any?
+        if domain_names.any?
+          url = "http://#{domain_names.first.name}"
+          url += ":#{Staticd::Config[:port]}" if Staticd::Config[:port] != 80
+        end
       end
 
       def to_s

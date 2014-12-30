@@ -36,9 +36,9 @@
   %h3 Configure your Staticd client to use this endpoint
 
   %p
-    %code= "staticdctl --host http://#{Staticd::Config[:domain]}/api config:set access_id #{Staticd::Config[:access_id] || "your_access_id"}"
+    %code= "staticdctl --host http://#{@staticd_host}/api config:set access_id #{Staticd::Config[:access_id] || "your_access_id"}"
     %br
-    %code= "staticdctl --host http://#{Staticd::Config[:domain]}/api config:set secret_key #{Staticd::Config[:secret_key] || "your_secret_key"}"
+    %code= "staticdctl --host http://#{@staticd_host}/api config:set secret_key #{Staticd::Config[:secret_key] || "your_secret_key"}"
 
   %h3 Almost finish
 

@@ -46,36 +46,47 @@
 
   %p
     Inside your project folder:
-    %pre
-      :preserve
-        $:website> staticdctl --host http://wildcard_domain.tld/api sites:create`
-        The vagrant site has been created.
-        http://jtbghu.wildcard_domain.tld
+    %br
+    %code= "$:website> staticdctl --host http://#{@staticd_host}/api sites:create"
+    %br
+    %code The vagrant site has been created.
+    %br
+    %code= "http://jtbghu.#{@staticd_host}"
 
   %h3 Deploying a site
 
   %p
     Inside your project folder, assuming source files are in the 'built' folder:
-    %pre
-      :preserve
-        $:website> staticdctl --host http://wildcard_domain.tld/api push build/
-        Counting resources... done (2 resources).
-        Asking host to identify new resources... done (2 new resources to upload).
-        Building the archive... done (3KB).
-        Uploading the archive... done (2.08s / 1.48kbps).
-
-        The vagrant release (v1) has been created.
-        http://jtbghu.wildcard_domain.tld
+    %br
+    %code= "$:website> staticdctl --host http://#{@staticd_host}/api push build/"
+    %br
+    %code Counting resources... done (2 resources).
+    %br
+    %code Asking host to identify new resources... done (2 new resources to upload).
+    %br
+    %code Building the archive... done (3KB).
+    %br
+    %code Uploading the archive... done (2.08s / 1.48kbps).
+    %br
+    %br
+    %code The vagrant release (v1) has been created.
+    %br
+    %code= "http://jtbghu.#{@staticd_host}"
 
   %h3 Adding custom domain names
 
-  %pre
-    :preserve
-      $:website> staticdctl --host http://wildcard_domain.tld/api domains:attach www.domain.tld
-      The www.domain.tld domain has been attached to the website site.
+  %p
+    %code= "$:website> staticdctl --host http://#{@staticd_host}/api domains:attach www.domain.tld"
+    %br
+    %code The www.domain.tld domain has been attached to the website site.
 
   %p <i><b>Note</b>: If you use heroku to host the app, do not forget to also add your custom domain to the heroku app.</i>
 
   %h3 Using an environment variable to specify the host flag
 
-  %p The <code>--host</code> flag can also be provided through the <code>STATICDCTL_ENDPOINT</code> environment variable.
+  %p
+    The <code>--host</code> flag can also be provided through the <code>STATICDCTL_ENDPOINT</code> environment variable.
+    %br
+    You can execute this kind of command to define a default Statidctl endpoint URL:
+    %br
+    %code= "echo 'export STATICDCTL_ENDPOINT=#{@staticd_host}' > ~/.bashrc"

@@ -49,6 +49,12 @@ module Staticd
     # Display a welcome page with instructions to finish setup and configure
     # the Staticd toolbelt.
     get "/welcome" do
+      @staticd_host =
+        if @config[:port] == 80
+          @config[:domain]
+        else
+          "#{@config[:domain]}:#{@config[:port]}"
+        end
       if StaticdConfig.ask_value?(:disable_setup_page)
         haml :welcome, layout: :main
       else

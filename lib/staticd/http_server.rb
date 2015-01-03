@@ -80,8 +80,12 @@ module Staticd
     # Mime type used when no type has been identified.
     DEFAULT_MIME_TYPE = "application/octet-stream"
 
-    def initialize(http_root)
+    def initialize(http_root, access_logger=nil)
       @http_root = http_root
+      unless (@access_logger = access_logger)
+        @access_logger = Logger.new(STDOUT)
+        @access_logger.formatter = proc { |_, _, _, msg| "#{msg}\n"}
+      end
 
       raise "No HTTP root folder provided" unless @http_root
     end
@@ -94,10 +98,52 @@ module Staticd
       @env = env
       req = Rack::Request.new(@env)
       file_path = @http_root + req.path
-      File.readable?(file_path) ? sendfile(file_path) : send_404
+      res = File.readable?(file_path) ? serve(file_path) : send_404
+      log(req, res)
     end
 
     private
+
+    # Log a request using the "Extended Log File Format".
+    # See: http://www.w3.org/TR/WD-logfile.html
+    #
+    # Use the request.time key setup by the Rack::RequestTime middleware.
+    #
+    # Version: 1.0
+    # Fields: time cs-dns cs-ip date cs-method cs-uri sc-status sc-byte sc-time-taken
+    def log(req, res)
+      request_stop_time = Time.now
+      request_start_time =
+        req.env.key?("request.time") ? req.env["request.time"] : nil
+      request_completed_time =
+        if request_start_time
+          (request_stop_time - request_start_time).round(4)
+        else
+          "-"
+        end
+      content_length =
+        res[1].key?("Content-Length") ? " #{res[1]["Content-Length"]}" : "-"
+
+      log_string = "#{request_stop_time.strftime("%Y-%m-%d %H:%M:%S")}"
+      log_string << " #{req.host}"
+      log_string << " #{req.env["REMOTE_ADDR"]}"
+      log_string << " #{req.env["REQUEST_METHOD"]} #{req.path_info}"
+      log_string << " #{res[0]}"
+      log_string << content_length
+      log_string << " #{request_completed_time}"
+      @access_logger.info(log_string)
+
+      res
+    end
+
+    # Serve a file.
+    #
+    # This method will return a Rack compatible response ready to be served to
+    # the client. It will use the appropriate method (loading file into memory
+    # vs serving file using the sendfile system call) based on availability.
+    def serve(file_path)
+      @env['rack.hijack?'] ? sendfile(file_path) : send(file_path)
+    end
 
     # Send a file loading it in memory.
     #
@@ -117,7 +163,6 @@ module Staticd
     # See: https://github.com/codeslinger/sendfile
     # See: http://blog.phusion.nl/2013/01/23/the-new-rack-socket-hijacking-api/
     def sendfile(file_path)
-      return send(file_path) unless @env['rack.hijack?']
 
       response_header = {
         "Content-Type" => mime(file_path),

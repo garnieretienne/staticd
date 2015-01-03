@@ -1,4 +1,5 @@
 require "rack"
+require "rack/request_time"
 
 module Staticd
 
@@ -116,7 +117,8 @@ module Staticd
 
     def build_http_service
       http_service = Staticd::HTTPServer.new(@config[:http_cache])
-      Staticd::HTTPCache.new(@config[:http_cache], http_service)
+      cache_middleware = Staticd::HTTPCache.new(@config[:http_cache], http_service)
+      Rack::RequestTime.new(cache_middleware)
     end
   end
 end

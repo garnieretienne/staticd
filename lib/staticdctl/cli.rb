@@ -279,6 +279,10 @@ module Staticdctl
 
           print "Counting resources... "
           sitemap = StaticdUtils::Sitemap.create(source_path)
+          if sitemap.routes.size < 1
+            puts "stop. No resources."
+            raise "No resources to send in '#{source_path}'"
+          end
           puts "done (#{sitemap.routes.size} resources)."
 
           print "Asking host to identify new resources... "

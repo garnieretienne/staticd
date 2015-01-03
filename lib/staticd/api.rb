@@ -8,6 +8,7 @@ require "staticd/json_response"
 require "staticd/json_request"
 require "staticd/domain_generator"
 require "staticd/datastore"
+require "staticd/database"
 
 require "staticd_utils/archive"
 require "staticd_utils/sitemap"

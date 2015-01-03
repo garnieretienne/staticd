@@ -1,7 +1,11 @@
 [![Build Status](https://travis-ci.org/garnieretienne/staticd.svg?branch=master)](https://travis-ci.org/garnieretienne/staticd)
 -----
 
-![Staticd Logo](http://www.imagesup.net/?di=16141830503310)
+![Staticd Logo](http://www.staticd.yuweb.fr/images/staticd_logo.png)
+
+* Official website: [www.staticd.yuweb.fr](http://www.staticd.yuweb.fr/)
+* Backup website: [garnieretienne.github.io/staticd](https://garnieretienne.github.io/staticd/)
+
 
 # Staticd toolbelt
 

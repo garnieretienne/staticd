@@ -49,17 +49,17 @@ module Staticd
     # Display a welcome page with instructions to finish setup and configure
     # the Staticd toolbelt.
     get "/welcome" do
-      @staticd_host =
-        if @config[:port] == 80
-          @config[:domain]
-        else
-          "#{@config[:domain]}:#{@config[:port]}"
-        end
+      @staticd_host = @config[:domain]
+      if @config[:public_port] && @config[:public_port] != "80"
+        @staticd_host += ":#{@config[:public_port]}"
+      end
+      @staticd_url = "http://#{@staticd_host}/api"
       if StaticdConfig.ask_value?(:disable_setup_page)
         haml :welcome, layout: :main
       else
-        @domain_resolve = ping?(@config[:domain], @config[:port])
-        @wildcard_resolve = ping?("ping.#{@config[:domain]}", @config[:port])
+        @domain_resolve = ping?(@config[:domain], @config[:public_port])
+        @wildcard_resolve =
+          ping?("ping.#{@config[:domain]}", @config[:public_port])
         haml :setup, layout: :main
       end
     end
@@ -313,7 +313,7 @@ module Staticd
     private
 
     def ping?(domain, port=80)
-      open("http://#{domain}:8080/api/ping", read_timeout: 1) do |response|
+      open("http://#{domain}:#{port}/api/ping", read_timeout: 1) do |response|
         response.read == @config[:domain]
       end
     rescue

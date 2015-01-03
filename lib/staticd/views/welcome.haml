@@ -47,7 +47,7 @@
   %p
     Inside your project folder:
     %br
-    %code= "$:website> staticdctl --host http://#{@staticd_host}/api sites:create"
+    %code= "$:website> staticdctl --host #{@staticd_url} sites:create"
     %br
     %code The vagrant site has been created.
     %br
@@ -58,7 +58,7 @@
   %p
     Inside your project folder, assuming source files are in the 'built' folder:
     %br
-    %code= "$:website> staticdctl --host http://#{@staticd_host}/api push build/"
+    %code= "$:website> staticdctl --host #{@staticd_url} push build/"
     %br
     %code Counting resources... done (2 resources).
     %br
@@ -76,7 +76,7 @@
   %h3 Adding custom domain names
 
   %p
-    %code= "$:website> staticdctl --host http://#{@staticd_host}/api domains:attach www.domain.tld"
+    %code= "$:website> staticdctl --host #{@staticd_url} domains:attach www.domain.tld"
     %br
     %code The www.domain.tld domain has been attached to the website site.
 
@@ -89,4 +89,4 @@
     %br
     You can execute this kind of command to define a default Statidctl endpoint URL:
     %br
-    %code= "echo 'export STATICDCTL_ENDPOINT=#{@staticd_host}' > ~/.bashrc"
+    %code= "echo 'export STATICDCTL_ENDPOINT=#{@staticd_url}' > ~/.bashrc"

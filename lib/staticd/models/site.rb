@@ -14,7 +14,11 @@ module Staticd
       def url
         if domain_names.any?
           url = "http://#{domain_names.first.name}"
-          url += ":#{Staticd::Config[:port]}" if Staticd::Config[:port] != 80
+          public_port = Staticd::Config[:public_port]
+          if public_port && public_port != "80"
+            url += ":#{Staticd::Config[:public_port]}"
+          end
+          url
         end
       end
 

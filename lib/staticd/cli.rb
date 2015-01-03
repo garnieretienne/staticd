@@ -34,7 +34,11 @@ module Staticd
         )
         c.flag(
           [:domain],
-          desc: "domain to use to generate site sub-domain urls"
+          desc: "base to generate per app sub-domain"
+        )
+        c.flag(
+          [:public_port],
+          desc: "port used to generate application and endpoint url"
         )
         c.flag([:access_id], desc: "HMAC auth access id for the API service")
         c.flag([:secret_key], desc: "HMAC auth secret key for the API service")

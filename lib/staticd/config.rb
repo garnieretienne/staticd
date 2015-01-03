@@ -60,6 +60,11 @@ module Staticd
       instance << settings
     end
 
+    # Same as << method.
+    def self.[]=(setting, value)
+      instance << {setting => value}
+    end
+
     # Get a setting value from the Staticd global configuration.
     def self.[](setting)
       instance[setting]

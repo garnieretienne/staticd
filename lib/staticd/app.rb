@@ -17,8 +17,11 @@ module Staticd
     # General configuration:
     # * environment: the app environment (test, development or production)
     # * domain: base to generate per app sub-domain
+    # * public_port: port used to generate application and endpoint url,
+    #   (default to 80)
     # * database: database url to store resources metadata
     # * datastore: datastore url to store resources
+    # * host: host to listen to
     # * port: port to listen to
     #
     # API service configuration:
@@ -31,6 +34,7 @@ module Staticd
     # * http_cache: folder where resources are cached
     def initialize(config)
       @config = config
+      @config[:public_port] ||= "80"
       require_settings(:environment, :domain, :database, :datastore)
 
       env = @config[:environment]
@@ -79,6 +83,7 @@ module Staticd
         puts "* Host: #{@config[:host]}"
         puts "* Port: #{@config[:port]}"
         puts "* Domain: #{@config[:domain]}"
+        puts "* Public Port: #{@config[:public_port]}"
         puts "* Access ID: #{@config[:access_id]}"
         puts "* Secret Key: #{@config[:secret_key]}"
       end
@@ -97,10 +102,7 @@ module Staticd
     end
 
     def build_api_service
-      api_service = Staticd::API.new(
-        domain: @config[:domain],
-        port: @config[:port]
-      )
+      api_service = Staticd::API.new(@config)
 
       # Do not require HMAC authentication in test environment.
       return api_service unless @config[:environment] == "test"

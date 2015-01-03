@@ -5,7 +5,9 @@ class HTTPServerTest < Minitest::Unit::TestCase
   include TestHelper
 
   def app
-    Staticd::HTTPServer.new(fixtures_path('sites/hello_world'))
+    logger = Logger.new(STDOUT)
+    logger.level = Logger::ERROR
+    Staticd::HTTPServer.new(fixtures_path('sites/hello_world'), logger)
   end
 
   def setup

@@ -4,7 +4,7 @@ body {
 }
 
 .big {
-  text-align: center;
+  padding-left: 2em;
   font-size: 1.6em;
   text-decoration: underline;
 }
@@ -99,8 +99,17 @@ main {
   margin: 2em 0;
 }
 
-.picto {
-  display: block;
-  margin: 1em auto;
-  width: 4em;
+footer {
+  padding: 0.6em;
+}
+
+.signature {
+  text-align: right;
+}
+
+.avatar {
+  padding: 0.4em;
+  vertical-align: middle;
+  display: inline-block;
+  border-radius: 50% 50% 50% 50%;
 }

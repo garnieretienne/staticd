@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/garnieretienne/staticd.svg?branch=master)](https://travis-ci.org/garnieretienne/staticd)
 -----
 
-![Staticd Logo](http://www.staticd.yuweb.fr/images/staticd_logo.png)
+![Staticd Logo](http://staticd.eggnet.io/images/staticd_logo.png)
 
-* Official website: [www.staticd.yuweb.fr](http://www.staticd.yuweb.fr/)
+* Official website: [staticd.eggnet.io](http://staticd.eggnet.io/)
 * Backup website: [garnieretienne.github.io/staticd](https://garnieretienne.github.io/staticd/)
 
 

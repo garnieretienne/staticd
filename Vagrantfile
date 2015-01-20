@@ -56,7 +56,7 @@ cat <<EOC > ~/.staticdctl.yml
 ---
 http://localhost:8080/api:
   access_id: '1000'
-  secret_key: XAQCxLanQwGNTS99+EAkBRDf/it4nZVa2Ct5zugRn/QorNdN+hxBrjvPLExhuFpwnQLpGIF641eddgknEbbAiw==
+  secret_key: not_secure
 EOC
 echo "export STATICDCTL_ENDPOINT=http://localhost:8080/api" >> ~/.bashrc
 

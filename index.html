@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Staticd - The static-web toolbelt.</title>
+    <title>Staticd - The static-web toolbelt</title>
     <link rel="stylesheet" href="stylesheets/normalize.css">
     <link rel="stylesheet" href="stylesheets/skeleton.css">
     <link rel="stylesheet" href="stylesheets/styles.css">
@@ -36,7 +36,7 @@
           <div class="six columns">
             <div class="headline">
               <h1>Staticd</h1>
-              <h2>The static-web toolbelt.</h2>
+              <h2>The static-web toolbelt</h2>
               <p>Deploy your own Staticd Web Hosting platform.</p>
             </div>
             <a class="button button-primary" href="https://github.com/garnieretienne/staticd#getting-started">Getting Started</a>
@@ -63,28 +63,30 @@
             <h3>FAQ</h4>
 
             <h4>Where can I deploy?</h4>
-            <p>You can deploy the Staticd API and HTTP services as a traditional ruby application on any PaaS supporting the ruby language or as a ruby gem utility. <b>Currently the application have only <a href="https://github.com/garnieretienne/staticd#deployment">been tested on Heroku</a>.</b> Other deployment test and guides will follow.</p>
+            <p>You can deploy the Staticd API and HTTP services as a traditional ruby application on any PaaS supporting the ruby language or as a ruby gem utility.
+            <br>
+            <b>Currently, the application have only <a href="https://github.com/garnieretienne/staticd#deployment">been tested on Heroku</a></b>, other deployment test and guides will follow.</p>
 
             <h4>Is this production ready?</h4>
-            <p>No, not yet. It's a side project and the only website in production using Staticd is this one. Expect bugs and alpha quality releases until version <code>1.0.0</code>.</p>
+            <p>No, not yet. It's a side project and the only website in production using Staticd I'm aware of is this one. Expect bugs and alpha/beta quality releases until version <code>1.0.0</code>.</p>
 
             <h4>How do I interact with my Staticd API service?</h4>
             <p>
-              You can install and use the <code>staticdctl</code> gem which is the official Staticd client or develop your own library. API documentation is available as comments in this <a href="https://github.com/garnieretienne/staticd/blob/master/lib/staticd/api.rb">file</a>.
+              You can install and use the <code>staticdctl</code> gem which is the official Staticd client or develop your own. API documentation is available as comments in this <a href="https://github.com/garnieretienne/staticd/blob/master/lib/staticd/api.rb">file</a>.
               <br>
               <b>Note:</b> The API authentication is based on the <a href="https://en.wikipedia.org/wiki/Hash-based_message_authentication_code">HMAC</a> protocol.
             </p>
 
             <h4>Where are my sites stored?</h4>
             <p>
-              Your site architecture and metadata are stored in a <i>database</i>. Currently the only supported <i>database</i> is a <a href="http://www.postgresql.org/">PostgreSQL</a> database.
+              Your site metadata are stored in a <i>database</i>. Currently the only supported <i>database</i> is a <a href="http://www.postgresql.org/">PostgreSQL</a> database.
               <br>
               Your site resources are stored in a <i>datastore</i>. Currently the only supported <i>datastore</i> is an <a href="https://aws.amazon.com/s3/">Amazon S3 bucket</a>.
             </p>
 
             <h4>How do I scale?</h4>
             <p>
-              The Staticd API and HTTP service follow the <a href="https://devcenter.heroku.com/articles/process-model">Process Model</a>. Depending on how you choose to deploy the application, you can scale your process using the scaling options available at your PaaS or just adding process and load balancing beetween them if you've deployed Staticd on your own VPS/Private Server. As the sites metadata and resources are stored in the database and the datastore, these processes doesn't need to be started on the same host.
+              The Staticd API and HTTP service follow the <a href="https://devcenter.heroku.com/articles/process-model">Process Model</a>. Depending on how you choose to deploy the application, you can scale your processes using the workflow available at your PaaS or, if you've deployed Staticd on your own VPS/Private Server, just adding processes and configuring a load balancer beetween them. As the sites metadata and resources are stored in the database and the datastore, these processes doesn't need to be started on the same host.
             </p>
           </div>
         </div>
@@ -95,7 +97,7 @@
       <div class="container">
         <div class="row">
           <div class="twelve columns">
-            <p class="signature">Made by <img class="avatar" src="https://avatars1.githubusercontent.com/u/223963?v=3&s=40" alt="Avatar"> <a href="mailto:garnier.etienne@gmail.com"><b>Etienne Garnier</b> aka <b>kurt</b></a>.</p>
+            <p class="signature">Made by <img class="avatar" src="https://avatars1.githubusercontent.com/u/223963?v=3&s=40" alt="Avatar"> <a href="http://kurt.eggnet.io"><b>Etienne Garnier</b> aka <b>kurt</b></a>.</p>
           </div>
         </div>
       </div>

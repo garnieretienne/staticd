@@ -106,7 +106,6 @@ GEM
     mini_portile (0.6.1)
     multi_json (1.10.1)
     netrc (0.7.9)
-    newrelic_rpm (3.9.9.275)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     puma (2.9.2)
@@ -137,7 +136,6 @@ DEPENDENCIES
   byebug (= 3.5.1)
   dm-sqlite-adapter (= 1.2.0)
   foreman (= 0.75.0)
-  newrelic_rpm
   rake (= 10.3.2)
   staticd!
   staticdctl!

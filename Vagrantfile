@@ -54,11 +54,11 @@ sudo apt-get install --assume-yes sqlite3 libsqlite3-dev
 # credentials
 cat <<EOC > ~/.staticdctl.yml
 ---
-http://localhost:8080/api:
+http://localhost:8080/api/v1:
   access_id: '1000'
   secret_key: not_secure
 EOC
-echo "export STATICDCTL_ENDPOINT=http://localhost:8080/api" >> ~/.bashrc
+echo "export STATICDCTL_ENDPOINT=http://localhost:8080/api/v1" >> ~/.bashrc
 
 # Install gem dependencies using bundler
 sudo apt-get install --assume-yes build-essential libssl-dev

@@ -51,7 +51,7 @@ In order to run the Staticd API and HTTP services, you will need:
 
 ### Once deployed
 
-Once deployed, visit the `/api/welcome` page to complete the setup and get
+Once deployed, visit the `/api/v1/welcome` page to complete the setup and get
 instructions to configure the `staticdctl` utility.
 
 ### Deployment

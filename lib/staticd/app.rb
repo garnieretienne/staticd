@@ -1,6 +1,13 @@
 require "rack"
 require "rack/request_time"
 
+require "staticd/config"
+require "staticd/database"
+require "staticd/datastore"
+require "staticd/api"
+require "staticd/http_cache"
+require "staticd/http_server"
+
 module Staticd
 
   # Staticd App.
@@ -53,7 +60,7 @@ module Staticd
 
       routes = {}
       routes["/"] = build_http_service if @config[:http]
-      routes["/api"] = build_api_service if @config[:api]
+      routes["/api/#{Staticd::API::VERSION}"] = build_api_service if @config[:api]
       router = Rack::URLMap.new(routes)
 
       Rack::Server.start(

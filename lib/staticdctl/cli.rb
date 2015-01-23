@@ -66,7 +66,9 @@ module Staticdctl
 
     def set_global_option_host
       @gli.desc("Staticd API endpoint")
-      @gli.default_value(ENV["STATICDCTL_ENDPOINT"] || "http://localhost/api")
+      @gli.default_value(
+        ENV["STATICDCTL_ENDPOINT"] || "http://localhost/api/v1"
+      )
       @gli.arg_name("<Staticd API endpoint>")
       @gli.flag([:h, :host])
     end

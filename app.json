@@ -4,7 +4,7 @@
   "logo": "http://www.imagesup.net/?di=16141830503310",
   "website": "https://github.com/garnieretienne/staticd#staticd-toolbelt",
   "repository": "https://github.com/garnieretienne/staticd.git",
-  "success_url": "/api/welcome",
+  "success_url": "/api/v1/welcome",
   "env": {
     "DATASTORE_URL": {
       "description": "S3 URL where sites resources are stored.",

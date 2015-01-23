@@ -19,6 +19,8 @@ module Staticd
   class API < Sinatra::Base
     include Staticd::Models
 
+    VERSION = "v1"
+
     PUBLIC_URI = %w(
       /welcome /ping /main.css /main.js /jquery-1.11.1.min.js
     )
@@ -54,7 +56,7 @@ module Staticd
       if @config[:public_port] && @config[:public_port] != "80"
         @staticd_host += ":#{@config[:public_port]}"
       end
-      @staticd_url = "http://#{@staticd_host}/api"
+      @staticd_url = "http://#{@staticd_host}/api/#{VERSION}"
       if StaticdConfig.ask_value?(:disable_setup_page)
         haml :welcome, layout: :main
       else
@@ -314,7 +316,7 @@ module Staticd
     private
 
     def ping?(domain, port=80)
-      open("http://#{domain}:#{port}/api/ping", read_timeout: 1) do |response|
+      open("http://#{domain}:#{port}/api/#{VERSION}/ping", read_timeout: 1) do |response|
         response.read == @config[:domain]
       end
     rescue

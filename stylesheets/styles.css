@@ -3,9 +3,40 @@ body {
   color: #131313;
 }
 
+header {
+  background-color: #131313;
+  color: #FBFBFB;
+  padding: 0.6em;
+  border-bottom: 4px solid #0A0A0A;
+}
+
+#title {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  background-color: #131313;
+  background-image: url(/images/background.jpg);
+  background-repeat:no-repeat;
+  background-position: center;
+  color: #FBFBFB;
+  border-bottom: 4px solid #0A0A0A;
+}
+
+main {
+  margin: 2em 0;
+}
+
+footer {
+  padding: 0.6em;
+}
+
+.desktop {
+  display: none !important;
+}
+
 .big {
-  padding-left: 2em;
   font-size: 1.6em;
+  text-align: center;
   text-decoration: underline;
 }
 
@@ -18,29 +49,14 @@ body {
   background-color: rgba(0, 0, 0, 0.70);
 }
 
-header {
-  background-color: #131313;
-  color: #FBFBFB;
-  padding: 0.6em;
-  border-bottom: 4px solid #0A0A0A;
-}
-
-.home-link {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: middle;
-  height: 2em;
-}
-
-.home-link > .logo {
-  height: 100%;
-}
-
 .nav {
+  display: block;
   margin: 0;
+  margin: auto;
   list-style-type: none;
   text-align: right;
   word-spacing: 1em;
+  text-align: center;
 }
 
 .nav > .entry {
@@ -59,19 +75,6 @@ header {
   border-bottom: 1px solid #FBFBFB;
 }
 
-#title {
-  position: relative;
-  padding: 4em;
-  overflow: hidden;
-  text-align: center;
-  background-color: #131313;
-  background-image: url(/images/background.jpg);
-  background-repeat:no-repeat;
-  background-position: center;
-  color: #FBFBFB;
-  border-bottom: 4px solid #0A0A0A;
-}
-
 #title h1 {
   font-size: 4em;
   margin: 0;
@@ -88,28 +91,65 @@ header {
 }
 
 #title .screencast {
+  color: #131313;;
+  display: block;
   overflow: hidden;
-}
-
-.screencast > * {
-  margin: 0 !important;
-}
-
-main {
-  margin: 2em 0;
-}
-
-footer {
-  padding: 0.6em;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 
 .signature {
-  text-align: right;
+  font-size: 0.8em;
+  text-align: center;
 }
 
 .avatar {
-  padding: 0.4em;
+  padding: 1em;
   vertical-align: middle;
   display: inline-block;
   border-radius: 50% 50% 50% 50%;
+}
+
+@media (min-width: 1000px) {
+
+  .mobile {
+    display: none !important;
+  }
+
+  .desktop {
+    display: block !important;
+  }
+
+  .home-link {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: middle;
+    height: 2em;
+  }
+
+  .nav {
+    text-align: right;
+  }
+
+  .headline {
+    padding: 2em;
+  }
+
+  .home-link > .logo {
+    height: 100%;
+  }
+
+  .screencast > * {
+    margin: 0 !important;
+  }
+
+  .big {
+    padding-left: 2em;
+    text-align: left;
+  }
+
+  .signature {
+    font-size: 0.8em;
+    text-align: right;
+  }
 }

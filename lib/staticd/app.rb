@@ -111,9 +111,6 @@ module Staticd
     def build_api_service
       api_service = Staticd::API.new(@config)
 
-      # Do not require HMAC authentication in test environment.
-      return api_service unless @config[:environment] == "test"
-
       # Bind the API service with the HMAC middleware.
       raise "No access ID provided" unless @config[:access_id]
       raise "No secret_key provided" unless @config[:secret_key]

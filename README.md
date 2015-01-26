@@ -92,33 +92,14 @@ http://jtbghu.wildcard_domain.tld
 
 # Contributing
 
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) if you wish to contribute to the
+project.
+
 * Pull requests are welcome.
 * Documentation is available on the
   [Github Wiki](https://github.com/garnieretienne/staticd/wiki).
 * Issues are managed in
   [Github](https://github.com/garnieretienne/staticd/issues).
-* The staticd and staticdctl gems use
-  [Sementic Versionning](http://semver.org/).
-* The project use this
-  [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide#the-ruby-style-guide).
-
-## Vagrant
-
-A [Vagrant file](Vagrantfile) is available and will install and
-configure the following components:
-
-* A Ruby stack
-* The SQLite tool
-* A PostgreSQL service (database, user and password are "vagrant")
-* The `staticdctl` configuration file configured for local use
-  (`~/.staticdctl.yml`)
-* The project source available in the `/vagrant` directory
-
-To start the Staticd API and HTTP services: `bundle exec foreman start`.
-
-To execute a Rake task: `bundle exec foreman run rake -T`.
-
-To use the `staticdctl` utility: `bundle exec staticdctl --help`.
 
 # License
 

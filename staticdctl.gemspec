@@ -10,19 +10,10 @@ spec = Gem::Specification.new do |s|
   s.license = "MIT"
   s.author = 'Etienne Garnier'
   s.email = 'garnier.etienne@gmail.com'
-  s.homepage = 'http://yuweb.fr'
+  s.homepage = 'http://staticd.eggnet.io'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'CLI for the staticd API'
-  s.description = 'CLI client to control a staticd app on a remote host'
-  s.files = [
-    "bin/staticdctl",
-    "lib/staticdctl.rb",
-    "lib/staticdctl/rest_client.rb",
-    "lib/staticdctl/version.rb",
-    "lib/staticd_utils/archive.rb",
-    "lib/staticd_utils/file_size.rb",
-    "lib/staticd_utils/archive_file.rb"
-  ]
+  s.summary = 'Staticd CLI Client'
+  s.description = 'CLI Client for the Staticd API service'
   s.files = Dir["lib/staticdctl/**/*"] + Dir["lib/staticd_utils/**/*"] + [
     "lib/staticdctl.rb",
     "bin/staticdctl"

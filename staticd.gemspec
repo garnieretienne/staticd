@@ -10,15 +10,19 @@ spec = Gem::Specification.new do |s|
   s.license = "MIT"
   s.author = 'Etienne Garnier'
   s.email = 'garnier.etienne@gmail.com'
-  s.homepage = 'http://www.yuweb.fr'
+  s.homepage = 'http://staticd.eggnet.io'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'Staticd API and HTTP server'
-  s.description = 'Staticd is a Rack app serving static content and ' +
-    'supporting virtual hosts'
-  s.files = Dir["lib/staticd/**/*"] + Dir["lib/staticd_utils/**/*"] + [
-    "bin/staticd",
-    "config.ru"
-  ]
+  s.summary = 'Staticd API and HTTP service'
+  s.description =
+    'Staticd API and HTTP service to manage and serve staticd content over HTTP'
+  s.files =
+    Dir["lib/staticd/**/*"] +
+    Dir["lib/staticd_utils/**/*"] +
+    Dir["lib/rack/**/*"] +
+    [
+      "lib/staticd.rb",
+      "bin/staticd"
+    ]
   s.require_paths << 'lib'
   s.bindir = 'bin'
   s.executables << 'staticd'

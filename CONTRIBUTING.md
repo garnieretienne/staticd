@@ -34,7 +34,7 @@ a `.env` [file](.env).
 To use the `staticdctl` utility: `bundle exec staticdctl --help` inside the
 `/vagrant` folder.
 Configuration for the `staticdctl` command is provided by the
-`~/.staticdctl.yml` config file and the STATICDCTL_ENDPOINT environment
+`~/.staticdctl.yml` config file and the `STATICDCTL_ENDPOINT` environment
 variable, both built at the VM creation.
 
 ## Releases

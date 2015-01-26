@@ -1,7 +1,7 @@
 {
   "name": "Staticd",
   "description": "Staticd API and HTTP services",
-  "logo": "http://www.imagesup.net/?di=16141830503310",
+  "logo": "http://staticd.eggnet.io/images/staticd_logo.png",
   "website": "https://github.com/garnieretienne/staticd#staticd-toolbelt",
   "repository": "https://github.com/garnieretienne/staticd.git",
   "success_url": "/api/v1/welcome",

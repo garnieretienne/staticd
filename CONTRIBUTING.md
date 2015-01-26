@@ -41,3 +41,21 @@ variable, both built at the VM creation.
 
 The `staticd` and `staticdctl` gems use
 [Sementic Versionning](http://semver.org/).
+
+> Bug fixes not affecting the API increment the patch version, backwards
+> compatible API additions/changes increment the minor version, and backwards
+> incompatible API changes increment the major version.
+
+## Process
+
+1. Update release version in source code.
+   Edit [`lib/staticd/version.rb`](lib/staticd/version.rb),
+   [`lib/staticdctl/version.rb`](lib/staticdctl/version.rb), and if needed
+   [`lib/staticd/api.rb` (`VERSION=vX`)].
+2. Build and publish the gems.
+   Run `gem build staticd.gemspec` and `gem build staticdctl.gemspec` to build
+   the gem files and `gem push staticd-*.gem` and `gem push staticdctl-*.gem`
+   to publish them.
+3. Create a release on Github
+   Prefix the version name with the letter v (ex: `v1.0.0`), set the release
+   title and description and create the release.

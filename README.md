@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/staticd.svg)](http://badge.fury.io/rb/staticd)
 [![Build Status](https://travis-ci.org/garnieretienne/staticd.svg?branch=master)](https://travis-ci.org/garnieretienne/staticd)
 -----
 

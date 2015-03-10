@@ -64,7 +64,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.box = "ubuntu/trusty64"
   config.vm.network "forwarded_port", guest: 8080, host: 8080
-  config.vm.network "private_network", type: "dhcp"
+  config.vm.network "private_network", ip: "192.168.50.10"
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
   config.vm.provision "shell", inline: $provision_script, privileged: false
 end

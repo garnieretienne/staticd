@@ -74,7 +74,8 @@ module Staticd
       ".wmv"     => "video/x-ms-wmv",
       ".asx"     => "video/x-ms-asf",
       ".asf"     => "video/x-ms-asf",
-      ".mng"     => "video/x-mng"
+      ".mng"     => "video/x-mng",
+      ".svg"     => "image/svg+xml"
     }
 
     # Mime type used when no type has been identified.
